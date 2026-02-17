@@ -2,11 +2,11 @@
 
 ## 📌 Descripción del Proyecto
 
-Este repositorio contiene el proyecto **Software Engineering**,
+Este repositorio contiene el proyecto de **Ingeniería de Software**,
 desarrollado como parte del trabajo académico por los alumnos:
 
--   Juan Manuel de Miguel\
--   Yonathan Ismael Bautista\
+-   Juan Manuel de Miguel
+-   Yonathan Ismael Bautista
 -   Hugo García
 
 El objetivo del proyecto es el **desarrollo de una aplicación**,
@@ -64,8 +64,8 @@ implementación, pruebas y documentación.
 
 ## 👥 Equipo de Trabajo
 
--   Juan Manuel de Miguel\
--   Yonathan Ismael Bautista\
+-   Juan Manuel de Miguel
+-   Yonathan Ismael Bautista
 -   Hugo García
 
 ------------------------------------------------------------------------
