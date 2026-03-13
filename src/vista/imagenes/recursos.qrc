@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="imagenes">
+    <file>tatis-jr.png</file>
+    <file>fondo-login.jpg</file>
+  </qresource>
+</RCC>
