@@ -28,9 +28,9 @@ implementación, pruebas y documentación.
 
 ## 🛠️ Tecnologías Utilizadas
 
--   Lenguaje de programación: *Por definir*
+-   Lenguaje de programación: Python,...
 -   Framework / Librerías: *Por definir*
--   Base de datos: *Por definir*
+-   Base de datos: MySQL,...
 -   Control de versiones: Git y GitHub
 
 ------------------------------------------------------------------------
