@@ -11,11 +11,11 @@ class MiVentana(QMainWindow, Form):
         self.setupUi(self)  # Inicializa los widgets
 
         # Conectar el botón a la función
-        self.botonAceptar.clicked.connect(self.on_button_click)
+        self.btn_login.clicked.connect(self.on_button_click)
 
     def on_button_click(self):
         print("Botón presionado")
-        texto_area = self.textoNombre.text()  # Obtenet el texto del campo nombre
+        texto_area = self.edit_user.text()  # Obtenet el texto del campo nombre
         print("El texto es: ")
         print(texto_area)
 
