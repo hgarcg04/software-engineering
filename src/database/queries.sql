@@ -26,7 +26,7 @@ CREATE TABLE Personal (
 CREATE TABLE Medicos (
     id_medico INT PRIMARY KEY,
     especialidad VARCHAR(100), 
-    firma TEXT, 
+    firma VARCHAR(MAX), 
     FOREIGN KEY (id_medico) REFERENCES Personal(id_empleado)
 );
 
@@ -48,7 +48,7 @@ CREATE TABLE Pacientes (
     apellido1 VARCHAR(50), 
     apellido2 VARCHAR(50), 
     fecha_nacimiento DATE, 
-    genero VARCHAR(10), 
+    genero VARCHAR(10) CHECK (genero IN ('Hombre','Mujer','Otro')),
     estado VARCHAR(20), 
     fecha_registro DATETIME DEFAULT GETDATE(),
     medico_asignado INT, 
@@ -62,7 +62,8 @@ CREATE TABLE Citas (
     fecha DATE, 
     hora TIME, 
     FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico),
-    FOREIGN KEY (id_paciente) REFERENCES Pacientes(id_paciente)
+    FOREIGN KEY (id_paciente) REFERENCES Pacientes(id_paciente),
+    CONSTRAINT UQ_Cita UNIQUE (id_medico, fecha, hora)
 );
 
 CREATE TABLE Episodios (
@@ -70,7 +71,7 @@ CREATE TABLE Episodios (
     id_paciente INT, 
     fecha_hora_inicio DATETIME DEFAULT GETDATE(), 
     fecha_hora_fin DATETIME, 
-    tipo VARCHAR(20),
+    tipo VARCHAR(20) CHECK (tipo IN ('Consulta','Ingreso')),
     FOREIGN KEY (id_paciente) REFERENCES Pacientes(id_paciente)
 );
 
@@ -103,23 +104,23 @@ CREATE TABLE Constantes (
 GO
 
 ---------------------------------------------------------
--- DATOS SINT…TICOS
+-- DATOS SINT√âTICOS
 ---------------------------------------------------------
 
--- PERSONAL (MÈdicos, Enfermeros, Admins)
+-- PERSONAL (M√©dicos, Enfermeros, Admins)
 INSERT INTO Personal (dni, nombre, apellidos, nombre_usuario, email, password_, rol) VALUES
-('12345678A', 'Javier', 'GarcÌa Fern·ndez', 'jgarcia', 'jgarcia@clinicaleon.es', 'hash_pass_1', 'Medico'),
-('23456789B', 'MarÌa', 'LÛpez Gonz·lez', 'mlopez', 'mlopez@clinicaleon.es', 'hash_pass_2', 'Medico'),
-('34567890C', 'Sergio', 'DÌez Camino', 'sdiez', 'sdiez@clinicaleon.es', 'hash_pass_3', 'Medico'),
-('45678901D', 'Elena', 'MartÌnez Robla', 'emartinez', 'emartinez@clinicaleon.es', 'hash_pass_4', 'Enfermero'),
-('56789012E', 'Pablo', 'GutiÈrrez TascÛn', 'pgutierrez', 'pgutierrez@clinicaleon.es', 'hash_pass_5', 'Enfermero'),
-('67890123F', 'LucÌa', 'Blanco Villadangos', 'lblanco', 'lblanco@clinicaleon.es', 'hash_pass_6', 'Administrativo');
+('12345678A', 'Javier', 'Garc√≠a Fern√°ndez', 'jgarcia', 'jgarcia@clinicaleon.es', 'hash_pass_1', 'Medico'),
+('23456789B', 'Mar√≠a', 'L√≥pez Gonz√°lez', 'mlopez', 'mlopez@clinicaleon.es', 'hash_pass_2', 'Medico'),
+('34567890C', 'Sergio', 'D√≠ez Camino', 'sdiez', 'sdiez@clinicaleon.es', 'hash_pass_3', 'Medico'),
+('45678901D', 'Elena', 'Mart√≠nez Robla', 'emartinez', 'emartinez@clinicaleon.es', 'hash_pass_4', 'Enfermero'),
+('56789012E', 'Pablo', 'Guti√©rrez Tasc√≥n', 'pgutierrez', 'pgutierrez@clinicaleon.es', 'hash_pass_5', 'Enfermero'),
+('67890123F', 'Luc√≠a', 'Blanco Villadangos', 'lblanco', 'lblanco@clinicaleon.es', 'hash_pass_6', 'Administrativo');
 
 -- MEDICOS (IDs corresponden a Personal)
 INSERT INTO Medicos (id_medico, especialidad, firma) VALUES
 (1, 'Medicina Interna', 'Firma_Digital_JGF'),
-(2, 'TraumatologÌa', 'Firma_Digital_MLG'),
-(3, 'CardiologÌa', 'Firma_Digital_SDC');
+(2, 'Traumatolog√≠a', 'Firma_Digital_MLG'),
+(3, 'Cardiolog√≠a', 'Firma_Digital_SDC');
 
 -- ENFERMEROS
 INSERT INTO Enfermeros (id_enfermero) VALUES (4), (5);
@@ -128,11 +129,11 @@ INSERT INTO Enfermeros (id_enfermero) VALUES (4), (5);
 INSERT INTO Administrativos (id_admin, contador_citas) VALUES (6, 0);
 
 INSERT INTO Pacientes (nif, nombre, apellido1, apellido2, fecha_nacimiento, genero, estado, medico_asignado) VALUES
-('71400111X', 'Manuel', '¡lvarez', 'Cimadevilla', '1955-05-12', 'Hombre', 'Activo', 1),
+('71400111X', 'Manuel', '√Ålvarez', 'Cimadevilla', '1955-05-12', 'Hombre', 'Activo', 1),
 ('71422333Y', 'Carmen', 'Mera', 'Getino', '1982-10-20', 'Mujer', 'Activo', 2),
 ('71555666Z', 'Roberto', 'Ferrero', 'Pola', '1990-02-15', 'Hombre', 'Activo', 3),
-('71666777K', 'Sara', 'GarcÌa', 'Del Egido', '1978-08-05', 'Mujer', 'Inactivo', 1),
-('71888999J', 'BegoÒa', 'Orejas', 'Lorenzana', '1962-12-30', 'Mujer', 'Activo', 2);
+('71666777K', 'Sara', 'Garc√≠a', 'Del Egido', '1978-08-05', 'Mujer', 'Inactivo', 1),
+('71888999J', 'Bego√±a', 'Orejas', 'Lorenzana', '1962-12-30', 'Mujer', 'Activo', 2);
 
 
 -- CITAS
@@ -152,13 +153,13 @@ INSERT INTO Episodios (id_paciente, fecha_hora_inicio, tipo) VALUES
 
 -- CONSULTAS (Relacionadas con Episodios 1, 3 y 4)
 INSERT INTO Consultas (id_episodio, diagnostico) VALUES
-(1, 'Resfriado com˙n con congestiÛn nasal severa. Se receta reposo.'),
+(1, 'Resfriado com√∫n con congesti√≥n nasal severa. Se receta reposo.'),
 (3, 'Arritmia leve detectada. Se solicita ECG de esfuerzo.'),
-(4, 'Control rutinario post-operatorio. EvoluciÛn favorable.');
+(4, 'Control rutinario post-operatorio. Evoluci√≥n favorable.');
 
 -- INGRESOS (Relacionado con Episodio 2)
 INSERT INTO Ingresos (id_episodio, num_habitacion, dieta) VALUES
-(2, 'H-204', 'Dieta blanda post-quir˙rgica, baja en sodio.');
+(2, 'H-204', 'Dieta blanda post-quir√∫rgica, baja en sodio.');
 
 -- CONSTANTES (Tomadas por los enfermeros durante los episodios)
 INSERT INTO Constantes (id_episodio, id_enfermero, fecha, hora, temperatura, tension) VALUES
