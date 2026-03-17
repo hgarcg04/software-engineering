@@ -1,4 +1,5 @@
 
+
 DROP TABLE IF EXISTS Constantes;
 DROP TABLE IF EXISTS Consultas;
 DROP TABLE IF EXISTS Ingresos;
@@ -182,3 +183,4 @@ SELECT
 FROM Personal p
 INNER JOIN Medicos m ON p.id_empleado = m.id_medico;
 
+SELECT *from  episodios

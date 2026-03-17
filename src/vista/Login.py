@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import uic
+from src.modelo.VO.LoginVO import LoginVO
 
 # Cargar la interfaz generada desde el archivo .ui
 Form, Window = uic.loadUiType("./src/vista/Ui/VistaLogin.ui")
@@ -15,9 +16,14 @@ class MiVentana(QMainWindow, Form):
 
     def on_button_click(self):
         print("Botón presionado")
-        texto_area = self.edit_user.text()  # Obtenet el texto del campo nombre
+        texto_nombre = self.edit_user.text()  # Obtener el texto del campo nombre
+        texto_password = self.edit_pass.text()# obtener el texto del campo contraseña
+
+        login = LoginVO(texto_nombre, texto_password)
+
+
         print("El texto es: ")
-        print(texto_area)
+        print(texto_nombre)
 
 
 if __name__ == "__main__":
