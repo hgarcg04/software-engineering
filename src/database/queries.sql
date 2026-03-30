@@ -1,5 +1,4 @@
 
-
 DROP TABLE IF EXISTS Constantes;
 DROP TABLE IF EXISTS Consultas;
 DROP TABLE IF EXISTS Ingresos;
