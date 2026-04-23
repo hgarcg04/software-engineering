@@ -12,6 +12,7 @@ if __name__ == "__main__":
 
     ventana.controlador = controlador
     controlador.ventanaInciarSesion()
-    controlador.comprobarLogin(texto_nombre, texto_pass)
 
     app.exec_()
+
+    

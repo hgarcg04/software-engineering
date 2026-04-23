@@ -1,5 +1,6 @@
 from src.modelo.VO.LoginVO import LoginVO
 
+
 class ControladorPrincipal:
 
     def __init__(self, ref_vista, ref_modelo):
@@ -8,15 +9,19 @@ class ControladorPrincipal:
     
     def ventanaInciarSesion(self):
         self._vista.show()
-        self._modelo.ejemploSelect()
     
-    def comprobarLogin(self, nombre, passw):
-        login = LoginVO(nombre, passw)
-        resultado = self._modelo.consultarLogin(login)
+    def comprobarLogin(self, loginVO):
+        UserVO =  self._modelo.comprobarLogin(loginVO) # esto es el UserVO
+                
+        # este bloque, en vez de imprimir por terminal, debería abrir una ventana nueva, o bien 
+        # mostras un mensaje de error
 
-        if resultado is None:
-            print("No existe")
+        if UserVO is None:
+            print("Usuario y/o contraseña incorrectos.")
             
         else:
-            self._vista.close()
-            # falta abrir otro objeto vista con la nueva ventana
+            print(f"Login correcto. Bienvenido/a, {UserVO.nombre} (ID: {UserVO.id_empleado}). Rol: {UserVO.rol}")
+
+            self._vista.cerrar()
+
+

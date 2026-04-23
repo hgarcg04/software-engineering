@@ -1,36 +1,36 @@
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__)))  
+
+
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import uic
-from src.modelo.BusinessObject import BusssinesObject
 from src.modelo.VO.LoginVO import LoginVO
-import os.path
-os.path.dirname(os.path.abspath(__file__))
 
-# Cargar la interfaz generada desde el archivo .ui
-Form, Window = uic.loadUiType("./src/vista/Ui/VistaLogin.ui")
+ui_path = os.path.join(os.path.dirname(__file__), "Ui/VistaLogin.ui")
+Form, Window = uic.loadUiType(ui_path)
 
 
 class MiVentana(QMainWindow, Form):
     def __init__(self):
         super().__init__()
-        self.setupUi(self)  # Inicializa los widgets
+        self.setupUi(self)  
         self.controlador = None
 
-        # Conectar el botón a la función
         self.btn_login.clicked.connect(self.on_button_click)
 
     def on_button_click(self):
-        print("Botón presionado")
-        texto_nombre = self.edit_user.text()  # Obtener el texto del campo nombre
-        texto_password = self.edit_pass.text() # obtener el texto del campo contraseña
+        texto_nombre = self.edit_user.text()  
+        texto_password = self.edit_pass.text() 
 
-        login = LoginVO(texto_nombre, texto_password)
-
-
-        print("El texto es: ")
-        print(texto_nombre)
-    
-
+        loginVO = LoginVO(texto_nombre, texto_password)
+        if self._controlador:
+            self._controlador.comprobarLogin(loginVO)
         
+    def cerrar(self):      
+        self.close()
+
+      
     @property
     def controlador(self):
         return self._controlador
@@ -39,10 +39,3 @@ class MiVentana(QMainWindow, Form):
     def controlador(self, ref_controlador):
         self._controlador = ref_controlador
 
-
-
-if __name__ == "__main__":
-    app = QApplication([])
-    ventana = MiVentana()
-    ventana.show()
-    app.exec_()

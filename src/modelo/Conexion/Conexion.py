@@ -1,7 +1,9 @@
 import jaydebeapi
+import os
+os.environ["JAVA_HOME"] = r"C:\Users\isma3\anaconda3\pkgs\openjdk-22.0.1-h57928b3_1\Library\lib\jvm"
 
 class Conexion:
-    def __init__(self, host='localhost', database='floristeria', user='root', password='pruebaISD2024'):
+    def __init__(self, host='localhost', database='KURA', user='sa', password='Ademar07'):
         self._host = host
         self._database = database
         self._user = user
@@ -10,15 +12,19 @@ class Conexion:
 
     def createConnection(self):
         try:
-            jdbc_driver = "com.mysql.cj.jdbc.Driver"
-            jar_file = "lib/mysql-connector-j-8.3.0.jar"
+            jar_file = r"C:\Users\isma3\OneDrive - unileon.es\2 DATOS e IA\Ing del Software\Proyecto\lib\mssql-jdbc-13.4.0.jre11.jar"
+            jdbc_driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+            url = f"jdbc:sqlserver://{self._host}:1433;databaseName=KURA;encrypt=true;trustServerCertificate=true;" 
+
             self.conexion = jaydebeapi.connect(
                 jdbc_driver,
-                f"jdbc:mysql://{self._host}/{self._database}",
+                url,
                 [self._user, self._password],
                 jar_file
             )
+            print("Conexión creada con éxito")
             return self.conexion
+        
         except Exception as e:
             print("Error creando conexión:", e)
             return None
@@ -37,4 +43,15 @@ class Conexion:
                 self.conexion = None
         except Exception as e:
             print("Error cerrando conexión:", e)
+
+if __name__ == "__main__":
+    print("--- Iniciando conexión con Base de Datos ---")
+    
+    db = Conexion() 
+
+    
+    
+
+    
+
 

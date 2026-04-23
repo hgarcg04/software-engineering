@@ -1,4 +1,4 @@
 class LoginVO:
-    def __init__(self, nombre, contra):
-        self.__nombre = nombre
-        self.__contrasena = contra
+    def __init__(self, nombre, passw):
+        self.nombre = nombre
+        self.passw = passw
