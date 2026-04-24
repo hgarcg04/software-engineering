@@ -3,7 +3,12 @@
  <class>VistaEnfermero</class>
  <widget class="QMainWindow" name="VistaEnfermero">
   <property name="geometry">
-   <rect><x>0</x><y>0</y><width>1200</width><height>800</height></rect>
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>800</height>
+   </rect>
   </property>
   <property name="windowTitle">
    <string>KURA - Panel Enfermero</string>
@@ -44,7 +49,7 @@
         padding-left: 20px;
         padding-top: 10px;
     }
-    QPushButton[class="navBtn"] {
+    QPushButton[class=&quot;navBtn&quot;] {
         background-color: transparent;
         color: #dfe6e9;
         border: none;
@@ -53,8 +58,8 @@
         font-family: 'Segoe UI';
         font-size: 14px;
     }
-    QPushButton[class="navBtn"]:hover { background-color: #3d5166; }
-    QPushButton[class="navBtn"]:checked { background-color: #00b894; color: white; }
+    QPushButton[class=&quot;navBtn&quot;]:hover { background-color: #3d5166; }
+    QPushButton[class=&quot;navBtn&quot;]:checked { background-color: #00b894; color: white; }
 
     /* Panel central */
     #centralPanel { background-color: #f0f4f8; }
@@ -89,6 +94,33 @@
         border-bottom: 1px solid #dde3ea;
     }
 
+    /* Banner de paciente seleccionado */
+    #frame_paciente_seleccionado {
+        background-color: #d8f3ed;
+        border: 1.5px solid #00b894;
+        border-radius: 10px;
+        padding: 4px 12px;
+    }
+    #lbl_paciente_sel_texto {
+        font-family: 'Segoe UI';
+        font-size: 13px;
+        color: #636e72;
+    }
+    #lbl_paciente_sel_nombre {
+        font-family: 'Segoe UI Semibold';
+        font-size: 14px;
+        color: #00a381;
+    }
+    #btn_deseleccionar {
+        background-color: transparent;
+        color: #e17055;
+        border: 1px solid #e17055;
+        border-radius: 6px;
+        padding: 3px 10px;
+        font-size: 12px;
+    }
+    #btn_deseleccionar:hover { background-color: #ffecea; }
+
     /* Botones de acción */
     #btn_nuevo_registro, #btn_suministrar {
         background-color: #00b894;
@@ -99,6 +131,10 @@
         font-size: 13px;
     }
     #btn_nuevo_registro:hover, #btn_suministrar:hover { background-color: #00a381; }
+    #btn_nuevo_registro:disabled, #btn_suministrar:disabled {
+        background-color: #b2d8d0;
+        color: #ffffff;
+    }
     #btn_ver_registros {
         background-color: #6a9edb;
         color: white;
@@ -120,252 +156,579 @@
         min-width: 280px;
     }
     #search_bar:focus { border: 1px solid #00b894; }
+
+    /* Panel detalle episodio */
+    #frame_detalle_episodio {
+        background-color: #ffffff;
+        border: 1px solid #dde3ea;
+        border-radius: 10px;
+    }
+    #lbl_detalle_titulo {
+        font-family: 'Segoe UI Black';
+        font-size: 18px;
+        color: #2d3436;
+    }
+    #lbl_detalle_sub {
+        font-family: 'Segoe UI';
+        font-size: 12px;
+        color: #636e72;
+    }
+    #btn_cerrar_detalle {
+        background-color: #dfe6e9;
+        color: #2d3436;
+        border: none;
+        border-radius: 6px;
+        padding: 5px 14px;
+        font-size: 13px;
+    }
+    #btn_cerrar_detalle:hover { background-color: #b2bec3; }
+    QTextEdit#txt_detalle_episodio {
+        background-color: #f8fafc;
+        border: 1px solid #dde3ea;
+        border-radius: 8px;
+        font-family: 'Segoe UI';
+        font-size: 13px;
+        color: #2d3436;
+        padding: 10px;
+    }
    </string>
   </property>
-
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="mainLayout">
-    <property name="spacing"><number>0</number></property>
-    <property name="leftMargin"><number>0</number></property>
-    <property name="topMargin"><number>0</number></property>
-    <property name="rightMargin"><number>0</number></property>
-    <property name="bottomMargin"><number>0</number></property>
-
-    <!-- BARRA SUPERIOR -->
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QFrame" name="topBar">
       <layout class="QHBoxLayout" name="topBarLayout">
-       <property name="leftMargin"><number>20</number></property>
-       <property name="rightMargin"><number>20</number></property>
+       <property name="leftMargin">
+        <number>20</number>
+       </property>
+       <property name="rightMargin">
+        <number>20</number>
+       </property>
        <item>
         <widget class="QLabel" name="lbl_app_name">
-         <property name="text"><string>KURA</string></property>
+         <property name="text">
+          <string>KURA</string>
+         </property>
         </widget>
        </item>
        <item>
         <spacer>
-         <property name="orientation"><enum>Qt::Horizontal</enum></property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
         </spacer>
        </item>
        <item>
         <widget class="QLabel" name="lbl_user_name">
-         <property name="text"><string>Enfermero/a: ---</string></property>
+         <property name="text">
+          <string>Enfermero/a: ---</string>
+         </property>
         </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
        <item>
         <widget class="QLabel" name="lbl_datetime">
-         <property name="text"><string>00/00/0000  00:00</string></property>
+         <property name="text">
+          <string>00/00/0000  00:00</string>
+         </property>
         </widget>
        </item>
        <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
         <widget class="QPushButton" name="btn_logout">
-         <property name="text"><string>Cerrar sesión</string></property>
+         <property name="text">
+          <string>Cerrar sesión</string>
+         </property>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
-
-    <!-- CUERPO PRINCIPAL -->
     <item>
      <layout class="QHBoxLayout" name="bodyLayout">
-      <property name="spacing"><number>0</number></property>
-
-      <!-- BARRA LATERAL -->
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QFrame" name="sideBar">
         <layout class="QVBoxLayout" name="sideLayout">
-         <property name="spacing"><number>4</number></property>
-         <property name="leftMargin"><number>0</number></property>
-         <property name="topMargin"><number>20</number></property>
-         <property name="rightMargin"><number>0</number></property>
-         <property name="bottomMargin"><number>20</number></property>
-
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>20</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>20</number>
+         </property>
          <item>
           <widget class="QLabel" name="lbl_menu_title">
-           <property name="text"><string>MENÚ</string></property>
+           <property name="text">
+            <string>MENÚ</string>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btn_nav_inicio">
-           <property name="text"><string>  Inicio</string></property>
-           <property name="checkable"><bool>true</bool></property>
-           <property name="checked"><bool>true</bool></property>
-           <property name="class" stdset="0"><string>navBtn</string></property>
+           <property name="text">
+            <string>  Inicio</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <property name="class" stdset="0">
+            <string>navBtn</string>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btn_nav_constantes">
-           <property name="text"><string>  Registro de constantes</string></property>
-           <property name="checkable"><bool>true</bool></property>
-           <property name="class" stdset="0"><string>navBtn</string></property>
+           <property name="text">
+            <string>  Registro de constantes</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="class" stdset="0">
+            <string>navBtn</string>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btn_nav_medicacion">
-           <property name="text"><string>  Suministrar medicación</string></property>
-           <property name="checkable"><bool>true</bool></property>
-           <property name="class" stdset="0"><string>navBtn</string></property>
+           <property name="text">
+            <string>  Suministrar medicación</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="class" stdset="0">
+            <string>navBtn</string>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btn_nav_episodios">
-            <property name="text"><string>  Consultar episodios</string></property>
-            <property name="checkable"><bool>true</bool></property>
-            <property name="class" stdset="0"><string>navBtn</string></property>
+           <property name="text">
+            <string>  Consultar episodios</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="class" stdset="0">
+            <string>navBtn</string>
+           </property>
           </widget>
          </item>
          <item>
           <spacer>
-           <property name="orientation"><enum>Qt::Vertical</enum></property>
-           <property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
           </spacer>
          </item>
         </layout>
        </widget>
       </item>
-
-      <!-- PANEL CENTRAL (stacked: una página por sección) -->
       <item>
        <widget class="QStackedWidget" name="stackedPanel">
-
-        <!-- PÁGINA 0: INICIO -->
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
         <widget class="QWidget" name="page_inicio">
          <layout class="QVBoxLayout" name="inicioLayout">
-          <property name="leftMargin"><number>30</number></property>
-          <property name="topMargin"><number>30</number></property>
-          <property name="rightMargin"><number>30</number></property>
-          <property name="bottomMargin"><number>30</number></property>
-
+          <property name="leftMargin">
+           <number>30</number>
+          </property>
+          <property name="topMargin">
+           <number>30</number>
+          </property>
+          <property name="rightMargin">
+           <number>30</number>
+          </property>
+          <property name="bottomMargin">
+           <number>30</number>
+          </property>
           <item>
            <widget class="QLabel" name="lbl_section_title">
-            <property name="text"><string>Pacientes hospitalizados</string></property>
+            <property name="text">
+             <string>Pacientes hospitalizados</string>
+            </property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="lbl_section_sub">
-            <property name="text"><string>Listado de pacientes actualmente ingresados bajo tu supervisión</string></property>
+            <property name="text">
+             <string>Selecciona un paciente paciente ingresado</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_paciente_seleccionado">
+            <layout class="QHBoxLayout">
+             <property name="leftMargin">
+              <number>12</number>
+             </property>
+             <property name="topMargin">
+              <number>8</number>
+             </property>
+             <property name="rightMargin">
+              <number>12</number>
+             </property>
+             <property name="bottomMargin">
+              <number>8</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="lbl_paciente_sel_texto">
+               <property name="text">
+                <string>Paciente seleccionado:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="lbl_paciente_sel_nombre">
+               <property name="text">
+                <string>Ninguno</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btn_deseleccionar">
+               <property name="text">
+                <string>Deseleccionar</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
           <item>
            <layout class="QHBoxLayout">
             <item>
-             <widget class="QLineEdit" name="search_bar_inicio">
-              <property name="placeholderText"><string>Buscar paciente...</string></property>
-              <property name="objectName"><string>search_bar</string></property>
+             <widget class="QLineEdit" name="search_bar">
+              <property name="placeholderText">
+               <string>Buscar paciente por apellido...</string>
+              </property>
              </widget>
             </item>
             <item>
              <spacer>
-              <property name="orientation"><enum>Qt::Horizontal</enum></property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
              </spacer>
             </item>
            </layout>
           </item>
           <item>
            <widget class="QTableWidget" name="tabla_pacientes">
-            <property name="columnCount"><number>5</number></property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
             <property name="selectionBehavior">
              <enum>QAbstractItemView::SelectRows</enum>
             </property>
-            <property name="editTriggers">
-             <set>QAbstractItemView::NoEditTriggers</set>
+            <property name="columnCount">
+             <number>6</number>
             </property>
             <attribute name="horizontalHeaderStretchLastSection">
              <bool>true</bool>
             </attribute>
-            <column><property name="text"><string>ID</string></property></column>
-            <column><property name="text"><string>Nombre</string></property></column>
-            <column><property name="text"><string>DNI</string></property></column>
-            <column><property name="text"><string>Habitación</string></property></column>
-            <column><property name="text"><string>Médico responsable</string></property></column>
+            <column>
+             <property name="text">
+              <string>NIF</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Nombre</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Apellido1 </string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Apellido2</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Fecha Nacimiento</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Género</string>
+             </property>
+            </column>
            </widget>
           </item>
           <item>
            <layout class="QHBoxLayout">
             <item>
-             <spacer><property name="orientation"><enum>Qt::Horizontal</enum></property></spacer>
+             <spacer>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
              <widget class="QPushButton" name="btn_nuevo_registro">
-              <property name="text"><string>Nuevo registro de constantes</string></property>
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Nuevo registro de constantes</string>
+              </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="btn_ver_registros">
-              <property name="text"><string>Ver registros anteriores</string></property>
+              <property name="text">
+               <string>       Consultar HCD        </string>
+              </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="btn_suministrar">
-              <property name="text"><string>Suministrar medicación</string></property>
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Suministrar medicación</string>
+              </property>
              </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </item>
-
          </layout>
         </widget>
-
-        <!-- PÁGINA 1: REGISTRO DE CONSTANTES -->
         <widget class="QWidget" name="page_constantes">
          <layout class="QVBoxLayout" name="constLayout">
-          <property name="leftMargin"><number>30</number></property>
-          <property name="topMargin"><number>30</number></property>
-          <property name="rightMargin"><number>30</number></property>
-          <property name="bottomMargin"><number>30</number></property>
+          <property name="leftMargin">
+           <number>30</number>
+          </property>
+          <property name="topMargin">
+           <number>30</number>
+          </property>
+          <property name="rightMargin">
+           <number>30</number>
+          </property>
+          <property name="bottomMargin">
+           <number>30</number>
+          </property>
           <item>
-           <widget class="QLabel" name="lbl_const_title">
-            <property name="text"><string>Registro de constantes</string></property>
-            <property name="objectName"><string>lbl_section_title</string></property>
+           <widget class="QLabel" name="lbl_section_title">
+            <property name="text">
+             <string>Registro de constantes</string>
+            </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="lbl_const_sub">
-            <property name="text"><string>Busca un paciente ingresado y registra sus constantes vitales</string></property>
-            <property name="objectName"><string>lbl_section_sub</string></property>
+           <widget class="QFrame" name="frame_pac_constantes">
+            <layout class="QHBoxLayout">
+             <property name="leftMargin">
+              <number>12</number>
+             </property>
+             <property name="topMargin">
+              <number>8</number>
+             </property>
+             <property name="rightMargin">
+              <number>12</number>
+             </property>
+             <property name="bottomMargin">
+              <number>8</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="lbl_paciente_sel_texto">
+               <property name="text">
+                <string>Registrando constantes para:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="lbl_paciente_sel_nombre">
+               <property name="text">
+                <string>— Sin paciente seleccionado —</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout">
-            <item>
-             <widget class="QLineEdit" name="search_bar_constantes">
-              <property name="placeholderText"><string>Buscar paciente ingresado...</string></property>
-              <property name="objectName"><string>search_bar</string></property>
-             </widget>
-            </item>
-            <item>
-             <spacer><property name="orientation"><enum>Qt::Horizontal</enum></property></spacer>
-            </item>
-           </layout>
           </item>
           <item>
            <layout class="QFormLayout" name="formConstantes">
             <item row="0" column="0">
-             <widget class="QLabel"><property name="text"><string>Constante vital:</string></property></widget>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Constante vital:</string>
+              </property>
+             </widget>
             </item>
             <item row="0" column="1">
              <widget class="QComboBox" name="combo_constante">
-              <item><property name="text"><string>Tensión arterial</string></property></item>
-              <item><property name="text"><string>Frecuencia cardíaca</string></property></item>
-              <item><property name="text"><string>Temperatura</string></property></item>
-              <item><property name="text"><string>Saturación de oxígeno</string></property></item>
+              <item>
+               <property name="text">
+                <string>Tensión arterial</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Frecuencia cardíaca</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Temperatura</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Saturación de oxígeno</string>
+               </property>
+              </item>
              </widget>
             </item>
             <item row="1" column="0">
-             <widget class="QLabel"><property name="text"><string>Valor:</string></property></widget>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Valor:</string>
+              </property>
+             </widget>
             </item>
             <item row="1" column="1">
              <widget class="QLineEdit" name="edit_valor_constante">
-              <property name="placeholderText"><string>Introduce el valor medido</string></property>
+              <property name="placeholderText">
+               <string>Introduce el valor medido</string>
+              </property>
              </widget>
             </item>
             <item row="2" column="0">
-             <widget class="QLabel"><property name="text"><string>Observaciones:</string></property></widget>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Observaciones:</string>
+              </property>
+             </widget>
             </item>
             <item row="2" column="1">
              <widget class="QTextEdit" name="edit_observaciones">
-              <property name="placeholderText"><string>Observaciones adicionales (opcional)</string></property>
+              <property name="placeholderText">
+               <string>Observaciones adicionales (opcional)</string>
+              </property>
              </widget>
             </item>
            </layout>
@@ -373,96 +736,181 @@
           <item>
            <layout class="QHBoxLayout">
             <item>
-             <spacer><property name="orientation"><enum>Qt::Horizontal</enum></property></spacer>
+             <spacer>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="btn_guardar_constante">
-              <property name="text"><string>Guardar registro</string></property>
-              <property name="objectName"><string>btn_nuevo_registro</string></property>
+             <widget class="QPushButton" name="btn_nuevo_registro">
+              <property name="text">
+               <string>Guardar registro</string>
+              </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="btn_ver_historico">
-              <property name="text"><string>Ver histórico</string></property>
-              <property name="objectName"><string>btn_ver_registros</string></property>
+             <widget class="QPushButton" name="btn_ver_registros">
+              <property name="text">
+               <string>Ver histórico</string>
+              </property>
              </widget>
             </item>
            </layout>
           </item>
           <item>
-           <spacer><property name="orientation"><enum>Qt::Vertical</enum></property></spacer>
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
-
-        
-
-        <!-- PÁGINA 2: SUMINISTRAR MEDICACIÓN -->
         <widget class="QWidget" name="page_medicacion">
          <layout class="QVBoxLayout" name="medLayout">
-          <property name="leftMargin"><number>30</number></property>
-          <property name="topMargin"><number>30</number></property>
-          <property name="rightMargin"><number>30</number></property>
-          <property name="bottomMargin"><number>30</number></property>
+          <property name="leftMargin">
+           <number>30</number>
+          </property>
+          <property name="topMargin">
+           <number>30</number>
+          </property>
+          <property name="rightMargin">
+           <number>30</number>
+          </property>
+          <property name="bottomMargin">
+           <number>30</number>
+          </property>
           <item>
-           <widget class="QLabel" name="lbl_med_title">
-            <property name="text"><string>Suministrar medicación</string></property>
-            <property name="objectName"><string>lbl_section_title</string></property>
+           <widget class="QLabel" name="lbl_section_title">
+            <property name="text">
+             <string>Suministrar medicación</string>
+            </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="lbl_med_sub">
-            <property name="text"><string>Registra la medicación administrada a un paciente ingresado</string></property>
-            <property name="objectName"><string>lbl_section_sub</string></property>
+           <widget class="QFrame" name="frame_pac_medicacion">
+            <layout class="QHBoxLayout">
+             <property name="leftMargin">
+              <number>12</number>
+             </property>
+             <property name="topMargin">
+              <number>8</number>
+             </property>
+             <property name="rightMargin">
+              <number>12</number>
+             </property>
+             <property name="bottomMargin">
+              <number>8</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="lbl_paciente_sel_texto">
+               <property name="text">
+                <string>Administrando medicación a:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="lbl_paciente_sel_nombre">
+               <property name="text">
+                <string>— Sin paciente seleccionado —</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout">
-            <item>
-             <widget class="QLineEdit" name="search_bar_medicacion">
-              <property name="placeholderText"><string>Buscar paciente ingresado...</string></property>
-              <property name="objectName"><string>search_bar</string></property>
-             </widget>
-            </item>
-            <item>
-             <spacer><property name="orientation"><enum>Qt::Horizontal</enum></property></spacer>
-            </item>
-           </layout>
           </item>
           <item>
            <layout class="QFormLayout" name="formMedicacion">
             <item row="0" column="0">
-             <widget class="QLabel"><property name="text"><string>Categoría:</string></property></widget>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Categoría:</string>
+              </property>
+             </widget>
             </item>
             <item row="0" column="1">
              <widget class="QComboBox" name="combo_categoria">
-              <item><property name="text"><string>Antibióticos</string></property></item>
-              <item><property name="text"><string>Oncológicos</string></property></item>
-              <item><property name="text"><string>Analgésicos</string></property></item>
-              <item><property name="text"><string>Cardiovasculares</string></property></item>
+              <item>
+               <property name="text">
+                <string>Antibióticos</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Oncológicos</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Analgésicos</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Cardiovasculares</string>
+               </property>
+              </item>
              </widget>
             </item>
             <item row="1" column="0">
-             <widget class="QLabel"><property name="text"><string>Medicamento:</string></property></widget>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Medicamento:</string>
+              </property>
+             </widget>
             </item>
             <item row="1" column="1">
              <widget class="QComboBox" name="combo_medicamento"/>
             </item>
             <item row="2" column="0">
-             <widget class="QLabel"><property name="text"><string>Cantidad (unidades):</string></property></widget>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Cantidad (unidades):</string>
+              </property>
+             </widget>
             </item>
             <item row="2" column="1">
              <widget class="QSpinBox" name="spin_cantidad">
-              <property name="minimum"><number>1</number></property>
-              <property name="maximum"><number>100</number></property>
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>100</number>
+              </property>
              </widget>
             </item>
             <item row="3" column="0">
-             <widget class="QLabel"><property name="text"><string>Notas:</string></property></widget>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Notas:</string>
+              </property>
+             </widget>
             </item>
             <item row="3" column="1">
              <widget class="QTextEdit" name="edit_notas_med">
-              <property name="placeholderText"><string>Notas sobre la administración (opcional)</string></property>
+              <property name="placeholderText">
+               <string>Notas sobre la administración (opcional)</string>
+              </property>
              </widget>
             </item>
            </layout>
@@ -470,70 +918,185 @@
           <item>
            <layout class="QHBoxLayout">
             <item>
-             <spacer><property name="orientation"><enum>Qt::Horizontal</enum></property></spacer>
+             <spacer>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="btn_confirmar_medicacion">
-              <property name="text"><string>Confirmar administración</string></property>
-              <property name="objectName"><string>btn_suministrar</string></property>
+             <widget class="QPushButton" name="btn_suministrar">
+              <property name="text">
+               <string>Confirmar administración</string>
+              </property>
              </widget>
             </item>
            </layout>
           </item>
           <item>
-           <spacer><property name="orientation"><enum>Qt::Vertical</enum></property></spacer>
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
-
         <widget class="QWidget" name="page_episodios">
-        <layout class="QVBoxLayout" name="episodiosLayout">
-        <property name="leftMargin"><number>30</number></property>
-        <property name="topMargin"><number>30</number></property>
-        <property name="rightMargin"><number>30</number></property>
-        <property name="bottomMargin"><number>30</number></property>
-        <item>
-        <widget class="QLabel" name="lbl_epi_title">
-            <property name="text"><string>Consultar episodios clínicos</string></property>
-            <property name="objectName"><string>lbl_section_title</string></property>
-        </widget>
-        </item>
-        <item>
-        <widget class="QLabel" name="lbl_epi_sub">
-            <property name="text"><string>Busca un paciente para ver su histórico de episodios clínicos</string></property>
-            <property name="objectName"><string>lbl_section_sub</string></property>
-        </widget>
-        </item>
-        <item>
-        <layout class="QHBoxLayout">
+         <layout class="QHBoxLayout" name="episodiosOuterLayout">
+          <property name="spacing">
+           <number>16</number>
+          </property>
+          <property name="leftMargin">
+           <number>30</number>
+          </property>
+          <property name="topMargin">
+           <number>30</number>
+          </property>
+          <property name="rightMargin">
+           <number>30</number>
+          </property>
+          <property name="bottomMargin">
+           <number>30</number>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" name="episodiosListLayout">
             <item>
-            <widget class="QLineEdit" name="search_bar_episodios">
-            <property name="placeholderText"><string>Buscar paciente por nombre o DNI...</string></property>
-            <property name="objectName"><string>search_bar</string></property>
-            </widget>
+             <widget class="QLabel" name="lbl_section_title">
+              <property name="text">
+               <string>Consultar episodios clínicos</string>
+              </property>
+             </widget>
             </item>
-            <item><spacer><property name="orientation"><enum>Qt::Horizontal</enum></property></spacer></item>
-        </layout>
-        </item>
-        <item>
-        <widget class="QTableWidget" name="tabla_episodios">
-            <property name="columnCount"><number>4</number></property>
-            <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
-            <attribute name="horizontalHeaderStretchLastSection"><bool>true</bool></attribute>
-            <column><property name="text"><string>Fecha</string></property></column>
-            <column><property name="text"><string>Diagnóstico</string></property></column>
-            <column><property name="text"><string>Descripción</string></property></column>
-            <column><property name="text"><string>Médico responsable</string></property></column>
+            <item>
+             <widget class="QLabel" name="lbl_section_sub">
+              <property name="text">
+               <string>Busca un paciente y haz clic en un episodio para ver su detalle</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout">
+              <item>
+               <widget class="QLineEdit" name="search_bar">
+                <property name="placeholderText">
+                 <string>Buscar paciente por nombre o DNI...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="tabla_episodios">
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <property name="columnCount">
+               <number>4</number>
+              </property>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>Fecha</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Diagnóstico</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Tipo</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Estado</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_detalle_episodio">
+            <layout class="QVBoxLayout" name="detalleLayout">
+             <property name="leftMargin">
+              <number>20</number>
+             </property>
+             <property name="topMargin">
+              <number>20</number>
+             </property>
+             <property name="rightMargin">
+              <number>20</number>
+             </property>
+             <property name="bottomMargin">
+              <number>20</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout">
+               <item>
+                <widget class="QLabel" name="lbl_detalle_titulo">
+                 <property name="text">
+                  <string>Detalle del episodio</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_cerrar_detalle">
+                 <property name="text">
+                  <string>✕ Cerrar</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QLabel" name="lbl_detalle_sub">
+               <property name="text">
+                <string>Selecciona un episodio de la tabla</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QTextEdit" name="txt_detalle_episodio">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+               <property name="placeholderText">
+                <string>El contenido del episodio aparecerá aquí al seleccionarlo...</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
         </widget>
-        </item>
-        </layout>
-        </widget>
-
        </widget>
       </item>
      </layout>
     </item>
-
    </layout>
   </widget>
  </widget>

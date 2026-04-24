@@ -27,7 +27,13 @@ class UserDaoJDBC(Conexion):
                     password_,
                     rol,
                 ) = row
-                return UserVO(nombre, rol, id_empleado)
+                return UserVO(  
+                        id_empleado,
+                        dni,
+                        nombre,
+                        apellidos,
+                        email,
+                        rol)
             
         
 
