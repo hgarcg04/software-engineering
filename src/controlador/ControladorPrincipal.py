@@ -9,38 +9,45 @@ class ControladorPrincipal:
     def __init__(self, ref_vista, ref_modelo):
         self._vista = ref_vista
         self._modelo = ref_modelo
+        self.usuario_actualVO = None
     
     def ventanaInciarSesion(self):
         self._vista.show()
     
+    
+    
     def comprobarLogin(self, loginVO):
-        UserVO =  self._modelo.comprobarLogin(loginVO)
+        self.usuario_actualVO =  self._modelo.comprobarLogin(loginVO)
                 
-        # este bloque, en vez de imprimir por terminal, debería abrir una ventana nueva, o bien 
-        # mostras un mensaje de error
 
-        if UserVO is None:
+        if self.usuario_actualVO is None:
             print("Usuario y/o contraseña incorrectos.")
         
-        elif UserVO.rol == 'Enfermero':
-            print(f"Enfermero/a {UserVO.nombre} {UserVO.apellidos} ha inciado sesión.")
+        elif self.usuario_actualVO.rol == 'Enfermero':
             self._ventana_enfermero = VentanaEnfermeros()
 
-            self._ventana_enfermero.lbl_user_name.setText(f"Enfermero/a: {UserVO.nombre} {UserVO.apellidos}")
+            # señal para cerrar sesion y volver al login
+            self._ventana_enfermero.signal_logout.connect(self.volver_al_login)
+
             self._ventana_enfermero.show()
             self._vista.cerrar()
 
             
             modelo = Logica()
-            controlador = ControladorEnfermeros(self._ventana_enfermero, modelo)
-
+            controlador = ControladorEnfermeros(self._ventana_enfermero, modelo, self.usuario_actualVO)
             self._ventana_enfermero.controlador = controlador
             
 
-            
+        # Falta implementar los otros dos usuarios
         else:
-            print(f"Login correcto. Bienvenido/a, {UserVO.nombre} (ID: {UserVO.id_empleado}). Rol: {UserVO.rol}")
+            print(f"Login correcto. Bienvenido/a, {self.usuario_actualVO.nombre} (ID: {self.usuario_actualVO.id_empleado}). Rol: {self.usuario_actualVO.rol}")
 
             self._vista.cerrar()
 
+    def volver_al_login(self):
+        self.usuario_actualVO = None
+        
+        self._vista.limpiar_campos()
 
+        self._vista.show() 
+        print("Sesión cerrada correctamente.")

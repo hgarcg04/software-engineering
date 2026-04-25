@@ -26,6 +26,17 @@ class MiVentana(QMainWindow, Form):
         loginVO = LoginVO(texto_nombre, texto_password)
         if self._controlador:
             self._controlador.comprobarLogin(loginVO)
+
+
+    def limpiar_campos(self):
+        """ función que deja los campos de user y passw vacíos para cuando
+            se cierre sesión y se vuelva a la ventana de login no aparezcan 
+            los viejos """
+        
+        self.edit_user.clear()
+        self.edit_pass.clear()
+        self.edit_user.setFocus()
+
         
     def cerrar(self):      
         self.close()

@@ -342,13 +342,6 @@
             </property>
            </widget>
           </item>
-          <item alignment="Qt::AlignHCenter">
-           <widget class="QLabel" name="lbl_signup">
-            <property name="text">
-             <string>Crear una nueva cuenta</string>
-            </property>
-           </widget>
-          </item>
           <item>
            <spacer name="s2">
             <property name="orientation">
