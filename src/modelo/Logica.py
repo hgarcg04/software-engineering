@@ -16,3 +16,7 @@ class Logica():
     def guardarConstante(self, constanteVO):
         constante_dao = ConstanteDaoJDBC()
         constante_dao.guardar_constante(constanteVO)
+    
+    def consultarHistoricoConstantes(self, id_episodio, tipo, desde, hasta):
+        constante_dao = ConstanteDaoJDBC()
+        return constante_dao.consultar_historico(id_episodio, tipo, desde, hasta)

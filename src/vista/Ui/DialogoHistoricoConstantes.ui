@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogoHistorico</class>
+ <widget class="QDialog" name="DialogoHistorico">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>700</width>
+    <height>550</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Histórico de constantes</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+    QDialog { background-color: #f0f4f8; }
+
+    #lbl_paciente {
+        font-family: 'Segoe UI Black';
+        font-size: 16px;
+        color: #2d3436;
+    }
+    #lbl_subtitulo {
+        font-family: 'Segoe UI';
+        font-size: 12px;
+        color: #636e72;
+    }
+
+    QLabel {
+        font-family: 'Segoe UI';
+        font-size: 13px;
+        color: #2d3436;
+    }
+
+    QComboBox, QDateEdit {
+        border: 1px solid #dde3ea;
+        border-radius: 6px;
+        padding: 6px 10px;
+        background-color: #ffffff;
+        font-size: 13px;
+        color: #2d3436;
+        min-width: 200px;
+    }
+    QComboBox:focus, QDateEdit:focus {
+        border: 1px solid #00b894;
+    }
+
+    QTableWidget {
+        background-color: #ffffff;
+        border: 1px solid #dde3ea;
+        border-radius: 10px;
+        gridline-color: #f0f4f8;
+        font-size: 13px;
+    }
+    QTableWidget::item { padding: 8px; }
+    QTableWidget::item:selected {
+        background-color: #d8f3ed;
+        color: #2d3436;
+    }
+    QHeaderView::section {
+        background-color: #f8fafc;
+        color: #636e72;
+        font-family: 'Segoe UI Semibold';
+        font-size: 12px;
+        padding: 8px;
+        border: none;
+        border-bottom: 1px solid #dde3ea;
+    }
+
+    #btn_consultar {
+        background-color: #00b894;
+        color: white;
+        border-radius: 8px;
+        padding: 8px 20px;
+        font-family: 'Segoe UI Semibold';
+        font-size: 13px;
+    }
+    #btn_consultar:hover { background-color: #00a381; }
+
+    #btn_generar_grafico {
+        background-color: #00b894;
+        color: white;
+        border-radius: 8px;
+        padding: 8px 20px;
+        font-family: 'Segoe UI Semibold';
+        font-size: 13px;
+    }
+    #btn_generar_grafico:hover { background-color: #00a381; }
+    #btn_generar_grafico:disabled {
+        background-color: #b2d8d0;
+        color: #e0f5f1;
+    }
+
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>14</number>
+   </property>
+   <property name="leftMargin">
+    <number>24</number>
+   </property>
+   <property name="topMargin">
+    <number>24</number>
+   </property>
+   <property name="rightMargin">
+    <number>24</number>
+   </property>
+   <property name="bottomMargin">
+    <number>24</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="lbl_paciente">
+     <property name="text">
+      <string>Paciente: —</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="lbl_subtitulo">
+     <property name="text">
+      <string>Consulta el histórico de constantes vitales en un rango de fechas</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="line">
+     <property name="frameShape">
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QFormLayout" name="formFiltros">
+     <property name="horizontalSpacing">
+      <number>10</number>
+     </property>
+     <property name="verticalSpacing">
+      <number>10</number>
+     </property>
+     <item row="0" column="0">
+      <widget class="QLabel" name="lbl_constante">
+       <property name="text">
+        <string>Constante:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="combo_constante">
+       <item>
+        <property name="text">
+         <string>Frecuencia cardíaca</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Temperatura</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Saturación de oxígeno</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tensión arterial</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="lbl_desde">
+       <property name="text">
+        <string>Desde:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QDateTimeEdit" name="date_desde">
+       <property name="displayFormat">
+        <string>dd/MM/yyyy  HH:mm</string>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="lbl_hasta">
+       <property name="text">
+        <string>Hasta:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QDateTimeEdit" name="date_hasta">
+       <property name="displayFormat">
+        <string>dd/MM/yyyy  HH:mm</string>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout">
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_consultar">
+       <property name="text">
+        <string>Consultar</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="tabla_historico">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="columnCount">
+      <number>4</number>
+     </property>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>Fecha</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Hora</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Valor</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Observaciones</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_generar_grafico">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"></string>
+       </property>
+       <property name="text">
+        <string>Generar Gráfico</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

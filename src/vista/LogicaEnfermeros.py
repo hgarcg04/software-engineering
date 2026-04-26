@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QHeaderView
 
 from src.modelo.VO.UsuariosVO import UserVO
 from src.modelo.VO.ConstantesVO import ConstantesVO
+from src.vista.LogicaDialogoConstantes import DialogoHistorico
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
@@ -46,12 +47,16 @@ class VentanaEnfermeros(QMainWindow, Form):
 
         self.btn_nav_inicio.clicked.connect(lambda: self._navegar(PAGE_INICIO))
         self.btn_nav_constantes.clicked.connect(lambda: self._navegar(PAGE_CONSTANTES))
+        self.btn_nav_constantes.clicked.connect(lambda: self.edit_valor_constante.setFocus())
+     
         self.btn_nav_medicacion.clicked.connect(lambda: self._navegar(PAGE_MEDICACION))
         self.btn_nav_episodios.clicked.connect(lambda: self._navegar(PAGE_EPISODIOS))
         self.btn_ver_registros.clicked.connect(self._abrir_detalles_ingreso)
         self.btn_cerrar_detalles_ingreso.clicked.connect(lambda: self._navegar(PAGE_DETALLES))
         self.btn_suministrar.clicked.connect(lambda: self._navegar(PAGE_MEDICACION))
         self.btn_nuevo_registro.clicked.connect(lambda: self._navegar(PAGE_CONSTANTES))
+        self.btn_nuevo_registro.clicked.connect(lambda: self.edit_valor_constante.setFocus())
+
         self.btn_nav_inicio.clicked.connect(lambda: self._navegar(PAGE_INICIO))
         self.btn_logout.clicked.connect(self.cerrar_sesion)
 
@@ -66,6 +71,12 @@ class VentanaEnfermeros(QMainWindow, Form):
         self.btn_guardar_registro.clicked.connect(self.guardar_constantes)
         self.btn_borrar_todo.clicked.connect(self._borrar_todo)
         self.btn_borrar_seleccionado.clicked.connect(self._borrar_seleccionado)
+        self.btn_ver_historico.clicked.connect(self.ver_historico)
+
+        self.edit_valor_constante.returnPressed.connect(lambda: self.edit_observaciones.setFocus())
+        self.combo_constante.activated.connect(lambda: self.edit_valor_constante.setFocus())
+        self.btn_anadir_registro.clicked.connect(lambda: self.edit_valor_constante.setFocus())
+
 
 
         # -----------------------------------------------------------------------------
@@ -272,6 +283,7 @@ class VentanaEnfermeros(QMainWindow, Form):
         valor         = self.edit_valor_constante.text()
         observaciones = self.edit_observaciones.toPlainText()
 
+
         if not valor:
             QMessageBox.warning(self, "Campo vacío", "Introduce un valor para la constante.")
             return
@@ -313,11 +325,15 @@ class VentanaEnfermeros(QMainWindow, Form):
 
             # creamos la lista de objetos ConstantesVO
             lista_vos = [
-            ConstantesVO(c['tipo'], c['valor'], c.get('observaciones', ''), self._enfermero.id_empleado, self._paciente_activo.nif, self._paciente_activo.id_episodio)
+            ConstantesVO(c['tipo'], c['valor'], c.get('observaciones', ''), self._enfermero.id_empleado,
+                         self._paciente_activo.id_ingreso)
             for c in self._constantes_pendientes
             ]
+
             #pasamos la lista al controlador
             if self._controlador:
+
+                print(f"({self._enfermero.id_empleado})Le paso al controlador la lista de constantes. ")
                 self._controlador.guardar_constante(lista_vos)
 
             self._constantes_pendientes.clear()
@@ -354,6 +370,29 @@ class VentanaEnfermeros(QMainWindow, Form):
             return
         self._constantes_pendientes.pop(fila)
         self._actualizar_tabla_pendientes()
+
+    # ------------------------------------------------
+    # Ver histórico de constantes
+    # ------------------------------------------------
+
+    def ver_historico(self):
+        if self._paciente_activo is None:
+            QMessageBox.warning(self, "Sin paciente", "Selecciona un paciente primero.")
+            return
+
+        dialogo = DialogoHistorico(self._paciente_activo, parent=self)
+
+        # Ejecutamos el método del controladorEnfermeros que cambia la referencias a la vista
+        # (de VentanaEnfermeros a DialogoHistorico)
+
+        if self._controlador:
+            self._controlador.set_dialogo_historico(dialogo)
+        
+        # Decimos a la ventana de diálogo que su controlodar es el mismo que el de 
+        # VentanaEnfermeros (ControladorEnfermeros)
+        dialogo.controlador = self._controlador
+
+        dialogo.exec_() # DUDA: ejecutamos esto aquí, o desde ControladorEnfermeros?
 
 
 

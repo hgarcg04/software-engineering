@@ -180,6 +180,36 @@
         color: #ffffff;
     }
 
+    #btn_ver_historico {
+        background-color: #6a9edb;
+        color: white;
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-family: 'Segoe UI Semibold';
+        font-size: 13px;
+    }
+    #btn_ver_historico:hover { background-color: #4a7ec0; }
+
+    #btn_borrar_seleccionado {
+        background-color: transparent;
+        color: #e17055;
+        border: 1px solid #e17055;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    #btn_borrar_seleccionado:hover { background-color: #ffecea; }
+
+    #btn_borrar_todo {
+        background-color: transparent;
+        color: #636e72;
+        border: 1px solid #b2bec3;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    #btn_borrar_todo:hover { background-color: #dfe6e9; }
+
     #lbl_pendientes_titulo {
         font-family: 'Segoe UI Semibold';
         font-size: 13px;
@@ -521,6 +551,9 @@
               <property name="placeholderText">
                <string>Buscar paciente por nombre, apellido(s) o NIF...</string>
               </property>
+              <property name="clearButtonEnabled">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item>
@@ -725,7 +758,7 @@
                <widget class="QComboBox" name="combo_constante">
                 <item>
                  <property name="text">
-                  <string>Tensión arterial</string>
+                  <string>Temperatura</string>
                  </property>
                 </item>
                 <item>
@@ -735,7 +768,7 @@
                 </item>
                 <item>
                  <property name="text">
-                  <string>Temperatura</string>
+                  <string>Tensión arterial</string>
                  </property>
                 </item>
                 <item>
@@ -755,7 +788,10 @@
               <item row="1" column="1">
                <widget class="QLineEdit" name="edit_valor_constante">
                 <property name="placeholderText">
-                 <string>Introduce el valor medido</string>
+                 <string>Introduce el valor medido (sin unidades de medida)...</string>
+                </property>
+                <property name="clearButtonEnabled">
+                 <bool>false</bool>
                 </property>
                </widget>
               </item>
@@ -773,33 +809,24 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <spacer name="horizontalSpacer_3">
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout">
+              <item>
+               <spacer>
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
-                  <height>20</height>
+                  <width>0</width>
+                  <height>0</height>
                  </size>
                 </property>
                </spacer>
               </item>
-              <item row="4" column="1">
-               <spacer name="verticalSpacer_2">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="3" column="1">
+              <item>
                <widget class="QPushButton" name="btn_anadir_registro">
                 <property name="text">
                  <string>+ Añadir</string>
@@ -809,7 +836,17 @@
              </layout>
             </item>
             <item>
-             <layout class="QHBoxLayout"/>
+             <spacer>
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </item>
@@ -836,6 +873,13 @@
                  </size>
                 </property>
                </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btn_ver_historico">
+                <property name="text">
+                 <string>Ver histórico</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -875,19 +919,19 @@
               <item>
                <widget class="QPushButton" name="btn_borrar_seleccionado">
                 <property name="text">
-                 <string>  Eliminar Seleccionado  </string>
+                 <string>Eliminar seleccionado</string>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_4">
+               <spacer>
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
-                  <height>20</height>
+                  <width>0</width>
+                  <height>0</height>
                  </size>
                 </property>
                </spacer>
@@ -896,9 +940,6 @@
                <widget class="QPushButton" name="btn_borrar_todo">
                 <property name="text">
                  <string>Borrar todo</string>
-                </property>
-                <property name="checkable">
-                 <bool>false</bool>
                 </property>
                </widget>
               </item>
@@ -1143,12 +1184,6 @@
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
                </spacer>
               </item>
              </layout>
@@ -1220,12 +1255,6 @@
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>0</width>
-                   <height>0</height>
-                  </size>
-                 </property>
                 </spacer>
                </item>
                <item>
@@ -1286,12 +1315,6 @@
              <spacer>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
               </property>
              </spacer>
             </item>
@@ -1438,12 +1461,6 @@
            <spacer>
             <property name="orientation">
              <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
             </property>
            </spacer>
           </item>

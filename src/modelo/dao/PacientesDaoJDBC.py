@@ -7,7 +7,7 @@ class PacientesDaoJDBC(Conexion):
     SQL_SELECT = """SELECT  ep.id_episodio, px.nif, px.nombre, px.apellido1, px.apellido2, 
                             px.fecha_nacimiento, px.genero, px.fecha_registro, 
                             med.apellidos, I.num_habitacion, ep.fecha_hora_inicio,
-                            I.dieta
+                            I.dieta, I.id_ingreso
 
                     FROM Ingreso_Enfermeros as IE
 
@@ -40,6 +40,7 @@ class PacientesDaoJDBC(Conexion):
                     num_habitacion=row[9],
                     fecha_ingreso=row[10],
                     dieta=row[11],
+                    id_ingreso=row[12]
                 )
                 pacientes.append(paciente)
 

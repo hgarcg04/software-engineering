@@ -11,6 +11,8 @@ ui_path = os.path.join(os.path.dirname(__file__), "Ui/VistaLogin.ui")
 Form, Window = uic.loadUiType(ui_path)
 
 
+
+
 class MiVentana(QMainWindow, Form):
     def __init__(self):
         super().__init__()
@@ -18,6 +20,8 @@ class MiVentana(QMainWindow, Form):
         self.controlador = None
 
         self.btn_login.clicked.connect(self.on_button_click)
+        self.edit_user.returnPressed.connect(lambda: self.edit_pass.setFocus())
+        self.edit_pass.returnPressed.connect(self.on_button_click)
 
     def on_button_click(self):
         texto_nombre = self.edit_user.text()  
