@@ -17,7 +17,7 @@ class ControladorPrincipal:
     
     
     def comprobarLogin(self, loginVO):
-        self.usuario_actualVO =  self._modelo.comprobarLogin(loginVO)
+        self.usuario_actualVO =  self._modelo.comprobarLogin(loginVO) # Objeto UserVO
                 
 
         if self.usuario_actualVO is None:
@@ -25,14 +25,13 @@ class ControladorPrincipal:
         
         elif self.usuario_actualVO.rol == 'Enfermero':
             self._ventana_enfermero = VentanaEnfermeros()
+            self._ventana_enfermero.show()
+            self._vista.cerrar()
 
             # señal para cerrar sesion y volver al login
             self._ventana_enfermero.signal_logout.connect(self.volver_al_login)
 
-            self._ventana_enfermero.show()
-            self._vista.cerrar()
-
-            
+           
             modelo = Logica()
             controlador = ControladorEnfermeros(self._ventana_enfermero, modelo, self.usuario_actualVO)
             self._ventana_enfermero.controlador = controlador

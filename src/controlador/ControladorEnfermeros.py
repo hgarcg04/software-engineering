@@ -17,6 +17,16 @@ class ControladorEnfermeros:
         if lista_pacientes:
             self._vista.cargar_datos_iniciales(lista_pacientes, self.user_vo) 
     
+    def cargar_tratamientos(self, pacienteVO):
+        """
+            Pedimos al modelo un listado de los tratamientos activos del paciente seleccionado.
+            Luego mostramos la lista en la vista.
+        """
+        lista_tratamientos = self._modelo.obtenerTratamientos(pacienteVO)
+        if lista_tratamientos:
+            self._vista.mostrar_tratamientos(lista_tratamientos)
+
+
     def guardar_constante(self, lista):
         """
             Llamamos al metodo del modelo que alamacena cada registro de una nueva constante.
@@ -40,5 +50,16 @@ class ControladorEnfermeros:
             en la base de datos, para un rango de tiempo concreto.
         """
         resultados = self._modelo.consultarHistoricoConstantes(id_episodio, tipo, desde, hasta)
-        self._vista.cargar_resultados(resultados) # Hacemos que la vista muestre los resultados
+        self._vista.cargar_resultados(resultados) # Hacemos que la ventana de dialogo muestre los resultados
     
+    
+    def guardar_nueva_toma(self, tomaVO):
+        self._modelo.guardarNuevaToma(tomaVO)
+    
+    def obtener_ultima_toma(self, tratamientoVO):
+        ultima_toma = self._modelo.obtenerUltimaToma(tratamientoVO)
+        self._vista.cargar_ultima_toma(ultima_toma)
+    
+    def obtener_tomas_sesion_actual(self, pacienteVO):
+        tomas_sesion = self._modelo.obtenerTomasSesionActual(pacienteVO)
+        return tomas_sesion # DUDA: se mantien el MVC si hago un return desde el controlador?

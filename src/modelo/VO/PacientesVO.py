@@ -2,7 +2,7 @@ class PacientesVO:
     def __init__(self, id_episodio, nif, nombre, apellido1, apellido2,
                  fecha_nacimiento, genero, fecha_registro,
                  medico_asignado, num_habitacion=None, fecha_ingreso=None,
-                 dieta=None, id_ingreso=None): # he puesto id_ingreso=None porque lo añadí luego y me obliga poner un valor por defecto
+                 dieta=None, id_ingreso=None, id_paciente=None): # he puesto id_ingreso=None porque lo añadí luego y me obliga poner un valor por defecto
         
         self.id_episodio = id_episodio
         self.nif = nif
@@ -17,6 +17,7 @@ class PacientesVO:
         self.fecha_ingreso = fecha_ingreso
         self.dieta = dieta
         self.id_ingreso = id_ingreso
+        self.id_paciente = id_paciente
     
     @property
 

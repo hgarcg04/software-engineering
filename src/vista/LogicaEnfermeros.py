@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QHeaderView
 
 from src.modelo.VO.UsuariosVO import UserVO
 from src.modelo.VO.ConstantesVO import ConstantesVO
+from src.modelo.VO.TomaVO import TomaVO
 from src.vista.LogicaDialogoConstantes import DialogoHistorico
 
 
@@ -46,18 +47,22 @@ class VentanaEnfermeros(QMainWindow, Form):
         # --- Navegación ---
 
         self.btn_nav_inicio.clicked.connect(lambda: self._navegar(PAGE_INICIO))
+
         self.btn_nav_constantes.clicked.connect(lambda: self._navegar(PAGE_CONSTANTES))
+        self.btn_nuevo_registro.clicked.connect(lambda: self._navegar(PAGE_CONSTANTES))
+        self.btn_nav_medicacion.clicked.connect(self.actualizar_tomas_sesion_actual)
+        self.btn_suministrar.clicked.connect(self.actualizar_tomas_sesion_actual)
+
         self.btn_nav_constantes.clicked.connect(lambda: self.edit_valor_constante.setFocus())
      
         self.btn_nav_medicacion.clicked.connect(lambda: self._navegar(PAGE_MEDICACION))
+        self.btn_suministrar.clicked.connect(lambda: self._navegar(PAGE_MEDICACION))
+
         self.btn_nav_episodios.clicked.connect(lambda: self._navegar(PAGE_EPISODIOS))
         self.btn_ver_registros.clicked.connect(self._abrir_detalles_ingreso)
         self.btn_cerrar_detalles_ingreso.clicked.connect(lambda: self._navegar(PAGE_DETALLES))
-        self.btn_suministrar.clicked.connect(lambda: self._navegar(PAGE_MEDICACION))
-        self.btn_nuevo_registro.clicked.connect(lambda: self._navegar(PAGE_CONSTANTES))
         self.btn_nuevo_registro.clicked.connect(lambda: self.edit_valor_constante.setFocus())
 
-        self.btn_nav_inicio.clicked.connect(lambda: self._navegar(PAGE_INICIO))
         self.btn_logout.clicked.connect(self.cerrar_sesion)
 
         # --- Gestion tabla pacientes ---
@@ -72,12 +77,14 @@ class VentanaEnfermeros(QMainWindow, Form):
         self.btn_borrar_todo.clicked.connect(self._borrar_todo)
         self.btn_borrar_seleccionado.clicked.connect(self._borrar_seleccionado)
         self.btn_ver_historico.clicked.connect(self.ver_historico)
-
         self.edit_valor_constante.returnPressed.connect(lambda: self.edit_observaciones.setFocus())
         self.combo_constante.activated.connect(lambda: self.edit_valor_constante.setFocus())
         self.btn_anadir_registro.clicked.connect(lambda: self.edit_valor_constante.setFocus())
 
 
+        # --- Botones de pagina de medicación ---
+        self.tabla_tratamientos.cellClicked.connect(self.on_tratamiento_clicked)
+        self.btn_confirmar_toma.clicked.connect(self.on_confirmar_administracion_clicked)
 
         # -----------------------------------------------------------------------------
         # INICIALIZACIONES
@@ -87,6 +94,9 @@ class VentanaEnfermeros(QMainWindow, Form):
         self._paciente_activo = None
         self._enfermero = None
         self._constantes_pendientes = []
+        self._tratamiento_activo = None
+        self._ultima_toma = None
+        self._tomas_sesion_actual = []
 
         self.btn_nuevo_registro.setEnabled(False)
         self.btn_suministrar.setEnabled(False)
@@ -116,7 +126,8 @@ class VentanaEnfermeros(QMainWindow, Form):
         self._enfermero = userVO
         self.lbl_user_name.setText(f"Enfermero/a: {self._enfermero.nombre} {self._enfermero.apellidos}")
 
-
+    def cargar_ultima_toma(self, toma):
+        self._ultima_toma = toma
 
 
     # -----------------------------------------------------------------------
@@ -226,6 +237,8 @@ class VentanaEnfermeros(QMainWindow, Form):
             
         self.mostrar_tabla_pacientes(filtrados) 
 
+        
+
     # -----------------------------------------------------------------------
     # SELECCIÓN / DESELECCIÓN DE PACIENTE
     # -----------------------------------------------------------------------
@@ -235,6 +248,9 @@ class VentanaEnfermeros(QMainWindow, Form):
             return
 
         self._paciente_activo = item.data(Qt.UserRole)
+        self.controlador.cargar_tratamientos(self._paciente_activo)
+
+
         self._actualizar_banner_inicio()
         self.btn_nuevo_registro.setEnabled(True)
         self.btn_suministrar.setEnabled(True)
@@ -259,6 +275,7 @@ class VentanaEnfermeros(QMainWindow, Form):
 
 
         else:
+            
             self.lbl_paciente_sel_nombre.setText("Ninguno")
             self.lbl_paciente_sel_nombre_2.setStyleSheet("color: #00b894; font-weight: bold;")
             self.lbl_paciente_sel_nombre_2.setText("— Sin paciente seleccionado —")
@@ -279,10 +296,11 @@ class VentanaEnfermeros(QMainWindow, Form):
         if self._paciente_activo is None:
             QMessageBox.warning(self, "Sin paciente", "No hay paciente activo. Vuelve al inicio y selecciona uno.")
             return
+        
+
         constante     = self.combo_constante.currentText()
         valor         = self.edit_valor_constante.text()
         observaciones = self.edit_observaciones.toPlainText()
-
 
         if not valor:
             QMessageBox.warning(self, "Campo vacío", "Introduce un valor para la constante.")
@@ -313,7 +331,7 @@ class VentanaEnfermeros(QMainWindow, Form):
         
       
         
-        # texto que aparecerá en el mensaje informativo
+        # texto que aparecerá en el mensaje informativo antes de guardar
         resumen = '\n'.join(f" · {c['tipo']}: {c['valor']}" for c in self._constantes_pendientes)
         
         respuesta = QMessageBox.question(
@@ -332,7 +350,6 @@ class VentanaEnfermeros(QMainWindow, Form):
 
             #pasamos la lista al controlador
             if self._controlador:
-
                 print(f"({self._enfermero.id_empleado})Le paso al controlador la lista de constantes. ")
                 self._controlador.guardar_constante(lista_vos)
 
@@ -391,9 +408,93 @@ class VentanaEnfermeros(QMainWindow, Form):
         # Decimos a la ventana de diálogo que su controlodar es el mismo que el de 
         # VentanaEnfermeros (ControladorEnfermeros)
         dialogo.controlador = self._controlador
-
         dialogo.exec_() # DUDA: ejecutamos esto aquí, o desde ControladorEnfermeros?
 
+
+
+
+    # ----------------------------------------------------------------------------------------------------------------------------------------------------------
+    #                                                      PÁGINA DE SUMINISTRO DE MEDICACIÓN
+    # ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    
+    def mostrar_tratamientos(self, lista):
+        self.tabla_tratamientos.setRowCount(len(lista))
+        
+        for fila, t in enumerate(lista):
+            fecha_inicio = str(t.fecha_inicio)[:16] if t.fecha_inicio else "—"
+
+            datos = [
+                t.nombre, t.categoria, t.dosis, t.frecuencia, str(fecha_inicio)
+            ]
+            
+            for col, valor in enumerate(datos):
+                item = QTableWidgetItem(str(valor))
+                item.setTextAlignment(Qt.AlignCenter)
+                item.setData(Qt.UserRole, t)  
+                self.tabla_tratamientos.setItem(fila, col, item)    
+    
+    def on_tratamiento_clicked(self, fila):
+
+        self.btn_confirmar_toma.setEnabled(True)
+        item = self.tabla_tratamientos.item(fila, 0)
+        if item is None:
+            return
+
+        self._tratamiento_activo = item.data(Qt.UserRole)
+        self.controlador.obtener_ultima_toma(self._tratamiento_activo)
+        self.actualizar_ultima_toma()
+        self.actualizar_tomas_sesion_actual()
+
+
+
+        # Rellenamos los detalles
+        self.lbl_det_inicio.setText(self._tratamiento_activo.fecha_inicio)
+        self.lbl_det_fin.setText(self._tratamiento_activo.fecha_fin if self._tratamiento_activo.fecha_fin else "No indicada")
+        self.lbl_det_medicamento.setText(self._tratamiento_activo.nombre)
+        self.lbl_det_notas_medico.setText(self._tratamiento_activo.notas)
+        self.lbl_det_frecuencia.setText(self._tratamiento_activo.frecuencia)
+        self.lbl_det_via.setText(self._tratamiento_activo.via_administracion)
+        
+
+    def on_confirmar_administracion_clicked(self):
+
+        observaciones = self.edit_notas_toma.toPlainText()
+        tomaVO = TomaVO(self._enfermero.id_empleado, self._tratamiento_activo.id_tratamiento, observaciones)
+        self.controlador.guardar_nueva_toma(tomaVO)
+
+        self.actualizar_ultima_toma()
+        self.actualizar_tomas_sesion_actual()
+
+        self.edit_notas_toma.clear()
+
+        
+        
+    def actualizar_ultima_toma(self):
+        self.controlador.obtener_ultima_toma(self._tratamiento_activo)
+        self.lbl_det_ultima_toma.setText(f"{self._ultima_toma.fecha} - {self._ultima_toma.hora[:5]}")
+
+    def actualizar_tomas_sesion_actual(self):
+        self._tomas_sesion_actual = self.controlador.obtener_tomas_sesion_actual(self._paciente_activo)
+
+        self.tabla_tomas_sesion.setRowCount(len(self._tomas_sesion_actual))
+        for fila, t in enumerate(self._tomas_sesion_actual):
+            
+            item0 = QTableWidgetItem(str(t.nombre))
+            item0.setTextAlignment(Qt.AlignCenter)
+            self.tabla_tomas_sesion.setItem(fila, 0, item0)
+            
+            
+            item1 = QTableWidgetItem(t.hora)
+            item1.setTextAlignment(Qt.AlignCenter)
+            self.tabla_tomas_sesion.setItem(fila, 1, item1)
+            
+           
+            item2 = QTableWidgetItem(t.observaciones)
+            self.tabla_tomas_sesion.setItem(fila, 2, item2) 
+
+
+        
 
 
 
