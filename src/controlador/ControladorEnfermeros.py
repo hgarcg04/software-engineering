@@ -62,4 +62,4 @@ class ControladorEnfermeros:
     
     def obtener_tomas_sesion_actual(self, pacienteVO):
         tomas_sesion = self._modelo.obtenerTomasSesionActual(pacienteVO)
-        return tomas_sesion # DUDA: se mantien el MVC si hago un return desde el controlador?
+        self._vista.cargar_tomas_sesion_actual(tomas_sesion)

@@ -73,6 +73,7 @@ class DialogoHistorico(QDialog, Form):
     
     def _generar_grafico(self):
         pass
+    
     @property
     def controlador(self):
         return self._controlador

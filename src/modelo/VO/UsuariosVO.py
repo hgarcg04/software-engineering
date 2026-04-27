@@ -13,5 +13,5 @@ class UserVO:
         if self.rol == 'Medico':
             return f"Dr./Dra {self.apellidos}"
         else:
-            raise ValueError("Este atributo solo se usa para los médicos. Usa self.nombre/self.apellidos en su lugar")
+            raise ValueError("Este atributo solo se usa para los médicos. Usa self.nombre o self.apellidos en su lugar")
 

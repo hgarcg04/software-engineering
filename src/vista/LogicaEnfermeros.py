@@ -128,6 +128,9 @@ class VentanaEnfermeros(QMainWindow, Form):
 
     def cargar_ultima_toma(self, toma):
         self._ultima_toma = toma
+    
+    def cargar_tomas_sesion_actual(self, lista):
+        self._tomas_sesion_actual = lista
 
 
     # -----------------------------------------------------------------------
@@ -442,7 +445,6 @@ class VentanaEnfermeros(QMainWindow, Form):
             return
 
         self._tratamiento_activo = item.data(Qt.UserRole)
-        self.controlador.obtener_ultima_toma(self._tratamiento_activo)
         self.actualizar_ultima_toma()
         self.actualizar_tomas_sesion_actual()
 
@@ -465,7 +467,6 @@ class VentanaEnfermeros(QMainWindow, Form):
 
         self.actualizar_ultima_toma()
         self.actualizar_tomas_sesion_actual()
-
         self.edit_notas_toma.clear()
 
         
@@ -475,8 +476,7 @@ class VentanaEnfermeros(QMainWindow, Form):
         self.lbl_det_ultima_toma.setText(f"{self._ultima_toma.fecha} - {self._ultima_toma.hora[:5]}")
 
     def actualizar_tomas_sesion_actual(self):
-        self._tomas_sesion_actual = self.controlador.obtener_tomas_sesion_actual(self._paciente_activo)
-
+        self.controlador.obtener_tomas_sesion_actual(self._paciente_activo)
         self.tabla_tomas_sesion.setRowCount(len(self._tomas_sesion_actual))
         for fila, t in enumerate(self._tomas_sesion_actual):
             
