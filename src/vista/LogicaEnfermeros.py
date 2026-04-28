@@ -7,8 +7,6 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QButtonGroup, QMessageBox
 from PyQt5.QtCore import QTimer, QDateTime, Qt, pyqtSignal
 from PyQt5.QtWidgets import QHeaderView
 
-from src.modelo.VO.UsuariosVO import UserVO
-from src.modelo.VO.ConstantesVO import ConstantesVO
 from src.modelo.VO.TomaVO import TomaVO
 from src.vista.LogicaDialogoConstantes import DialogoHistorico
 
@@ -344,18 +342,10 @@ class VentanaEnfermeros(QMainWindow, Form):
             QMessageBox.Ok | QMessageBox.Cancel )
 
         if respuesta == QMessageBox.Ok:
-
-            # creamos la lista de objetos ConstantesVO
-            lista_vos = [
-            ConstantesVO(c['tipo'], c['valor'], c.get('observaciones', ''), self._enfermero.id_empleado,
-                         self._paciente_activo.id_ingreso)
-            for c in self._constantes_pendientes
-            ]
-
             #pasamos la lista al controlador
             if self._controlador:
                 print(f"({self._enfermero.id_empleado})Le paso al controlador la lista de constantes. ")
-                self._controlador.guardar_constante(lista_vos)
+                self._controlador.guardar_constante(self._constantes_pendientes, self._enfermero.id_empleado, self._paciente_activo.id_ingreso)
 
             self._constantes_pendientes.clear()
             self._actualizar_tabla_pendientes()
@@ -463,8 +453,7 @@ class VentanaEnfermeros(QMainWindow, Form):
     def on_confirmar_administracion_clicked(self):
 
         observaciones = self.edit_notas_toma.toPlainText()
-        tomaVO = TomaVO(self._enfermero.id_empleado, self._tratamiento_activo.id_tratamiento, observaciones)
-        self.controlador.guardar_nueva_toma(tomaVO)
+        self.controlador.guardar_nueva_toma(self._enfermero.id_empleado, self._tratamiento_activo.id_tratamiento, observaciones)
 
         self.actualizar_ultima_toma()
         self.actualizar_tomas_sesion_actual()

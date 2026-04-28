@@ -16,7 +16,9 @@ class ControladorPrincipal:
     
     
     
-    def comprobarLogin(self, loginVO):
+    def comprobarLogin(self, texto_nombre, texto_password):
+        loginVO = LoginVO(texto_nombre, texto_password)
+
         self.usuario_actualVO =  self._modelo.comprobarLogin(loginVO) # Objeto UserVO
                 
 

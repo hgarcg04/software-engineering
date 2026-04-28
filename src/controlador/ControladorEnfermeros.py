@@ -1,3 +1,7 @@
+from src.modelo.VO.UsuariosVO import UserVO
+from src.modelo.VO.ConstantesVO import ConstantesVO
+from src.modelo.VO.TomaVO import TomaVO
+
 class ControladorEnfermeros:
     def __init__(self, vista, dao, user_vo):
         self._vista = vista
@@ -27,13 +31,14 @@ class ControladorEnfermeros:
             self._vista.mostrar_tratamientos(lista_tratamientos)
 
 
-    def guardar_constante(self, lista):
+    def guardar_constante(self, lista_dicts, id_enfermero, id_ingreso):
         """
             Llamamos al metodo del modelo que alamacena cada registro de una nueva constante.
             Lo hacemos para cada elemento de la lista de objetos ConstanteVO.
         """
         print("(Controlador): Recibo la lista de constantes:")
-        for constanteVO in lista:
+        for c in lista_dicts:
+            constanteVO = ConstantesVO(c['tipo'], c['valor'], c.get('observaciones', ''), id_enfermero, id_ingreso)
             print("ID del enfermero: ", constanteVO.id_enfermero)
             self._modelo.guardarConstante(constanteVO)
 
@@ -53,7 +58,8 @@ class ControladorEnfermeros:
         self._vista.cargar_resultados(resultados) # Hacemos que la ventana de dialogo muestre los resultados
     
     
-    def guardar_nueva_toma(self, tomaVO):
+    def guardar_nueva_toma(self, id_empleado, id_tratamiento, observaciones):
+        tomaVO =TomaVO(id_empleado, id_tratamiento, observaciones)
         self._modelo.guardarNuevaToma(tomaVO)
     
     def obtener_ultima_toma(self, tratamientoVO):

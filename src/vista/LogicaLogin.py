@@ -27,9 +27,8 @@ class MiVentana(QMainWindow, Form):
         texto_nombre = self.edit_user.text()  
         texto_password = self.edit_pass.text() 
 
-        loginVO = LoginVO(texto_nombre, texto_password)
         if self._controlador:
-            self._controlador.comprobarLogin(loginVO)
+            self._controlador.comprobarLogin(texto_nombre, texto_password)
         
         
 

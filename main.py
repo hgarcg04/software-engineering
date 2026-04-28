@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from src.vista.Login import MiVentana
+from src.vista.LogicaLogin import MiVentana
 from src.modelo.Logica import Logica
 from src.controlador.ControladorPrincipal import ControladorPrincipal
 

@@ -1,6 +1,5 @@
 import jaydebeapi
 import os
-os.environ["JAVA_HOME"] = r"C:\Users\isma3\anaconda3\pkgs\openjdk-22.0.1-h57928b3_1\Library\lib\jvm"
 
 class Conexion:
     def __init__(self, host='localhost', database='KURA', user='sa', password='Ademar07'):
