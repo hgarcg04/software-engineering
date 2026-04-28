@@ -1,8 +1,11 @@
 from src.modelo.VO.LoginVO import LoginVO
 from src.vista.LogicaEnfermeros import VentanaEnfermeros
+from src.vista.LogicaMedicos import VentanaMedico
 from src.modelo.dao.PacientesDaoJDBC import PacientesDaoJDBC
 from src.modelo.Logica import Logica
 from src.controlador.ControladorEnfermeros import ControladorEnfermeros
+from src.controlador.ControladorMedicos import ControladorMedicos
+
 
 class ControladorPrincipal:
 
@@ -37,6 +40,17 @@ class ControladorPrincipal:
             modelo = Logica()
             controlador = ControladorEnfermeros(self._ventana_enfermero, modelo, self.usuario_actualVO)
             self._ventana_enfermero.controlador = controlador
+
+        elif self.usuario_actualVO.rol == 'medico': #Comprobar minuscula o mayuscula
+            self._ventana_medico = VentanaMedico()
+            self._ventana_medico.show()
+            self._vista.cerrar()
+
+            self._ventana_medico.signal_logout.connect(self.volver_al_login)
+
+            modelo = Logica()
+            controlador = ControladorMedicos(self._ventana_medico, modelo, self.usuario_actualVO)
+            self._ventana_medico.controlador = controlador
             
 
         # Falta implementar los otros dos usuarios
