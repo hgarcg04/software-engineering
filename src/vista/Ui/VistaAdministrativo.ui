@@ -1,0 +1,1527 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>VistaAdministrativo</class>
+ <widget class="QMainWindow" name="VistaAdministrativo">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>KURA - Panel Administrativo</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+    QMainWindow { background-color: #f0f4f8; }
+
+    #topBar {
+        background-color: #ffffff;
+        border-bottom: 1px solid #dde3ea;
+        min-height: 60px;
+    }
+    #lbl_app_name { font-family: 'Segoe UI Black'; font-size: 20px; color: #00b894; }
+    #lbl_user_name { font-family: 'Segoe UI'; font-size: 14px; color: #2d3436; }
+    #lbl_datetime  { font-family: 'Segoe UI'; font-size: 13px; color: #636e72; }
+    #btn_logout {
+        background-color: #e17055;
+        color: white;
+        border-radius: 8px;
+        padding: 6px 16px;
+        font-family: 'Segoe UI Semibold';
+        font-size: 13px;
+    }
+    #btn_logout:hover { background-color: #c0392b; }
+
+    #sideBar {
+        background-color: #2d3436;
+        min-width: 200px;
+        max-width: 200px;
+    }
+    #lbl_menu_title {
+        color: #b2bec3;
+        font-family: 'Segoe UI';
+        font-size: 11px;
+        padding-left: 20px;
+        padding-top: 10px;
+    }
+    QPushButton[class=&quot;navBtn&quot;] {
+        background-color: transparent;
+        color: #dfe6e9;
+        border: none;
+        text-align: left;
+        padding: 12px 20px;
+        font-family: 'Segoe UI';
+        font-size: 14px;
+    }
+    QPushButton[class=&quot;navBtn&quot;]:hover { background-color: #3d5166; }
+    QPushButton[class=&quot;navBtn&quot;]:checked { background-color: #00b894; color: white; }
+
+    #centralPanel { background-color: #f0f4f8; }
+    #lbl_section_title {
+        font-family: 'Segoe UI Black';
+        font-size: 22px;
+        color: #2d3436;
+    }
+    #lbl_section_sub {
+        font-family: 'Segoe UI';
+        font-size: 13px;
+        color: #636e72;
+    }
+
+    QTableWidget {
+        background-color: #ffffff;
+        border: 1px solid #dde3ea;
+        border-radius: 10px;
+        gridline-color: #f0f4f8;
+        font-size: 13px;
+    }
+    QTableWidget::item { padding: 8px; }
+    QTableWidget::item:selected { background-color: #d8f3ed; color: #2d3436; }
+    QHeaderView::section {
+        background-color: #f8fafc;
+        color: #636e72;
+        font-family: 'Segoe UI Semibold';
+        font-size: 12px;
+        padding: 8px;
+        border: none;
+        border-bottom: 1px solid #dde3ea;
+    }
+
+    #search_bar {
+        border: 1px solid #dde3ea;
+        border-radius: 8px;
+        padding: 8px 12px;
+        background-color: #ffffff;
+        font-size: 13px;
+        color: #2d3436;
+        min-width: 280px;
+    }
+    #search_bar:focus { border: 1px solid #00b894; }
+
+    QLineEdit, QDateEdit, QComboBox, QSpinBox, QTimeEdit {
+        border: 1px solid #dde3ea;
+        border-radius: 8px;
+        padding: 8px 12px;
+        background-color: #ffffff;
+        font-size: 13px;
+        color: #2d3436;
+    }
+    QLineEdit:focus, QDateEdit:focus, QComboBox:focus, QSpinBox:focus, QTimeEdit:focus {
+        border: 1px solid #00b894;
+    }
+    QTextEdit {
+        background-color: #f8fafc;
+        border: 1px solid #dde3ea;
+        border-radius: 8px;
+        font-family: 'Segoe UI';
+        font-size: 13px;
+        color: #2d3436;
+        padding: 10px;
+    }
+    QLabel[class=&quot;formLabel&quot;] {
+        font-family: 'Segoe UI Semibold';
+        font-size: 13px;
+        color: #2d3436;
+    }
+
+    /* === Frames de paciente/entidad seleccionada === */
+    #frame_paciente_seleccionado, #frame_medico_seleccionado {
+        background-color: #d8f3ed;
+        border: 1.5px solid #00b894;
+        border-radius: 10px;
+        padding: 4px 12px;
+    }
+    #lbl_paciente_sel_texto, #lbl_medico_sel_texto {
+        font-family: 'Segoe UI';
+        font-size: 13px;
+        color: #636e72;
+    }
+    #lbl_paciente_sel_nombre, #lbl_medico_sel_nombre {
+        font-family: 'Segoe UI Semibold';
+        font-size: 14px;
+        color: #00a381;
+    }
+    #btn_deseleccionar {
+        background-color: transparent;
+        color: #e17055;
+        border: 1px solid #e17055;
+        border-radius: 6px;
+        padding: 3px 10px;
+        font-size: 12px;
+    }
+    #btn_deseleccionar:hover { background-color: #ffecea; }
+
+    /* === Botones primarios verdes === */
+    #btn_registrar_paciente, #btn_asignar_cita, #btn_generar_credenciales,
+    #btn_confirmar_pedido, #btn_crear_backup, #btn_bloquear_agenda,
+    #btn_guardar_paciente, #btn_guardar_credencial {
+        background-color: #00b894;
+        color: white;
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-family: 'Segoe UI Semibold';
+        font-size: 13px;
+    }
+    #btn_registrar_paciente:hover, #btn_asignar_cita:hover, #btn_generar_credenciales:hover,
+    #btn_confirmar_pedido:hover, #btn_crear_backup:hover, #btn_bloquear_agenda:hover,
+    #btn_guardar_paciente:hover, #btn_guardar_credencial:hover { background-color: #00a381; }
+    #btn_registrar_paciente:disabled, #btn_asignar_cita:disabled,
+    #btn_confirmar_pedido:disabled, #btn_bloquear_agenda:disabled {
+        background-color: #b2d8d0;
+        color: #ffffff;
+    }
+
+    /* === Botones secundarios azules === */
+    #btn_buscar_paciente, #btn_buscar_medico, #btn_consultar_disponibilidad,
+    #btn_ver_detalle_paciente {
+        background-color: #6a9edb;
+        color: white;
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-family: 'Segoe UI Semibold';
+        font-size: 13px;
+    }
+    #btn_buscar_paciente:hover, #btn_buscar_medico:hover,
+    #btn_consultar_disponibilidad:hover, #btn_ver_detalle_paciente:hover { background-color: #4a7ec0; }
+    #btn_buscar_paciente:disabled, #btn_consultar_disponibilidad:disabled {
+        background-color: #cfe0f5;
+        color: #a0b8d0;
+    }
+
+    /* === Botones de acción neutral === */
+    #btn_limpiar_formulario, #btn_cancelar, #btn_nuevo_paciente {
+        background-color: #dfe6e9;
+        color: #2d3436;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-family: 'Segoe UI Semibold';
+        font-size: 13px;
+    }
+    #btn_limpiar_formulario:hover, #btn_cancelar:hover,
+    #btn_nuevo_paciente:hover { background-color: #b2bec3; }
+
+    /* === Frame de disponibilidad / resultado === */
+    #frame_disponibilidad {
+        background-color: #ffffff;
+        border: 1px solid #dde3ea;
+        border-radius: 10px;
+    }
+    #lbl_disponibilidad_titulo {
+        font-family: 'Segoe UI Black';
+        font-size: 15px;
+        color: #2d3436;
+    }
+
+    /* === Frame de detalle de cita / backup === */
+    #frame_info_backup {
+        background-color: #eaf4fb;
+        border: 1.5px solid #6a9edb;
+        border-radius: 10px;
+        padding: 12px 16px;
+    }
+    #lbl_backup_estado {
+        font-family: 'Segoe UI Semibold';
+        font-size: 14px;
+        color: #4a7ec0;
+    }
+    #lbl_backup_sub {
+        font-family: 'Segoe UI';
+        font-size: 12px;
+        color: #636e72;
+    }
+
+    /* === Alerta / advertencia === */
+    #frame_alerta {
+        background-color: #fff3cd;
+        border: 1.5px solid #f39c12;
+        border-radius: 10px;
+        padding: 8px 14px;
+    }
+    #lbl_alerta_texto {
+        font-family: 'Segoe UI';
+        font-size: 13px;
+        color: #856404;
+    }
+
+    /* === Calendario de disponibilidad === */
+    QCalendarWidget {
+        background-color: #ffffff;
+        border: 1px solid #dde3ea;
+        border-radius: 10px;
+    }
+    QCalendarWidget QTableView {
+        selection-background-color: #00b894;
+        selection-color: white;
+    }
+
+    /* === GroupBox === */
+    QGroupBox {
+        font-family: 'Segoe UI Semibold';
+        font-size: 13px;
+        color: #2d3436;
+        border: 1px solid #dde3ea;
+        border-radius: 10px;
+        margin-top: 14px;
+        padding-top: 10px;
+        background-color: #ffffff;
+    }
+    QGroupBox::title {
+        subcontrol-origin: margin;
+        subcontrol-position: top left;
+        padding: 0 8px;
+        color: #636e72;
+    }
+
+    /* === Barra de progreso backup === */
+    QProgressBar {
+        border: 1px solid #dde3ea;
+        border-radius: 8px;
+        background-color: #f0f4f8;
+        text-align: center;
+        font-size: 12px;
+        color: #2d3436;
+        min-height: 20px;
+    }
+    QProgressBar::chunk {
+        background-color: #00b894;
+        border-radius: 8px;
+    }
+
+    /* === Spinbox de cantidad medicamentos === */
+    #spin_cantidad {
+        min-width: 80px;
+        max-width: 100px;
+    }
+
+    /* === Badge de stock bajo === */
+    #lbl_stock_bajo {
+        background-color: #e17055;
+        color: white;
+        border-radius: 6px;
+        padding: 2px 8px;
+        font-family: 'Segoe UI Semibold';
+        font-size: 11px;
+    }
+   </string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="mainLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+
+    <!-- ════════════════════════ TOP BAR ════════════════════════ -->
+    <item>
+     <widget class="QFrame" name="topBar">
+      <layout class="QHBoxLayout" name="topBarLayout">
+       <property name="leftMargin">
+        <number>20</number>
+       </property>
+       <property name="rightMargin">
+        <number>20</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="lbl_app_name">
+         <property name="text">
+          <string>KURA</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="lbl_user_name">
+         <property name="text">
+          <string>Administrativo/a: ---</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="lbl_datetime">
+         <property name="text">
+          <string>00/00/0000  00:00</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_logout">
+         <property name="text">
+          <string>Cerrar sesión</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+
+    <!-- ════════════════════════ BODY ════════════════════════ -->
+    <item>
+     <layout class="QHBoxLayout" name="bodyLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+
+      <!-- ─────────── SIDEBAR ─────────── -->
+      <item>
+       <widget class="QFrame" name="sideBar">
+        <layout class="QVBoxLayout" name="sideLayout">
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>20</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>20</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="lbl_menu_title">
+           <property name="text">
+            <string>MENÚ</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_nav_inicio">
+           <property name="text">
+            <string>  Inicio</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <property name="class" stdset="0">
+            <string>navBtn</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_nav_pacientes">
+           <property name="text">
+            <string>  Registrar Paciente</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="class" stdset="0">
+            <string>navBtn</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_nav_citas">
+           <property name="text">
+            <string>  Asignar Citas</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="class" stdset="0">
+            <string>navBtn</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_nav_agenda">
+           <property name="text">
+            <string>  Bloquear Agenda</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="class" stdset="0">
+            <string>navBtn</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_nav_credenciales">
+           <property name="text">
+            <string>  Generar Credenciales</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="class" stdset="0">
+            <string>navBtn</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_nav_medicamentos">
+           <property name="text">
+            <string>  Pedir Medicamentos</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="class" stdset="0">
+            <string>navBtn</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_nav_backup">
+           <property name="text">
+            <string>  Copia de Seguridad</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="class" stdset="0">
+            <string>navBtn</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+
+      <!-- ─────────── STACKED WIDGET (páginas) ─────────── -->
+      <item>
+       <widget class="QStackedWidget" name="stackedWidget">
+
+        <!-- ══════════════ PAGE 0: INICIO ══════════════ -->
+        <widget class="QWidget" name="page_inicio">
+         <layout class="QVBoxLayout" name="inicioLayout">
+          <property name="leftMargin"><number>30</number></property>
+          <property name="topMargin"><number>30</number></property>
+          <property name="rightMargin"><number>30</number></property>
+          <property name="bottomMargin"><number>30</number></property>
+          <item>
+           <widget class="QLabel" name="lbl_section_title">
+            <property name="text">
+             <string>Bienvenido/a al Panel Administrativo</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lbl_section_sub">
+            <property name="text">
+             <string>Selecciona una opción del menú para comenzar.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation"><enum>Qt::Vertical</enum></property>
+            <property name="sizeHint" stdset="0">
+             <size><width>0</width><height>0</height></size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+
+        <!-- ══════════════ PAGE 1: REGISTRAR PACIENTE ══════════════ -->
+        <widget class="QWidget" name="page_pacientes">
+         <layout class="QVBoxLayout" name="pacientesLayout">
+          <property name="leftMargin"><number>30</number></property>
+          <property name="topMargin"><number>30</number></property>
+          <property name="rightMargin"><number>30</number></property>
+          <property name="bottomMargin"><number>30</number></property>
+          <item>
+           <widget class="QLabel" name="lbl_section_title">
+            <property name="text"><string>Registrar Paciente</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lbl_section_sub">
+            <property name="text"><string>Introduce los datos del nuevo paciente. El DNI no debe existir previamente en el sistema.</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_datos_paciente">
+            <property name="title"><string>Datos personales</string></property>
+            <layout class="QFormLayout" name="formPaciente">
+             <property name="leftMargin"><number>20</number></property>
+             <property name="topMargin"><number>20</number></property>
+             <property name="rightMargin"><number>20</number></property>
+             <property name="bottomMargin"><number>20</number></property>
+             <property name="horizontalSpacing"><number>20</number></property>
+             <property name="verticalSpacing"><number>12</number></property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="lbl_f_nombre">
+               <property name="text"><string>Nombre completo *</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="input_nombre_paciente">
+               <property name="placeholderText"><string>Ej: Ana García López</string></property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="lbl_f_dni">
+               <property name="text"><string>DNI *</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="input_dni_paciente">
+               <property name="placeholderText"><string>Ej: 12345678A</string></property>
+               <property name="maxLength"><number>9</number></property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="lbl_f_fnac">
+               <property name="text"><string>Fecha de nacimiento *</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QDateEdit" name="input_fnac_paciente">
+               <property name="calendarPopup"><bool>true</bool></property>
+               <property name="displayFormat"><string>dd/MM/yyyy</string></property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="lbl_f_telefono">
+               <property name="text"><string>Teléfono</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLineEdit" name="input_telefono_paciente">
+               <property name="placeholderText"><string>Ej: 612 345 678</string></property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="lbl_f_email">
+               <property name="text"><string>Correo electrónico</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QLineEdit" name="input_email_paciente">
+               <property name="placeholderText"><string>Ej: paciente@correo.com</string></property>
+              </widget>
+             </item>
+             <item row="5" column="0">
+              <widget class="QLabel" name="lbl_f_direccion">
+               <property name="text"><string>Dirección</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <widget class="QLineEdit" name="input_direccion_paciente">
+               <property name="placeholderText"><string>Calle, número, ciudad</string></property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QLabel" name="lbl_f_alergias">
+               <property name="text"><string>Alergias conocidas</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="6" column="1">
+              <widget class="QLineEdit" name="input_alergias_paciente">
+               <property name="placeholderText"><string>Ej: penicilina, látex... (opcional)</string></property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout">
+            <item>
+             <spacer>
+              <property name="orientation"><enum>Qt::Horizontal</enum></property>
+              <property name="sizeHint" stdset="0">
+               <size><width>0</width><height>0</height></size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_limpiar_formulario">
+              <property name="text"><string>Limpiar</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_guardar_paciente">
+              <property name="text"><string>Registrar Paciente</string></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+
+        <!-- ══════════════ PAGE 2: ASIGNAR CITAS ══════════════ -->
+        <widget class="QWidget" name="page_citas">
+         <layout class="QHBoxLayout" name="citasOuterLayout">
+          <property name="spacing"><number>20</number></property>
+          <property name="leftMargin"><number>30</number></property>
+          <property name="topMargin"><number>30</number></property>
+          <property name="rightMargin"><number>30</number></property>
+          <property name="bottomMargin"><number>30</number></property>
+
+          <!-- Columna izquierda: búsqueda y selección -->
+          <item>
+           <layout class="QVBoxLayout" name="citasLeftLayout">
+            <item>
+             <widget class="QLabel" name="lbl_section_title">
+              <property name="text"><string>Asignar Citas</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="lbl_section_sub">
+              <property name="text"><string>Busca al paciente y selecciona médico, fecha y hora.</string></property>
+             </widget>
+            </item>
+
+            <!-- Frame paciente seleccionado -->
+            <item>
+             <widget class="QFrame" name="frame_paciente_seleccionado">
+              <layout class="QHBoxLayout">
+               <property name="leftMargin"><number>12</number></property>
+               <property name="topMargin"><number>8</number></property>
+               <property name="rightMargin"><number>12</number></property>
+               <property name="bottomMargin"><number>8</number></property>
+               <item>
+                <widget class="QLabel" name="lbl_paciente_sel_texto">
+                 <property name="text"><string>Paciente seleccionado:</string></property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="lbl_paciente_sel_nombre">
+                 <property name="text"><string>Ninguno</string></property>
+                </widget>
+               </item>
+               <item>
+                <spacer>
+                 <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                 <property name="sizeHint" stdset="0">
+                  <size><width>0</width><height>0</height></size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_deseleccionar">
+                 <property name="text"><string>Deseleccionar</string></property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+
+            <!-- Búsqueda de paciente -->
+            <item>
+             <layout class="QHBoxLayout">
+              <item>
+               <widget class="QLineEdit" name="search_bar">
+                <property name="placeholderText">
+                 <string>Buscar paciente por nombre o DNI...</string>
+                </property>
+                <property name="clearButtonEnabled"><bool>true</bool></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btn_buscar_paciente">
+                <property name="text"><string>Buscar</string></property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="tabla_pacientes_cita">
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <property name="columnCount"><number>3</number></property>
+              <attribute name="horizontalHeaderStretchLastSection"><bool>true</bool></attribute>
+              <column><property name="text"><string>DNI</string></property></column>
+              <column><property name="text"><string>Paciente</string></property></column>
+              <column><property name="text"><string>Nº Expediente</string></property></column>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+          <!-- Columna derecha: formulario de cita -->
+          <item>
+           <widget class="QGroupBox" name="groupBox_nueva_cita">
+            <property name="title"><string>Nueva cita</string></property>
+            <layout class="QVBoxLayout" name="citasFormLayout">
+             <property name="leftMargin"><number>16</number></property>
+             <property name="topMargin"><number>20</number></property>
+             <property name="rightMargin"><number>16</number></property>
+             <property name="bottomMargin"><number>16</number></property>
+             <item>
+              <layout class="QFormLayout" name="formCita">
+               <property name="verticalSpacing"><number>12</number></property>
+               <property name="horizontalSpacing"><number>16</number></property>
+               <item row="0" column="0">
+                <widget class="QLabel" name="lbl_cf_especialidad">
+                 <property name="text"><string>Especialidad *</string></property>
+                 <property name="class" stdset="0"><string>formLabel</string></property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QComboBox" name="combo_especialidad">
+                 <item><property name="text"><string>-- Seleccionar especialidad --</string></property></item>
+                 <item><property name="text"><string>Medicina General</string></property></item>
+                 <item><property name="text"><string>Cardiología</string></property></item>
+                 <item><property name="text"><string>Traumatología</string></property></item>
+                 <item><property name="text"><string>Pediatría</string></property></item>
+                 <item><property name="text"><string>Neurología</string></property></item>
+                 <item><property name="text"><string>Oncología</string></property></item>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="lbl_cf_medico">
+                 <property name="text"><string>Médico *</string></property>
+                 <property name="class" stdset="0"><string>formLabel</string></property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QComboBox" name="combo_medico_cita">
+                 <item><property name="text"><string>-- Seleccionar médico --</string></property></item>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="lbl_cf_fecha">
+                 <property name="text"><string>Fecha *</string></property>
+                 <property name="class" stdset="0"><string>formLabel</string></property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QDateEdit" name="input_fecha_cita">
+                 <property name="calendarPopup"><bool>true</bool></property>
+                 <property name="displayFormat"><string>dd/MM/yyyy</string></property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="lbl_cf_hora">
+                 <property name="text"><string>Hora *</string></property>
+                 <property name="class" stdset="0"><string>formLabel</string></property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QComboBox" name="combo_hora_cita">
+                 <item><property name="text"><string>-- Consultar disponibilidad primero --</string></property></item>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="lbl_cf_motivo">
+                 <property name="text"><string>Motivo de la cita</string></property>
+                 <property name="class" stdset="0"><string>formLabel</string></property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QLineEdit" name="input_motivo_cita">
+                 <property name="placeholderText"><string>Descripción breve del motivo (opcional)</string></property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btn_consultar_disponibilidad">
+               <property name="text"><string>Consultar disponibilidad</string></property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btn_asignar_cita">
+               <property name="enabled"><bool>false</bool></property>
+               <property name="text"><string>Confirmar cita</string></property>
+              </widget>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation"><enum>Qt::Vertical</enum></property>
+               <property name="sizeHint" stdset="0">
+                <size><width>0</width><height>0</height></size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+
+        <!-- ══════════════ PAGE 3: BLOQUEAR AGENDA ══════════════ -->
+        <widget class="QWidget" name="page_agenda">
+         <layout class="QHBoxLayout" name="agendaOuterLayout">
+          <property name="spacing"><number>20</number></property>
+          <property name="leftMargin"><number>30</number></property>
+          <property name="topMargin"><number>30</number></property>
+          <property name="rightMargin"><number>30</number></property>
+          <property name="bottomMargin"><number>30</number></property>
+
+          <!-- Columna izquierda -->
+          <item>
+           <layout class="QVBoxLayout" name="agendaLeftLayout">
+            <item>
+             <widget class="QLabel" name="lbl_section_title">
+              <property name="text"><string>Bloquear Agenda</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="lbl_section_sub">
+              <property name="text"><string>Selecciona el médico y el rango de fechas a bloquear. Máximo 15 días consecutivos.</string></property>
+             </widget>
+            </item>
+
+            <!-- Frame médico seleccionado -->
+            <item>
+             <widget class="QFrame" name="frame_medico_seleccionado">
+              <layout class="QHBoxLayout">
+               <property name="leftMargin"><number>12</number></property>
+               <property name="topMargin"><number>8</number></property>
+               <property name="rightMargin"><number>12</number></property>
+               <property name="bottomMargin"><number>8</number></property>
+               <item>
+                <widget class="QLabel" name="lbl_medico_sel_texto">
+                 <property name="text"><string>Médico seleccionado:</string></property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="lbl_medico_sel_nombre">
+                 <property name="text"><string>Ninguno</string></property>
+                </widget>
+               </item>
+               <item>
+                <spacer>
+                 <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                 <property name="sizeHint" stdset="0">
+                  <size><width>0</width><height>0</height></size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </item>
+
+            <!-- Búsqueda de médico -->
+            <item>
+             <layout class="QHBoxLayout">
+              <item>
+               <widget class="QLineEdit" name="search_medico">
+                <property name="placeholderText">
+                 <string>Buscar médico por nombre o especialidad...</string>
+                </property>
+                <property name="clearButtonEnabled"><bool>true</bool></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btn_buscar_medico">
+                <property name="text"><string>Buscar</string></property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="tabla_medicos_agenda">
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <property name="columnCount"><number>3</number></property>
+              <attribute name="horizontalHeaderStretchLastSection"><bool>true</bool></attribute>
+              <column><property name="text"><string>ID</string></property></column>
+              <column><property name="text"><string>Nombre</string></property></column>
+              <column><property name="text"><string>Especialidad</string></property></column>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+          <!-- Columna derecha: formulario de bloqueo -->
+          <item>
+           <widget class="QGroupBox" name="groupBox_bloqueo">
+            <property name="title"><string>Rango de bloqueo</string></property>
+            <layout class="QVBoxLayout" name="bloqueoFormLayout">
+             <property name="leftMargin"><number>16</number></property>
+             <property name="topMargin"><number>20</number></property>
+             <property name="rightMargin"><number>16</number></property>
+             <property name="bottomMargin"><number>16</number></property>
+             <item>
+              <layout class="QFormLayout" name="formBloqueo">
+               <property name="verticalSpacing"><number>12</number></property>
+               <property name="horizontalSpacing"><number>16</number></property>
+               <item row="0" column="0">
+                <widget class="QLabel" name="lbl_bf_inicio">
+                 <property name="text"><string>Fecha inicio *</string></property>
+                 <property name="class" stdset="0"><string>formLabel</string></property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QDateEdit" name="input_fecha_inicio_bloqueo">
+                 <property name="calendarPopup"><bool>true</bool></property>
+                 <property name="displayFormat"><string>dd/MM/yyyy</string></property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="lbl_bf_fin">
+                 <property name="text"><string>Fecha fin *</string></property>
+                 <property name="class" stdset="0"><string>formLabel</string></property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QDateEdit" name="input_fecha_fin_bloqueo">
+                 <property name="calendarPopup"><bool>true</bool></property>
+                 <property name="displayFormat"><string>dd/MM/yyyy</string></property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="lbl_bf_motivo">
+                 <property name="text"><string>Motivo</string></property>
+                 <property name="class" stdset="0"><string>formLabel</string></property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QComboBox" name="combo_motivo_bloqueo">
+                 <item><property name="text"><string>Vacaciones</string></property></item>
+                 <item><property name="text"><string>Baja médica</string></property></item>
+                 <item><property name="text"><string>Formación</string></property></item>
+                 <item><property name="text"><string>Otro</string></property></item>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="lbl_bf_observaciones">
+                 <property name="text"><string>Observaciones</string></property>
+                 <property name="class" stdset="0"><string>formLabel</string></property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLineEdit" name="input_observaciones_bloqueo">
+                 <property name="placeholderText"><string>Información adicional (opcional)</string></property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <!-- Aviso de límite 15 días -->
+             <item>
+              <widget class="QFrame" name="frame_alerta">
+               <layout class="QHBoxLayout">
+                <property name="leftMargin"><number>10</number></property>
+                <property name="topMargin"><number>6</number></property>
+                <property name="rightMargin"><number>10</number></property>
+                <property name="bottomMargin"><number>6</number></property>
+                <item>
+                 <widget class="QLabel" name="lbl_alerta_texto">
+                  <property name="text">
+                   <string>⚠  Solo se pueden bloquear un máximo de 15 días consecutivos y fechas futuras.</string>
+                  </property>
+                  <property name="wordWrap"><bool>true</bool></property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btn_bloquear_agenda">
+               <property name="enabled"><bool>false</bool></property>
+               <property name="text"><string>Bloquear agenda</string></property>
+              </widget>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation"><enum>Qt::Vertical</enum></property>
+               <property name="sizeHint" stdset="0">
+                <size><width>0</width><height>0</height></size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+
+        <!-- ══════════════ PAGE 4: GENERAR CREDENCIALES ══════════════ -->
+        <widget class="QWidget" name="page_credenciales">
+         <layout class="QVBoxLayout" name="credencialesLayout">
+          <property name="leftMargin"><number>30</number></property>
+          <property name="topMargin"><number>30</number></property>
+          <property name="rightMargin"><number>30</number></property>
+          <property name="bottomMargin"><number>30</number></property>
+          <item>
+           <widget class="QLabel" name="lbl_section_title">
+            <property name="text"><string>Generar Credenciales</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lbl_section_sub">
+            <property name="text"><string>Registra al nuevo personal sanitario. El sistema generará sus credenciales de acceso automáticamente.</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_datos_personal">
+            <property name="title"><string>Datos del nuevo empleado</string></property>
+            <layout class="QFormLayout" name="formPersonal">
+             <property name="leftMargin"><number>20</number></property>
+             <property name="topMargin"><number>20</number></property>
+             <property name="rightMargin"><number>20</number></property>
+             <property name="bottomMargin"><number>20</number></property>
+             <property name="horizontalSpacing"><number>20</number></property>
+             <property name="verticalSpacing"><number>12</number></property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="lbl_pf_nombre">
+               <property name="text"><string>Nombre completo *</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="input_nombre_personal">
+               <property name="placeholderText"><string>Nombre y apellidos</string></property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="lbl_pf_dni">
+               <property name="text"><string>DNI *</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="input_dni_personal">
+               <property name="placeholderText"><string>Ej: 12345678A</string></property>
+               <property name="maxLength"><number>9</number></property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="lbl_pf_rol">
+               <property name="text"><string>Rol *</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QComboBox" name="combo_rol_personal">
+               <item><property name="text"><string>-- Seleccionar rol --</string></property></item>
+               <item><property name="text"><string>Médico</string></property></item>
+               <item><property name="text"><string>Enfermero/a</string></property></item>
+               <item><property name="text"><string>Administrativo/a</string></property></item>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="lbl_pf_especialidad">
+               <property name="text"><string>Especialidad</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QComboBox" name="combo_especialidad_personal">
+               <item><property name="text"><string>-- No aplica --</string></property></item>
+               <item><property name="text"><string>Medicina General</string></property></item>
+               <item><property name="text"><string>Cardiología</string></property></item>
+               <item><property name="text"><string>Traumatología</string></property></item>
+               <item><property name="text"><string>Pediatría</string></property></item>
+               <item><property name="text"><string>Neurología</string></property></item>
+               <item><property name="text"><string>Oncología</string></property></item>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="lbl_pf_email">
+               <property name="text"><string>Correo electrónico *</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QLineEdit" name="input_email_personal">
+               <property name="placeholderText"><string>correo@hospital.es</string></property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout">
+            <item>
+             <spacer>
+              <property name="orientation"><enum>Qt::Horizontal</enum></property>
+              <property name="sizeHint" stdset="0">
+               <size><width>0</width><height>0</height></size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_limpiar_credencial">
+              <property name="text"><string>Limpiar</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_guardar_credencial">
+              <property name="text"><string>Generar Credenciales</string></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+
+        <!-- ══════════════ PAGE 5: PEDIR MEDICAMENTOS ══════════════ -->
+        <widget class="QWidget" name="page_medicamentos">
+         <layout class="QHBoxLayout" name="medicamentosOuterLayout">
+          <property name="spacing"><number>20</number></property>
+          <property name="leftMargin"><number>30</number></property>
+          <property name="topMargin"><number>30</number></property>
+          <property name="rightMargin"><number>30</number></property>
+          <property name="bottomMargin"><number>30</number></property>
+
+          <!-- Columna izquierda: catálogo -->
+          <item>
+           <layout class="QVBoxLayout" name="medCatalogLayout">
+            <item>
+             <widget class="QLabel" name="lbl_section_title">
+              <property name="text"><string>Pedir Medicamentos</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="lbl_section_sub">
+              <property name="text"><string>Selecciona medicamentos del catálogo e indica la cantidad a solicitar.</string></property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout">
+              <item>
+               <widget class="QLineEdit" name="search_medicamento">
+                <property name="placeholderText">
+                 <string>Buscar medicamento por nombre o código...</string>
+                </property>
+                <property name="clearButtonEnabled"><bool>true</bool></property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="tabla_catalogo_medicamentos">
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <property name="columnCount"><number>4</number></property>
+              <attribute name="horizontalHeaderStretchLastSection"><bool>true</bool></attribute>
+              <column><property name="text"><string>Código</string></property></column>
+              <column><property name="text"><string>Medicamento</string></property></column>
+              <column><property name="text"><string>Stock actual</string></property></column>
+              <column><property name="text"><string>Unidad</string></property></column>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+          <!-- Columna derecha: pedido -->
+          <item>
+           <widget class="QGroupBox" name="groupBox_pedido">
+            <property name="title"><string>Pedido actual</string></property>
+            <layout class="QVBoxLayout" name="pedidoLayout">
+             <property name="leftMargin"><number>16</number></property>
+             <property name="topMargin"><number>20</number></property>
+             <property name="rightMargin"><number>16</number></property>
+             <property name="bottomMargin"><number>16</number></property>
+             <item>
+              <layout class="QHBoxLayout">
+               <item>
+                <widget class="QLabel" name="lbl_cantidad_label">
+                 <property name="text"><string>Cantidad a pedir:</string></property>
+                 <property name="class" stdset="0"><string>formLabel</string></property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="spin_cantidad">
+                 <property name="minimum"><number>1</number></property>
+                 <property name="maximum"><number>9999</number></property>
+                 <property name="value"><number>1</number></property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_anadir_al_pedido">
+                 <property name="text"><string>+ Añadir al pedido</string></property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QLabel" name="lbl_pendientes_titulo">
+               <property name="text"><string>Líneas del pedido:</string></property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QTableWidget" name="tabla_pedido">
+               <property name="editTriggers">
+                <set>QAbstractItemView::NoEditTriggers</set>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectRows</enum>
+               </property>
+               <property name="columnCount"><number>3</number></property>
+               <attribute name="horizontalHeaderStretchLastSection"><bool>true</bool></attribute>
+               <column><property name="text"><string>Medicamento</string></property></column>
+               <column><property name="text"><string>Cantidad</string></property></column>
+               <column><property name="text"><string>Unidad</string></property></column>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout">
+               <item>
+                <widget class="QPushButton" name="btn_borrar_seleccionado">
+                 <property name="text"><string>✕ Quitar seleccionado</string></property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_borrar_todo">
+                 <property name="text"><string>Vaciar pedido</string></property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btn_confirmar_pedido">
+               <property name="enabled"><bool>false</bool></property>
+               <property name="text"><string>Confirmar pedido</string></property>
+              </widget>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation"><enum>Qt::Vertical</enum></property>
+               <property name="sizeHint" stdset="0">
+                <size><width>0</width><height>0</height></size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+
+        <!-- ══════════════ PAGE 6: COPIA DE SEGURIDAD ══════════════ -->
+        <widget class="QWidget" name="page_backup">
+         <layout class="QVBoxLayout" name="backupLayout">
+          <property name="leftMargin"><number>30</number></property>
+          <property name="topMargin"><number>30</number></property>
+          <property name="rightMargin"><number>30</number></property>
+          <property name="bottomMargin"><number>30</number></property>
+          <item>
+           <widget class="QLabel" name="lbl_section_title">
+            <property name="text"><string>Copia de Seguridad</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lbl_section_sub">
+            <property name="text"><string>Genera una copia de seguridad completa de la base de datos y archivos del sistema.</string></property>
+           </widget>
+          </item>
+
+          <!-- Info del último backup -->
+          <item>
+           <widget class="QFrame" name="frame_info_backup">
+            <layout class="QVBoxLayout" name="backupInfoLayout">
+             <property name="leftMargin"><number>16</number></property>
+             <property name="topMargin"><number>12</number></property>
+             <property name="rightMargin"><number>16</number></property>
+             <property name="bottomMargin"><number>12</number></property>
+             <item>
+              <widget class="QLabel" name="lbl_backup_estado">
+               <property name="text"><string>Última copia de seguridad</string></property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="lbl_backup_sub">
+               <property name="text"><string>Fecha: —   |   Hora: —   |   Realizada por: —   |   Tamaño: —</string></property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+
+          <!-- Configuración del backup -->
+          <item>
+           <widget class="QGroupBox" name="groupBox_config_backup">
+            <property name="title"><string>Configuración</string></property>
+            <layout class="QFormLayout" name="formBackup">
+             <property name="leftMargin"><number>20</number></property>
+             <property name="topMargin"><number>20</number></property>
+             <property name="rightMargin"><number>20</number></property>
+             <property name="bottomMargin"><number>20</number></property>
+             <property name="verticalSpacing"><number>12</number></property>
+             <property name="horizontalSpacing"><number>20</number></property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="lbl_bk_destino">
+               <property name="text"><string>Directorio de destino</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <layout class="QHBoxLayout">
+               <item>
+                <widget class="QLineEdit" name="input_ruta_backup">
+                 <property name="placeholderText"><string>/ruta/al/directorio/de/backup</string></property>
+                 <property name="readOnly"><bool>true</bool></property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_seleccionar_ruta">
+                 <property name="text"><string>Examinar...</string></property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="lbl_bk_tipo">
+               <property name="text"><string>Tipo de copia</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="combo_tipo_backup">
+               <item><property name="text"><string>Completa (base de datos + archivos)</string></property></item>
+               <item><property name="text"><string>Solo base de datos</string></property></item>
+               <item><property name="text"><string>Solo archivos</string></property></item>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+
+          <!-- Barra de progreso (oculta inicialmente) -->
+          <item>
+           <widget class="QProgressBar" name="progress_backup">
+            <property name="value"><number>0</number></property>
+            <property name="visible"><bool>false</bool></property>
+            <property name="textVisible"><bool>true</bool></property>
+           </widget>
+          </item>
+
+          <!-- Historial de backups -->
+          <item>
+           <widget class="QGroupBox" name="groupBox_historial_backup">
+            <property name="title"><string>Historial de copias</string></property>
+            <layout class="QVBoxLayout" name="historialBackupLayout">
+             <property name="leftMargin"><number>16</number></property>
+             <property name="topMargin"><number>16</number></property>
+             <property name="rightMargin"><number>16</number></property>
+             <property name="bottomMargin"><number>16</number></property>
+             <item>
+              <widget class="QTableWidget" name="tabla_historial_backup">
+               <property name="editTriggers">
+                <set>QAbstractItemView::NoEditTriggers</set>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectRows</enum>
+               </property>
+               <property name="columnCount"><number>5</number></property>
+               <attribute name="horizontalHeaderStretchLastSection"><bool>true</bool></attribute>
+               <column><property name="text"><string>Fecha</string></property></column>
+               <column><property name="text"><string>Hora</string></property></column>
+               <column><property name="text"><string>Tipo</string></property></column>
+               <column><property name="text"><string>Tamaño</string></property></column>
+               <column><property name="text"><string>Realizada por</string></property></column>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+
+          <item>
+           <layout class="QHBoxLayout">
+            <item>
+             <spacer>
+              <property name="orientation"><enum>Qt::Horizontal</enum></property>
+              <property name="sizeHint" stdset="0">
+               <size><width>0</width><height>0</height></size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_crear_backup">
+              <property name="text"><string>Iniciar copia de seguridad</string></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
