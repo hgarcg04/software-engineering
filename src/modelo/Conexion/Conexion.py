@@ -12,7 +12,7 @@ class Conexion:
 
     def createConnection(self):
         try:
-            jar_file = r"C:\Users\isma3\OneDrive - unileon.es\2 DATOS e IA\Ing del Software\Proyecto\lib\mssql-jdbc-13.4.0.jre11.jar"
+            jar_file = r".\lib\mssql-jdbc-13.4.0.jre11.jar"
             jdbc_driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver"
             url = f"jdbc:sqlserver://{self._host}:1433;databaseName=KURA;encrypt=true;trustServerCertificate=true;" 
 

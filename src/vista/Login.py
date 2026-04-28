@@ -30,6 +30,8 @@ class MiVentana(QMainWindow, Form):
         loginVO = LoginVO(texto_nombre, texto_password)
         if self._controlador:
             self._controlador.comprobarLogin(loginVO)
+        
+        
 
 
     def limpiar_campos(self):

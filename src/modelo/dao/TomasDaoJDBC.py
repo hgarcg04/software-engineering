@@ -19,7 +19,7 @@ class TomasDaoJDBC(Conexion):
                 inner join Tratamientos as T on tomas.id_tratamiento = T.id_tratamiento
                 inner join Ingresos as I on T.id_ingreso = I.id_ingreso
 				inner join Medicamentos as M on T.id_medicamento = M.id_medicamento
-                where T.id_ingreso = ?
+                where T.id_ingreso = ? and tomas.fecha = CAST(GETDATE() AS Date)
 				order by tomas.fecha desc, tomas.hora desc
                   """
     

@@ -23,7 +23,7 @@ class ControladorPrincipal:
         if self.usuario_actualVO is None:
             print("Usuario y/o contraseña incorrectos.")
         
-        elif self.usuario_actualVO.rol == 'Enfermero':
+        elif self.usuario_actualVO.rol == 'enfermero':
             self._ventana_enfermero = VentanaEnfermeros()
             self._ventana_enfermero.show()
             self._vista.cerrar()

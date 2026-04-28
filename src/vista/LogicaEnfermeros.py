@@ -267,6 +267,7 @@ class VentanaEnfermeros(QMainWindow, Form):
         self.btn_suministrar.setEnabled(False)
         self.btn_ver_registros.setEnabled(False)
 
+        self.tabla_tratamientos.setRowCount(0)
         self._actualizar_banner_inicio()
 
     def _actualizar_banner_inicio(self):
@@ -454,7 +455,7 @@ class VentanaEnfermeros(QMainWindow, Form):
         self.lbl_det_inicio.setText(self._tratamiento_activo.fecha_inicio)
         self.lbl_det_fin.setText(self._tratamiento_activo.fecha_fin if self._tratamiento_activo.fecha_fin else "No indicada")
         self.lbl_det_medicamento.setText(self._tratamiento_activo.nombre)
-        self.lbl_det_notas_medico.setText(self._tratamiento_activo.notas)
+        self.lbl_det_notas_medico.setText(f"{self._tratamiento_activo.notas} {self._tratamiento_activo.dosis}")
         self.lbl_det_frecuencia.setText(self._tratamiento_activo.frecuencia)
         self.lbl_det_via.setText(self._tratamiento_activo.via_administracion)
         
@@ -473,7 +474,8 @@ class VentanaEnfermeros(QMainWindow, Form):
         
     def actualizar_ultima_toma(self):
         self.controlador.obtener_ultima_toma(self._tratamiento_activo)
-        self.lbl_det_ultima_toma.setText(f"{self._ultima_toma.fecha} - {self._ultima_toma.hora[:5]}")
+        if self._ultima_toma:
+            self.lbl_det_ultima_toma.setText(f"{self._ultima_toma.fecha} - {self._ultima_toma.hora[:5]}")
 
     def actualizar_tomas_sesion_actual(self):
         self.controlador.obtener_tomas_sesion_actual(self._paciente_activo)
