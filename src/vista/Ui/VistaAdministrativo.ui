@@ -60,12 +60,12 @@
     QPushButton[class=&quot;navBtn&quot;]:checked { background-color: #00b894; color: white; }
 
     #centralPanel { background-color: #f0f4f8; }
-    #lbl_section_title {
+    QLabel[class=&quot;sectionTitle&quot;] {
         font-family: 'Segoe UI Black';
         font-size: 22px;
         color: #2d3436;
     }
-    #lbl_section_sub {
+    QLabel[class=&quot;sectionSub&quot;] {
         font-family: 'Segoe UI';
         font-size: 13px;
         color: #636e72;
@@ -125,6 +125,8 @@
         font-family: 'Segoe UI Semibold';
         font-size: 13px;
         color: #2d3436;
+        min-height: 32px;
+        padding-top: 2px;
     }
 
     /* === Frames de paciente/entidad seleccionada === */
@@ -564,6 +566,7 @@
           <property name="bottomMargin"><number>30</number></property>
           <item>
            <widget class="QLabel" name="lbl_section_title">
+               <property name="class" stdset="0"><string>sectionTitle</string></property>
             <property name="text">
              <string>Bienvenido/a al Panel Administrativo</string>
             </property>
@@ -571,11 +574,13 @@
           </item>
           <item>
            <widget class="QLabel" name="lbl_section_sub">
+               <property name="class" stdset="0"><string>sectionSub</string></property>
             <property name="text">
              <string>Selecciona una opción del menú para comenzar.</string>
             </property>
            </widget>
           </item>
+
           <item>
            <spacer>
             <property name="orientation"><enum>Qt::Vertical</enum></property>
@@ -591,16 +596,19 @@
         <widget class="QWidget" name="page_pacientes">
          <layout class="QVBoxLayout" name="pacientesLayout">
           <property name="leftMargin"><number>30</number></property>
-          <property name="topMargin"><number>30</number></property>
+          <property name="topMargin"><number>20</number></property>
           <property name="rightMargin"><number>30</number></property>
-          <property name="bottomMargin"><number>30</number></property>
+          <property name="bottomMargin"><number>20</number></property>
+          <property name="spacing"><number>8</number></property>
           <item>
            <widget class="QLabel" name="lbl_section_title">
+               <property name="class" stdset="0"><string>sectionTitle</string></property>
             <property name="text"><string>Registrar Paciente</string></property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="lbl_section_sub">
+               <property name="class" stdset="0"><string>sectionSub</string></property>
             <property name="text"><string>Introduce los datos del nuevo paciente. El DNI no debe existir previamente en el sistema.</string></property>
            </widget>
           </item>
@@ -608,12 +616,12 @@
            <widget class="QGroupBox" name="groupBox_datos_paciente">
             <property name="title"><string>Datos personales</string></property>
             <layout class="QFormLayout" name="formPaciente">
-             <property name="leftMargin"><number>20</number></property>
-             <property name="topMargin"><number>20</number></property>
-             <property name="rightMargin"><number>20</number></property>
-             <property name="bottomMargin"><number>20</number></property>
+             <property name="leftMargin"><number>16</number></property>
+             <property name="topMargin"><number>12</number></property>
+             <property name="rightMargin"><number>16</number></property>
+             <property name="bottomMargin"><number>12</number></property>
              <property name="horizontalSpacing"><number>20</number></property>
-             <property name="verticalSpacing"><number>12</number></property>
+             <property name="verticalSpacing"><number>14</number></property>
              <item row="0" column="0">
               <widget class="QLabel" name="lbl_f_nombre">
                <property name="text"><string>Nombre completo *</string></property>
@@ -718,6 +726,14 @@
             </item>
            </layout>
           </item>
+          <item>
+           <spacer>
+            <property name="orientation"><enum>Qt::Vertical</enum></property>
+            <property name="sizeHint" stdset="0">
+             <size><width>0</width><height>0</height></size>
+            </property>
+           </spacer>
+          </item>
          </layout>
         </widget>
 
@@ -735,11 +751,13 @@
            <layout class="QVBoxLayout" name="citasLeftLayout">
             <item>
              <widget class="QLabel" name="lbl_section_title">
+               <property name="class" stdset="0"><string>sectionTitle</string></property>
               <property name="text"><string>Asignar Citas</string></property>
              </widget>
             </item>
             <item>
              <widget class="QLabel" name="lbl_section_sub">
+               <property name="class" stdset="0"><string>sectionSub</string></property>
               <property name="text"><string>Busca al paciente y selecciona médico, fecha y hora.</string></property>
              </widget>
             </item>
@@ -826,7 +844,7 @@
              <property name="bottomMargin"><number>16</number></property>
              <item>
               <layout class="QFormLayout" name="formCita">
-               <property name="verticalSpacing"><number>12</number></property>
+               <property name="verticalSpacing"><number>14</number></property>
                <property name="horizontalSpacing"><number>16</number></property>
                <item row="0" column="0">
                 <widget class="QLabel" name="lbl_cf_especialidad">
@@ -931,11 +949,13 @@
            <layout class="QVBoxLayout" name="agendaLeftLayout">
             <item>
              <widget class="QLabel" name="lbl_section_title">
+               <property name="class" stdset="0"><string>sectionTitle</string></property>
               <property name="text"><string>Bloquear Agenda</string></property>
              </widget>
             </item>
             <item>
              <widget class="QLabel" name="lbl_section_sub">
+               <property name="class" stdset="0"><string>sectionSub</string></property>
               <property name="text"><string>Selecciona el médico y el rango de fechas a bloquear. Máximo 15 días consecutivos.</string></property>
              </widget>
             </item>
@@ -1017,7 +1037,7 @@
              <property name="bottomMargin"><number>16</number></property>
              <item>
               <layout class="QFormLayout" name="formBloqueo">
-               <property name="verticalSpacing"><number>12</number></property>
+               <property name="verticalSpacing"><number>14</number></property>
                <property name="horizontalSpacing"><number>16</number></property>
                <item row="0" column="0">
                 <widget class="QLabel" name="lbl_bf_inicio">
@@ -1113,16 +1133,19 @@
         <widget class="QWidget" name="page_credenciales">
          <layout class="QVBoxLayout" name="credencialesLayout">
           <property name="leftMargin"><number>30</number></property>
-          <property name="topMargin"><number>30</number></property>
+          <property name="topMargin"><number>20</number></property>
           <property name="rightMargin"><number>30</number></property>
-          <property name="bottomMargin"><number>30</number></property>
+          <property name="bottomMargin"><number>20</number></property>
+          <property name="spacing"><number>8</number></property>
           <item>
            <widget class="QLabel" name="lbl_section_title">
+               <property name="class" stdset="0"><string>sectionTitle</string></property>
             <property name="text"><string>Generar Credenciales</string></property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="lbl_section_sub">
+               <property name="class" stdset="0"><string>sectionSub</string></property>
             <property name="text"><string>Registra al nuevo personal sanitario. El sistema generará sus credenciales de acceso automáticamente.</string></property>
            </widget>
           </item>
@@ -1130,12 +1153,12 @@
            <widget class="QGroupBox" name="groupBox_datos_personal">
             <property name="title"><string>Datos del nuevo empleado</string></property>
             <layout class="QFormLayout" name="formPersonal">
-             <property name="leftMargin"><number>20</number></property>
-             <property name="topMargin"><number>20</number></property>
-             <property name="rightMargin"><number>20</number></property>
-             <property name="bottomMargin"><number>20</number></property>
+             <property name="leftMargin"><number>16</number></property>
+             <property name="topMargin"><number>12</number></property>
+             <property name="rightMargin"><number>16</number></property>
+             <property name="bottomMargin"><number>12</number></property>
              <property name="horizontalSpacing"><number>20</number></property>
-             <property name="verticalSpacing"><number>12</number></property>
+             <property name="verticalSpacing"><number>14</number></property>
              <item row="0" column="0">
               <widget class="QLabel" name="lbl_pf_nombre">
                <property name="text"><string>Nombre completo *</string></property>
@@ -1226,6 +1249,14 @@
             </item>
            </layout>
           </item>
+          <item>
+           <spacer>
+            <property name="orientation"><enum>Qt::Vertical</enum></property>
+            <property name="sizeHint" stdset="0">
+             <size><width>0</width><height>0</height></size>
+            </property>
+           </spacer>
+          </item>
          </layout>
         </widget>
 
@@ -1243,11 +1274,13 @@
            <layout class="QVBoxLayout" name="medCatalogLayout">
             <item>
              <widget class="QLabel" name="lbl_section_title">
+               <property name="class" stdset="0"><string>sectionTitle</string></property>
               <property name="text"><string>Pedir Medicamentos</string></property>
              </widget>
             </item>
             <item>
              <widget class="QLabel" name="lbl_section_sub">
+               <property name="class" stdset="0"><string>sectionSub</string></property>
               <property name="text"><string>Selecciona medicamentos del catálogo e indica la cantidad a solicitar.</string></property>
              </widget>
             </item>
@@ -1376,11 +1409,13 @@
           <property name="bottomMargin"><number>30</number></property>
           <item>
            <widget class="QLabel" name="lbl_section_title">
+               <property name="class" stdset="0"><string>sectionTitle</string></property>
             <property name="text"><string>Copia de Seguridad</string></property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="lbl_section_sub">
+               <property name="class" stdset="0"><string>sectionSub</string></property>
             <property name="text"><string>Genera una copia de seguridad completa de la base de datos y archivos del sistema.</string></property>
            </widget>
           </item>
@@ -1416,7 +1451,7 @@
              <property name="topMargin"><number>20</number></property>
              <property name="rightMargin"><number>20</number></property>
              <property name="bottomMargin"><number>20</number></property>
-             <property name="verticalSpacing"><number>12</number></property>
+             <property name="verticalSpacing"><number>14</number></property>
              <property name="horizontalSpacing"><number>20</number></property>
              <item row="0" column="0">
               <widget class="QLabel" name="lbl_bk_destino">
