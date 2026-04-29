@@ -197,7 +197,9 @@ class VentanaMedico(QMainWindow, Form):
     # ── Logout ───────────────────────────────────────────────────
 
     def _logout(self):
+        print("Cerrando sesión...")
         self.signal_logout.emit()
+        self.close()
 
     # ── Utilidades ───────────────────────────────────────────────
 
