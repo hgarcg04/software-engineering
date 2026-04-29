@@ -48,6 +48,12 @@ class ControladorEnfermeros:
             Cambiamos la ref de la vista VentanaEnfermeros -> DialogoHistorico
         """
         self._vista = dialogo
+    
+    def set_ventana_enfermeros(self, ventana):
+        """
+            Método para devolver la referencia de la vista a la ventanaEnfermeros
+        """
+        self._vista = ventana
 
     def consultar_historico(self, id_episodio, tipo, desde, hasta):
         """

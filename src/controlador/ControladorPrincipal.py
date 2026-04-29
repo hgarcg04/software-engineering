@@ -1,9 +1,11 @@
 from src.modelo.VO.LoginVO import LoginVO
 from src.vista.LogicaEnfermeros import VentanaEnfermeros
 from src.vista.LogicaMedicos import VentanaMedico
+from src.vista.LogicaAdministrativos import VentanaAdministrativos
 from src.modelo.dao.PacientesDaoJDBC import PacientesDaoJDBC
 from src.modelo.Logica import Logica
 from src.controlador.ControladorEnfermeros import ControladorEnfermeros
+from src.controlador.ControladorAdministrativos import ControladorAdministrativos
 from src.controlador.ControladorMedicos import ControladorMedicos
 
 
@@ -51,9 +53,18 @@ class ControladorPrincipal:
             modelo = Logica()
             controlador = ControladorMedicos(self._ventana_medico, modelo, self.usuario_actualVO)
             self._ventana_medico.controlador = controlador
-            
 
-        # Falta implementar los otros dos usuarios
+        elif self.usuario_actualVO.rol == 'administrativo': #Comprobar minuscula o mayuscula
+            self._ventana_administrativo = VentanaAdministrativos()
+            self._ventana_administrativo.show()
+            self._vista.cerrar()
+
+            self._ventana_administrativo.signal_logout.connect(self.volver_al_login)
+
+            modelo = Logica()
+            controlador = ControladorAdministrativos(self._ventana_administrativo, modelo, self.usuario_actualVO)
+            self._ventana_administrativo.controlador = controlador
+            
         else:
             print(f"Login correcto. Bienvenido/a, {self.usuario_actualVO.nombre} (ID: {self.usuario_actualVO.id_empleado}). Rol: {self.usuario_actualVO.rol}")
 

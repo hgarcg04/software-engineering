@@ -6,8 +6,20 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMainWindow, QButtonGroup, QMessageBox, QTableWidgetItem
 from PyQt5.QtCore import QTimer, QDateTime, Qt, pyqtSignal
 from PyQt5.QtWidgets import QHeaderView
+from PyQt5.QtGui import QColor
 
-from src.modelo.VO.TomaVO import TomaVO
+
+from PyQt5.QtWidgets import QFileDialog
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, HRFlowable
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+
+
+
+
+
+
 from src.vista.LogicaDialogoConstantes import DialogoHistorico
 
 
@@ -83,6 +95,9 @@ class VentanaEnfermeros(QMainWindow, Form):
         # --- Botones de pagina de medicación ---
         self.tabla_tratamientos.cellClicked.connect(self.on_tratamiento_clicked)
         self.btn_confirmar_toma.clicked.connect(self.on_confirmar_administracion_clicked)
+
+        # --- PDF ----
+        self.btn_exportar_pdf.clicked.connect(self.exportar_informe_pdf)
 
         # -----------------------------------------------------------------------------
         # INICIALIZACIONES
@@ -170,23 +185,6 @@ class VentanaEnfermeros(QMainWindow, Form):
         ]
         for i, btn in enumerate(nav_btns):
             btn.setChecked(i == indice)
-    
-    def _abrir_detalles_ingreso(self):
-        if self._paciente_activo is None:
-            return None
-        else:
-            self._poblar_detalles(self._paciente_activo)
-            self._navegar(PAGE_DETALLES)
-    
-    def _poblar_detalles(self, pac):
-        self.lbl_det_nif.setText(str(pac.nif))
-        self.lbl_det_nombre.setText(f"{pac.nombre} {pac.apellido1} {pac.apellido2}")
-        self.lbl_det_fnac.setText(str(pac.fecha_nacimiento))
-        self.lbl_det_genero.setText(str(pac.genero))
-        self.lbl_det_habitacion.setText(str(pac.num_habitacion))
-        self.lbl_det_fingreso.setText(str(pac.fecha_ingreso)[:16] if pac.fecha_ingreso else "—")
-        self.lbl_det_medico.setText(str(pac.medico_asignado))
-        self.lbl_det_dieta.setText(str(pac.dieta) if pac.dieta else "—")
     
 
 
@@ -283,6 +281,124 @@ class VentanaEnfermeros(QMainWindow, Form):
             self.lbl_paciente_sel_nombre_2.setText("— Sin paciente seleccionado —")
             self.lbl_paciente_sel_nombre3.setStyleSheet("color: #00b894; font-weight: bold;")
             self.lbl_paciente_sel_nombre3.setText("— Sin paciente seleccionado —")
+
+
+    # ----------------------------------------------------------------------------------------------------------------------------------------------------------
+    #                                                      PÁGINA DE INFORME INICIAL DE HOSPITALIZACIÓN
+    # ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+    def _abrir_detalles_ingreso(self):
+        if self._paciente_activo is None:
+            return None
+        else:
+            self._poblar_detalles(self._paciente_activo)
+            self._navegar(PAGE_DETALLES)
+
+    
+    def _poblar_detalles(self, pac):
+        self.lbl_det_nif.setText(str(pac.nif))
+        self.lbl_det_nombre.setText(f"{pac.nombre} {pac.apellido1} {pac.apellido2}")
+        self.lbl_det_fnac.setText(str(pac.fecha_nacimiento))
+        self.lbl_det_genero.setText(str(pac.genero))
+        self.lbl_det_habitacion.setText(str(pac.num_habitacion))
+        self.lbl_det_fingreso.setText(str(pac.fecha_ingreso)[:16] if pac.fecha_ingreso else "—")
+        self.lbl_det_medico.setText(str(pac.medico_asignado))
+        self.lbl_det_dieta.setText(str(pac.dieta) if pac.dieta else "—")
+        ahora = QDateTime.currentDateTime().toString("dd/MM/yyyy HH:mm")
+        self.lbl_inf_fecha_gen.setText(f"Generado el: {ahora}")
+    
+
+    def exportar_informe_pdf(self):
+        """
+        Exporta el informe inicial de hospitalización del paciente activo a un PDF.
+            
+        """
+        if self._paciente_activo is None:
+            return
+    
+        pac = self._paciente_activo
+    
+        # Diálogo para elegir dónde guardar
+        ruta, _ = QFileDialog.getSaveFileName(
+            self,
+            "Guardar informe",
+            f"Informe_inicio_hospitalizacion{pac.nif}.pdf",
+            "PDF Files (*.pdf)"
+        )
+        if not ruta:
+            return
+
+        self._crear_pdf_informe(ruta, pac)
+    
+    def _crear_pdf_informe(self, ruta, pac):
+        
+        doc = SimpleDocTemplate(
+            ruta,
+            pagesize=A4,
+            leftMargin=2*cm,
+            rightMargin=2*cm,
+            topMargin=2*cm,
+            bottomMargin=2*cm
+        )
+    
+
+        historia = []
+    
+        # --- CABECERA ---
+        cabecera_data = [[
+            Paragraph("Informe de Hospitalización"),
+        ]]
+        tabla_cabecera = Table(cabecera_data, colWidths=[17*cm])
+
+        
+        historia.append(tabla_cabecera)
+        historia.append(Spacer(1, 0.3*cm))
+    
+        ahora = QDateTime.currentDateTime().toString("dd/MM/yyyy HH:mm")
+        historia.append(Paragraph(f"Documento generado el {ahora}"))
+        historia.append(Spacer(1, 0.5*cm))
+    
+        # --- SECCIÓN: DATOS DEL PACIENTE ---
+        historia.append(Paragraph("DATOS DEL PACIENTE"))
+        historia.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#dde3ea')))
+        historia.append(Spacer(1, 0.2*cm))
+    
+        datos_paciente = [
+            [Paragraph("NIF / DNI:"),       Paragraph(str(pac.nif)),
+            Paragraph("Nombre completo:"),  Paragraph(f"{pac.nombre} {pac.apellido1} {pac.apellido2}")],
+            [Paragraph("Fecha de nacimiento:"), Paragraph(str(pac.fecha_nacimiento)),
+            Paragraph("Género:"),           Paragraph(str(pac.genero))],
+        ]
+        tabla_pac = Table(datos_paciente, colWidths=[4*cm, 4.5*cm, 4*cm, 4.5*cm])
+        historia.append(tabla_pac)
+        historia.append(Spacer(1, 0.5*cm))
+    
+        # --- SECCIÓN: DATOS DEL INGRESO ---
+        historia.append(Paragraph("DATOS DEL INGRESO"))
+        historia.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#dde3ea')))
+        historia.append(Spacer(1, 0.2*cm))
+    
+        fecha_ingreso = str(pac.fecha_ingreso)[:16] if pac.fecha_ingreso else "—"
+        dieta = str(pac.dieta) if pac.dieta else "—"
+    
+        datos_ingreso = [
+            [Paragraph("Habitación:"),      Paragraph(str(pac.num_habitacion)),
+            Paragraph("Fecha de ingreso:"), Paragraph(fecha_ingreso)],
+            [Paragraph("Médico asignado:"), Paragraph(str(pac.medico_asignado)),
+            Paragraph("Dieta:"),            Paragraph(dieta)],
+        ]
+        tabla_ing = Table(datos_ingreso, colWidths=[4*cm, 4.5*cm, 4*cm, 4.5*cm])
+        historia.append(tabla_ing)
+        historia.append(Spacer(1, 1*cm))
+    
+        
+    
+        doc.build(historia)
+    
+        QMessageBox.information(self, "PDF exportado", f"Informe guardado correctamente en:\n{ruta}")
+
+
 
     
     # ----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -396,13 +512,18 @@ class VentanaEnfermeros(QMainWindow, Form):
         # Ejecutamos el método del controladorEnfermeros que cambia la referencias a la vista
         # (de VentanaEnfermeros a DialogoHistorico)
 
-        if self._controlador:
-            self._controlador.set_dialogo_historico(dialogo)
+        if self.controlador:
+            self.controlador.set_dialogo_historico(dialogo)
         
         # Decimos a la ventana de diálogo que su controlodar es el mismo que el de 
         # VentanaEnfermeros (ControladorEnfermeros)
         dialogo.controlador = self._controlador
-        dialogo.exec_() # DUDA: ejecutamos esto aquí, o desde ControladorEnfermeros?
+
+        dialogo.exec_() 
+
+        # Cuando se deje de ejecutar el dialogo de historico
+        # devolvemos la referencia de la vista a la ventana principal
+        self.controlador.set_ventana_enfermeros(self)
 
 
 
@@ -452,14 +573,41 @@ class VentanaEnfermeros(QMainWindow, Form):
 
     def on_confirmar_administracion_clicked(self):
 
+
+
         observaciones = self.edit_notas_toma.toPlainText()
         self.controlador.guardar_nueva_toma(self._enfermero.id_empleado, self._tratamiento_activo.id_tratamiento, observaciones)
 
         self.actualizar_ultima_toma()
         self.actualizar_tomas_sesion_actual()
+
+        self.parpadear(10, True)
         self.edit_notas_toma.clear()
 
+    def parpadear(self, n_veces, encendido):
+        # Funcion para que el enfermero pueda ver que se ha registrado una nueva confirmación de 
+        # suministro de medicación.
+
+        fila_nueva_toma = 0 # fila que va a parpadear
+
+        if n_veces <= 0:
+            # Cuando termina, quitar el color
+            for columna in range(self.tabla_tomas_sesion.columnCount()):
+                item = self.tabla_tomas_sesion.item(fila_nueva_toma, columna)
+                if item:
+                    item.setBackground(QColor("white"))
+            return
         
+        color = QColor("#c8f7e8") if encendido else QColor("white")
+        for columna in range(self.tabla_tomas_sesion.columnCount()):
+            item = self.tabla_tomas_sesion.item(fila_nueva_toma, columna)
+            if item:
+                item.setBackground(color)
+        
+        # definimos tiempo entre color y no color
+
+        QTimer.singleShot(300, lambda: self.parpadear(n_veces - 1, not encendido)) 
+
         
     def actualizar_ultima_toma(self):
         self.controlador.obtener_ultima_toma(self._tratamiento_activo)
@@ -467,27 +615,25 @@ class VentanaEnfermeros(QMainWindow, Form):
             self.lbl_det_ultima_toma.setText(f"{self._ultima_toma.fecha} - {self._ultima_toma.hora[:5]}")
 
     def actualizar_tomas_sesion_actual(self):
-        self.controlador.obtener_tomas_sesion_actual(self._paciente_activo)
-        self.tabla_tomas_sesion.setRowCount(len(self._tomas_sesion_actual))
-        for fila, t in enumerate(self._tomas_sesion_actual):
+        if self._paciente_activo:
+            self.controlador.obtener_tomas_sesion_actual(self._paciente_activo)
+            self.tabla_tomas_sesion.setRowCount(len(self._tomas_sesion_actual))
+            for fila, t in enumerate(self._tomas_sesion_actual):
+                
+                item0 = QTableWidgetItem(str(t.nombre))
+                item0.setTextAlignment(Qt.AlignCenter)
+                self.tabla_tomas_sesion.setItem(fila, 0, item0)
+                
+                
+                item1 = QTableWidgetItem(t.hora)
+                item1.setTextAlignment(Qt.AlignCenter)
+                self.tabla_tomas_sesion.setItem(fila, 1, item1)
+                
             
-            item0 = QTableWidgetItem(str(t.nombre))
-            item0.setTextAlignment(Qt.AlignCenter)
-            self.tabla_tomas_sesion.setItem(fila, 0, item0)
+                item2 = QTableWidgetItem(t.observaciones)
+                self.tabla_tomas_sesion.setItem(fila, 2, item2) 
+
             
-            
-            item1 = QTableWidgetItem(t.hora)
-            item1.setTextAlignment(Qt.AlignCenter)
-            self.tabla_tomas_sesion.setItem(fila, 1, item1)
-            
-           
-            item2 = QTableWidgetItem(t.observaciones)
-            self.tabla_tomas_sesion.setItem(fila, 2, item2) 
-
-
-        
-
-
 
     # ---------------------------------------------------------------------------------------------------------------------------------------------------------------
     #                                                                            CONTROLADOR 
