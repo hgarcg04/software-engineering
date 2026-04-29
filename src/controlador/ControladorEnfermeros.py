@@ -75,3 +75,6 @@ class ControladorEnfermeros:
     def obtener_tomas_sesion_actual(self, pacienteVO):
         tomas_sesion = self._modelo.obtenerTomasSesionActual(pacienteVO)
         self._vista.cargar_tomas_sesion_actual(tomas_sesion)
+
+    def actualizar_stock(self, id_tratamiento, cantidad):
+        self._modelo.actualizarStock(id_tratamiento, cantidad)

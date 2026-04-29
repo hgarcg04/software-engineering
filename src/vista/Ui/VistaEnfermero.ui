@@ -513,7 +513,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedPanel">
         <property name="currentIndex">
-         <number>2</number>
+         <number>4</number>
         </property>
         <widget class="QWidget" name="page_inicio">
          <layout class="QVBoxLayout" name="inicioLayout">
@@ -1520,8 +1520,6 @@
           <property name="bottomMargin">
            <number>30</number>
           </property>
-
-          <!-- Barra superior: título + botones -->
           <item>
            <layout class="QHBoxLayout">
             <item>
@@ -1546,9 +1544,6 @@
             </item>
             <item>
              <widget class="QPushButton" name="btn_exportar_pdf">
-              <property name="text">
-               <string>⬇ Exportar a PDF</string>
-              </property>
               <property name="styleSheet">
                <string>
                 #btn_exportar_pdf {
@@ -1562,6 +1557,9 @@
                 #btn_exportar_pdf:hover { background-color: #4a7ec0; }
                </string>
               </property>
+              <property name="text">
+               <string>⬇ Exportar a PDF</string>
+              </property>
              </widget>
             </item>
             <item>
@@ -1573,20 +1571,29 @@
             </item>
            </layout>
           </item>
-
-          <!-- Área scrolleable con el informe -->
           <item>
            <widget class="QScrollArea" name="scroll_informe">
-            <property name="widgetResizable">
-             <bool>true</bool>
-            </property>
             <property name="styleSheet">
              <string>
               QScrollArea { border: none; background-color: #f0f4f8; }
              </string>
             </property>
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
             <widget class="QWidget" name="scroll_contents">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>938</width>
+               <height>634</height>
+              </rect>
+             </property>
              <layout class="QVBoxLayout" name="scrollLayout">
+              <property name="spacing">
+               <number>16</number>
+              </property>
               <property name="leftMargin">
                <number>0</number>
               </property>
@@ -1599,11 +1606,6 @@
               <property name="bottomMargin">
                <number>20</number>
               </property>
-              <property name="spacing">
-               <number>16</number>
-              </property>
-
-              <!-- CABECERA DEL INFORME -->
               <item>
                <widget class="QFrame" name="frame_cabecera_informe">
                 <property name="styleSheet">
@@ -1616,35 +1618,41 @@
                  </string>
                 </property>
                 <layout class="QVBoxLayout">
-                 <property name="leftMargin"><number>20</number></property>
-                 <property name="topMargin"><number>16</number></property>
-                 <property name="rightMargin"><number>20</number></property>
-                 <property name="bottomMargin"><number>16</number></property>
+                 <property name="leftMargin">
+                  <number>20</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>16</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>20</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>16</number>
+                 </property>
                  <item>
                   <widget class="QLabel" name="lbl_inf_titulo">
-                   <property name="text">
-                    <string>KURA · Informe de Hospitalización</string>
-                   </property>
                    <property name="styleSheet">
                     <string>color: #ffffff; font-family: 'Segoe UI Black'; font-size: 18px;</string>
+                   </property>
+                   <property name="text">
+                    <string>KURA · Informe de Hospitalización</string>
                    </property>
                   </widget>
                  </item>
                  <item>
                   <widget class="QLabel" name="lbl_inf_subtitulo">
-                   <property name="text">
-                    <string>Documento generado automáticamente por el sistema</string>
-                   </property>
                    <property name="styleSheet">
                     <string>color: #b2bec3; font-family: 'Segoe UI'; font-size: 12px;</string>
+                   </property>
+                   <property name="text">
+                    <string>Documento generado automáticamente por el sistema</string>
                    </property>
                   </widget>
                  </item>
                 </layout>
                </widget>
               </item>
-
-              <!-- SECCIÓN: DATOS DEL PACIENTE -->
               <item>
                <widget class="QFrame" name="frame_sec_paciente">
                 <property name="styleSheet">
@@ -1657,88 +1665,131 @@
                  </string>
                 </property>
                 <layout class="QVBoxLayout">
-                 <property name="leftMargin"><number>20</number></property>
-                 <property name="topMargin"><number>16</number></property>
-                 <property name="rightMargin"><number>20</number></property>
-                 <property name="bottomMargin"><number>16</number></property>
+                 <property name="leftMargin">
+                  <number>20</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>16</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>20</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>16</number>
+                 </property>
                  <item>
-                  <widget class="QLabel">
-                   <property name="text"><string>DATOS DEL PACIENTE</string></property>
+                  <widget class="QLabel" name="label">
                    <property name="styleSheet">
                     <string>font-family: 'Segoe UI Semibold'; font-size: 11px; color: #00b894; letter-spacing: 1px; padding-bottom: 8px;</string>
+                   </property>
+                   <property name="text">
+                    <string>DATOS DEL PACIENTE</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QFrame">
-                   <property name="frameShape"><enum>QFrame::HLine</enum></property>
-                   <property name="styleSheet"><string>color: #dde3ea;</string></property>
+                  <widget class="QFrame" name="frame">
+                   <property name="styleSheet">
+                    <string>color: #dde3ea;</string>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::HLine</enum>
+                   </property>
                   </widget>
                  </item>
                  <item>
                   <layout class="QGridLayout" name="gridPaciente">
-                   <property name="verticalSpacing"><number>10</number></property>
-                   <property name="horizontalSpacing"><number>20</number></property>
-
+                   <property name="horizontalSpacing">
+                    <number>20</number>
+                   </property>
+                   <property name="verticalSpacing">
+                    <number>10</number>
+                   </property>
                    <item row="0" column="0">
-                    <widget class="QLabel">
-                     <property name="text"><string>NIF / DNI</string></property>
-                     <property name="styleSheet"><string>color: #636e72; font-size: 12px;</string></property>
+                    <widget class="QLabel" name="label">
+                     <property name="styleSheet">
+                      <string>color: #636e72; font-size: 12px;</string>
+                     </property>
+                     <property name="text">
+                      <string>NIF / DNI:</string>
+                     </property>
                     </widget>
                    </item>
                    <item row="0" column="1">
                     <widget class="QLabel" name="lbl_det_nif">
-                     <property name="text"><string>—</string></property>
-                     <property name="styleSheet"><string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string></property>
+                     <property name="styleSheet">
+                      <string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string>
+                     </property>
+                     <property name="text">
+                      <string>—</string>
+                     </property>
                     </widget>
                    </item>
-
                    <item row="0" column="2">
-                    <widget class="QLabel">
-                     <property name="text"><string>Nombre completo</string></property>
-                     <property name="styleSheet"><string>color: #636e72; font-size: 12px;</string></property>
+                    <widget class="QLabel" name="label">
+                     <property name="styleSheet">
+                      <string>color: #636e72; font-size: 12px;</string>
+                     </property>
+                     <property name="text">
+                      <string>Nombre completo:</string>
+                     </property>
                     </widget>
                    </item>
                    <item row="0" column="3">
                     <widget class="QLabel" name="lbl_det_nombre">
-                     <property name="text"><string>—</string></property>
-                     <property name="styleSheet"><string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string></property>
+                     <property name="styleSheet">
+                      <string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string>
+                     </property>
+                     <property name="text">
+                      <string>—</string>
+                     </property>
                     </widget>
                    </item>
-
                    <item row="1" column="0">
-                    <widget class="QLabel">
-                     <property name="text"><string>Fecha de nacimiento</string></property>
-                     <property name="styleSheet"><string>color: #636e72; font-size: 12px;</string></property>
+                    <widget class="QLabel" name="label">
+                     <property name="styleSheet">
+                      <string>color: #636e72; font-size: 12px;</string>
+                     </property>
+                     <property name="text">
+                      <string>Fecha de nacimiento:</string>
+                     </property>
                     </widget>
                    </item>
                    <item row="1" column="1">
                     <widget class="QLabel" name="lbl_det_fnac">
-                     <property name="text"><string>—</string></property>
-                     <property name="styleSheet"><string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string></property>
+                     <property name="styleSheet">
+                      <string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string>
+                     </property>
+                     <property name="text">
+                      <string>—</string>
+                     </property>
                     </widget>
                    </item>
-
                    <item row="1" column="2">
-                    <widget class="QLabel">
-                     <property name="text"><string>Género</string></property>
-                     <property name="styleSheet"><string>color: #636e72; font-size: 12px;</string></property>
+                    <widget class="QLabel" name="label">
+                     <property name="styleSheet">
+                      <string>color: #636e72; font-size: 12px;</string>
+                     </property>
+                     <property name="text">
+                      <string>Género:</string>
+                     </property>
                     </widget>
                    </item>
                    <item row="1" column="3">
                     <widget class="QLabel" name="lbl_det_genero">
-                     <property name="text"><string>—</string></property>
-                     <property name="styleSheet"><string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string></property>
+                     <property name="styleSheet">
+                      <string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string>
+                     </property>
+                     <property name="text">
+                      <string>—</string>
+                     </property>
                     </widget>
                    </item>
-
                   </layout>
                  </item>
                 </layout>
                </widget>
               </item>
-
-              <!-- SECCIÓN: DATOS DEL INGRESO -->
               <item>
                <widget class="QFrame" name="frame_sec_ingreso">
                 <property name="styleSheet">
@@ -1751,101 +1802,141 @@
                  </string>
                 </property>
                 <layout class="QVBoxLayout">
-                 <property name="leftMargin"><number>20</number></property>
-                 <property name="topMargin"><number>16</number></property>
-                 <property name="rightMargin"><number>20</number></property>
-                 <property name="bottomMargin"><number>16</number></property>
+                 <property name="leftMargin">
+                  <number>20</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>16</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>20</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>16</number>
+                 </property>
                  <item>
-                  <widget class="QLabel">
-                   <property name="text"><string>DATOS DEL INGRESO</string></property>
+                  <widget class="QLabel" name="label">
                    <property name="styleSheet">
                     <string>font-family: 'Segoe UI Semibold'; font-size: 11px; color: #00b894; letter-spacing: 1px; padding-bottom: 8px;</string>
+                   </property>
+                   <property name="text">
+                    <string>DATOS DEL INGRESO</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QFrame">
-                   <property name="frameShape"><enum>QFrame::HLine</enum></property>
-                   <property name="styleSheet"><string>color: #dde3ea;</string></property>
+                  <widget class="QFrame" name="frame">
+                   <property name="styleSheet">
+                    <string>color: #dde3ea;</string>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::HLine</enum>
+                   </property>
                   </widget>
                  </item>
                  <item>
                   <layout class="QGridLayout" name="gridIngreso">
-                   <property name="verticalSpacing"><number>10</number></property>
-                   <property name="horizontalSpacing"><number>20</number></property>
-
+                   <property name="horizontalSpacing">
+                    <number>20</number>
+                   </property>
+                   <property name="verticalSpacing">
+                    <number>10</number>
+                   </property>
                    <item row="0" column="0">
-                    <widget class="QLabel">
-                     <property name="text"><string>Habitación</string></property>
-                     <property name="styleSheet"><string>color: #636e72; font-size: 12px;</string></property>
+                    <widget class="QLabel" name="label">
+                     <property name="styleSheet">
+                      <string>color: #636e72; font-size: 12px;</string>
+                     </property>
+                     <property name="text">
+                      <string>Habitación:</string>
+                     </property>
                     </widget>
                    </item>
                    <item row="0" column="1">
                     <widget class="QLabel" name="lbl_det_habitacion">
-                     <property name="text"><string>—</string></property>
-                     <property name="styleSheet"><string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string></property>
+                     <property name="styleSheet">
+                      <string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string>
+                     </property>
+                     <property name="text">
+                      <string>—</string>
+                     </property>
                     </widget>
                    </item>
-
                    <item row="0" column="2">
-                    <widget class="QLabel">
-                     <property name="text"><string>Fecha de ingreso</string></property>
-                     <property name="styleSheet"><string>color: #636e72; font-size: 12px;</string></property>
+                    <widget class="QLabel" name="label">
+                     <property name="styleSheet">
+                      <string>color: #636e72; font-size: 12px;</string>
+                     </property>
+                     <property name="text">
+                      <string>Fecha de ingreso:</string>
+                     </property>
                     </widget>
                    </item>
                    <item row="0" column="3">
                     <widget class="QLabel" name="lbl_det_fingreso">
-                     <property name="text"><string>—</string></property>
-                     <property name="styleSheet"><string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string></property>
+                     <property name="styleSheet">
+                      <string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string>
+                     </property>
+                     <property name="text">
+                      <string>—</string>
+                     </property>
                     </widget>
                    </item>
-
                    <item row="1" column="0">
-                    <widget class="QLabel">
-                     <property name="text"><string>Médico asignado</string></property>
-                     <property name="styleSheet"><string>color: #636e72; font-size: 12px;</string></property>
+                    <widget class="QLabel" name="label">
+                     <property name="styleSheet">
+                      <string>color: #636e72; font-size: 12px;</string>
+                     </property>
+                     <property name="text">
+                      <string>Médico asignado:</string>
+                     </property>
                     </widget>
                    </item>
                    <item row="1" column="1">
                     <widget class="QLabel" name="lbl_det_medico">
-                     <property name="text"><string>—</string></property>
-                     <property name="styleSheet"><string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string></property>
+                     <property name="styleSheet">
+                      <string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string>
+                     </property>
+                     <property name="text">
+                      <string>—</string>
+                     </property>
                     </widget>
                    </item>
-
                    <item row="1" column="2">
-                    <widget class="QLabel">
-                     <property name="text"><string>Dieta</string></property>
-                     <property name="styleSheet"><string>color: #636e72; font-size: 12px;</string></property>
+                    <widget class="QLabel" name="label">
+                     <property name="styleSheet">
+                      <string>color: #636e72; font-size: 12px;</string>
+                     </property>
+                     <property name="text">
+                      <string>Dieta:</string>
+                     </property>
                     </widget>
                    </item>
                    <item row="1" column="3">
                     <widget class="QLabel" name="lbl_det_dieta">
-                     <property name="text"><string>—</string></property>
-                     <property name="styleSheet"><string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string></property>
+                     <property name="styleSheet">
+                      <string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string>
+                     </property>
+                     <property name="text">
+                      <string>—</string>
+                     </property>
                     </widget>
                    </item>
-
                    <item row="2" column="0">
-                    <widget class="QLabel">
-                     <property name="text"><string>Estado</string></property>
-                     <property name="styleSheet"><string>color: #636e72; font-size: 12px;</string></property>
+                    <widget class="QLabel" name="label">
+                     <property name="styleSheet">
+                      <string>color: #636e72; font-size: 12px;</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
                     </widget>
                    </item>
-                   <item row="2" column="1">
-                    <widget class="QLabel" name="lbl_det_estado">
-                     <property name="text"><string>—</string></property>
-                     <property name="styleSheet"><string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string></property>
-                    </widget>
-                   </item>
-
                   </layout>
                  </item>
                 </layout>
                </widget>
               </item>
-
-              <!-- SECCIÓN: OBSERVACIONES / NOTAS -->
               <item>
                <widget class="QFrame" name="frame_sec_notas">
                 <property name="styleSheet">
@@ -1858,38 +1949,54 @@
                  </string>
                 </property>
                 <layout class="QVBoxLayout">
-                 <property name="leftMargin"><number>20</number></property>
-                 <property name="topMargin"><number>16</number></property>
-                 <property name="rightMargin"><number>20</number></property>
-                 <property name="bottomMargin"><number>16</number></property>
+                 <property name="leftMargin">
+                  <number>20</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>16</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>20</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>16</number>
+                 </property>
                  <item>
-                  <widget class="QLabel">
-                   <property name="text"><string>OBSERVACIONES CLÍNICAS</string></property>
+                  <widget class="QLabel" name="label">
                    <property name="styleSheet">
                     <string>font-family: 'Segoe UI Semibold'; font-size: 11px; color: #00b894; letter-spacing: 1px; padding-bottom: 8px;</string>
+                   </property>
+                   <property name="text">
+                    <string>OBSERVACIONES CLÍNICAS</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QFrame">
-                   <property name="frameShape"><enum>QFrame::HLine</enum></property>
-                   <property name="styleSheet"><string>color: #dde3ea;</string></property>
+                  <widget class="QFrame" name="frame">
+                   <property name="styleSheet">
+                    <string>color: #dde3ea;</string>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::HLine</enum>
+                   </property>
                   </widget>
                  </item>
                  <item>
                   <widget class="QLabel" name="lbl_det_observaciones">
-                   <property name="text"><string>Sin observaciones registradas.</string></property>
-                   <property name="wordWrap"><bool>true</bool></property>
                    <property name="styleSheet">
                     <string>font-family: 'Segoe UI'; font-size: 13px; color: #2d3436; padding-top: 4px;</string>
+                   </property>
+                   <property name="text">
+                    <string>Sin observaciones registradas.</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
                 </layout>
                </widget>
               </item>
-
-              <!-- PIE DEL INFORME -->
               <item>
                <widget class="QFrame" name="frame_pie_informe">
                 <property name="styleSheet">
@@ -1902,39 +2009,58 @@
                  </string>
                 </property>
                 <layout class="QHBoxLayout">
-                 <property name="leftMargin"><number>20</number></property>
-                 <property name="topMargin"><number>12</number></property>
-                 <property name="rightMargin"><number>20</number></property>
-                 <property name="bottomMargin"><number>12</number></property>
+                 <property name="leftMargin">
+                  <number>20</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>12</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>20</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>12</number>
+                 </property>
                  <item>
                   <widget class="QLabel" name="lbl_inf_pie">
-                   <property name="text"><string>Documento confidencial · KURA Sistema Hospitalario</string></property>
-                   <property name="styleSheet"><string>color: #b2bec3; font-size: 11px; font-style: italic;</string></property>
+                   <property name="styleSheet">
+                    <string>color: #b2bec3; font-size: 11px; font-style: italic;</string>
+                   </property>
+                   <property name="text">
+                    <string>Documento confidencial · KURA Sistema Hospitalario</string>
+                   </property>
                   </widget>
                  </item>
                  <item>
                   <spacer>
-                   <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
                    <property name="sizeHint" stdset="0">
-                    <size><width>40</width><height>20</height></size>
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
                    </property>
                   </spacer>
                  </item>
                  <item>
                   <widget class="QLabel" name="lbl_inf_fecha_gen">
-                   <property name="text"><string>Generado el: —</string></property>
-                   <property name="styleSheet"><string>color: #b2bec3; font-size: 11px;</string></property>
+                   <property name="styleSheet">
+                    <string>color: #b2bec3; font-size: 11px;</string>
+                   </property>
+                   <property name="text">
+                    <string>Generado el: —</string>
+                   </property>
                   </widget>
                  </item>
                 </layout>
                </widget>
               </item>
-
              </layout>
             </widget>
            </widget>
           </item>
-
          </layout>
         </widget>
        </widget>
