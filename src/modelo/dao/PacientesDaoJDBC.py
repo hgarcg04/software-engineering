@@ -18,6 +18,14 @@ class PacientesDaoJDBC(Conexion):
                     
                     WHERE IE.id_enfermero = ? AND px.hospitalizado = 1 """
     
+    SQL_BUSCAR_PACIENTE = """
+        SELECT px.id_paciente, px.nif, px.nombre, px.apellido1, px.apellido2,
+            px.fecha_nacimiento, px.genero, px.fecha_registro, per.apellidos
+        FROM Pacientes as px
+        LEFT JOIN Personal as per ON px.medico_asignado = per.id_empleado
+        WHERE px.nif LIKE ? OR px.nombre LIKE ? OR px.apellido1 LIKE ? OR px.apellido2 LIKE ?
+    """
+    
 
     def devuelve_pacientes_ingresados(self, UserVO):
         cursor = self.getCursor()
@@ -50,4 +58,29 @@ class PacientesDaoJDBC(Conexion):
 
         except Exception as e:
             print("Error", e)
+            return []
+    def buscar_paciente(self, texto):
+        cursor = self.getCursor()
+        pacientes = []
+        try:
+            patron = f"%{texto}%"
+            cursor.execute(self.SQL_BUSCAR_PACIENTE, (patron, patron, patron, patron))
+            rows = cursor.fetchall()
+            for row in rows:
+                paciente = PacientesVO(
+                    id_episodio=None,
+                    nif=row[1],
+                    nombre=row[2],
+                    apellido1=row[3],
+                    apellido2=row[4],
+                    fecha_nacimiento=row[5],
+                    genero=row[6],
+                    fecha_registro=row[7],
+                    medico_asignado=row[8],
+                    id_paciente=row[0]
+                )
+                pacientes.append(paciente)
+            return pacientes
+        except Exception as e:
+            print("Error buscando paciente:", e)
             return []
