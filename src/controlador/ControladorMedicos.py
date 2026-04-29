@@ -82,7 +82,7 @@ class ControladorMedicos:
     """ def guardar_receta(self, id_medicamento, dosis, frecuencia, via, fecha_inicio, fecha_fin, notas, id_paciente):
         tratamientoVO = TratamientoVO(
             id_tratamiento=None,       # lo asigna la BD
-            id_ingreso=id_ingreso,     # necesitarás pasarlo desde la cita
+            id_ingreso=None,     # He puesto none porque no es obligatorio
             id_medico=self._user_vo.id_empleado,
             id_medicamento=id_medicamento,
             dosis=dosis,
@@ -116,10 +116,16 @@ class ControladorMedicos:
             return
         ep = self._episodios_actuales[fila]
         texto = (
-            f"Fecha: {ep.get('fecha', '')}\n"
             f"Tipo: {ep.get('tipo', '')}\n"
-            f"Síntomas: {ep.get('sintomas', '')}\n"
-            f"Diagnóstico: {ep.get('diagnostico', '')}"
+            f"Fecha inicio: {ep.get('fecha', '')}\n"
+            f"Fecha fin: {ep.get('fecha_fin', '')}\n\n"
+            f"Diagnóstico:\n{ep.get('diagnostico', '')}"
         )
-        tratamientos = self._modelo.obtenerTratamientos(ep.get('id_episodio'))
+        tratamientos = self._modelo.obtenerTratamientos_por_episodio(ep.get('id_episodio'))
         self._vista.mostrar_detalle_episodio(texto, tratamientos if tratamientos else [])
+        
+    def cargar_episodios_paciente(self, pacienteVO):
+        self._paciente_hcd_actual = pacienteVO
+        episodios = self._modelo.obtenerEpisodios(pacienteVO.id_paciente)
+        self._episodios_actuales = episodios if episodios else []
+        self._vista.cargar_episodios_hcd(pacienteVO.nombre_completo, self._episodios_actuales)

@@ -30,6 +30,23 @@ class EpisodiosDaoJDBC(Conexion):
         WHERE id_paciente = ?
     """
 
+    SQL_SELECT_EPISODIOS = """
+        SELECT ep.id_episodio, ep.fecha_hora_inicio, ep.fecha_hora_fin, ep.tipo,
+            c.diagnostico
+        FROM Episodios as ep
+        LEFT JOIN Consultas as c ON ep.id_episodio = c.id_episodio
+        WHERE ep.id_paciente = ?
+        ORDER BY ep.fecha_hora_inicio DESC
+    """
+
+    SQL_SELECT_DETALLE_EPISODIO = """
+        SELECT ep.id_episodio, ep.fecha_hora_inicio, ep.fecha_hora_fin, ep.tipo,
+            c.diagnostico
+        FROM Episodios as ep
+        LEFT JOIN Consultas as c ON ep.id_episodio = c.id_episodio
+        WHERE ep.id_episodio = ?
+    """
+
     def guardar_episodio(self, episodioVO):
         cursor = self.getCursor()
         try:
@@ -75,3 +92,40 @@ class EpisodiosDaoJDBC(Conexion):
         except Exception as e:
             print("Error ingresando paciente:", e)
             self.conexion.rollback()    
+
+    def obtener_episodios(self, id_paciente):
+        cursor = self.getCursor()
+        episodios = []
+        try:
+            cursor.execute(self.SQL_SELECT_EPISODIOS, (id_paciente,))
+            rows = cursor.fetchall()
+            for row in rows:
+                episodios.append({
+                    'id_episodio':      row[0],
+                    'fecha':            str(row[1])[:16],   # YYYY-MM-DD HH:MM
+                    'fecha_fin':        str(row[2])[:16] if row[2] else 'Abierto',
+                    'tipo':             row[3] if row[3] else '',
+                    'diagnostico':      row[4] if row[4] else ''
+                })
+            return episodios
+        except Exception as e:
+            print("Error obteniendo episodios:", e)
+            return []
+
+    def obtener_detalle_episodio(self, id_episodio):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_SELECT_DETALLE_EPISODIO, (id_episodio,))
+            row = cursor.fetchone()
+            if row:
+                return {
+                    'id_episodio':  row[0],
+                    'fecha':        str(row[1])[:16],
+                    'fecha_fin':    str(row[2])[:16] if row[2] else 'Abierto',
+                    'tipo':         row[3] if row[3] else '',
+                    'diagnostico':  row[4] if row[4] else ''
+                }
+            return None
+        except Exception as e:
+            print("Error obteniendo detalle episodio:", e)
+            return None

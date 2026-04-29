@@ -16,6 +16,16 @@ class TratamientosDaoJDBC(Conexion):
 					AND T.activo = 1
                 
                 """
+    
+    SQL_SELECT_POR_EPISODIO = """
+        SELECT T.id_tratamiento, M.nombre, T.dosis, T.frecuencia,
+            T.via_administracion, T.activo
+        FROM Tratamientos as T
+        INNER JOIN Medicamentos as M ON T.id_medicamento = M.id_medicamento
+        INNER JOIN Ingresos as I ON T.id_ingreso = I.id_ingreso
+        WHERE I.id_episodio = ?
+    """
+
     def devuelve_tratamientos(self, pacienteVO):
         tratamientos = []
         cursor = self.getCursor()
@@ -36,4 +46,22 @@ class TratamientosDaoJDBC(Conexion):
 
         except Exception as e:
             print("Error al conseguir tratamientos", e)
+            return []
+        
+    def obtener_tratamientos_por_episodio(self, id_episodio):
+        cursor = self.getCursor()
+        tratamientos = []
+        try:
+            cursor.execute(self.SQL_SELECT_POR_EPISODIO, (id_episodio,))
+            rows = cursor.fetchall()
+            for row in rows:
+                tratamientos.append({
+                    'medicamento': row[1],
+                    'dosis':       row[2] if row[2] else '',
+                    'frecuencia':  row[3] if row[3] else '',
+                    'via':         row[4] if row[4] else '',
+                })
+            return tratamientos
+        except Exception as e:
+            print("Error obteniendo tratamientos por episodio:", e)
             return []

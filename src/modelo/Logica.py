@@ -73,4 +73,13 @@ class Logica():
     #    dao = EpisodiosDaoJDBC()
     #    return dao.obtener_episodios(id_paciente)
 
+    def obtenerEpisodios(self, id_paciente):
+        from src.modelo.dao.EpisodiosDaoJDBC import EpisodiosDaoJDBC
+        dao = EpisodiosDaoJDBC()
+        return dao.obtener_episodios(id_paciente)
+    
+    def obtenerTratamientos_por_episodio(self, id_episodio):
+        from src.modelo.dao.TratamientosDaoJDBC import TratamientosDaoJDBC
+        dao = TratamientosDaoJDBC()
+        return dao.obtener_tratamientos_por_episodio(id_episodio)
 

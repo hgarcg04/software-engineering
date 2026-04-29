@@ -5,7 +5,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import uic
-from src.modelo.VO.LoginVO import LoginVO
 
 ui_path = os.path.join(os.path.dirname(__file__), "Ui/VistaLogin.ui")
 Form, Window = uic.loadUiType(ui_path)

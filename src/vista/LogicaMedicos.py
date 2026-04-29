@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import pyqtSignal
 from PyQt5 import uic
 from PyQt5.QtCore import QTimer, QDateTime
+from PyQt5.QtWidgets import QButtonGroup
 
 from src.vista.LogicaDialogoReceta import DialogoReceta
 
@@ -27,6 +28,12 @@ class VentanaMedico(QMainWindow, Form):
         self.timer.timeout.connect(self._actualizar_fecha_hora)
         self.timer.start(1000)
         self._actualizar_fecha_hora()
+
+        self._btn_group = QButtonGroup(self)
+        self._btn_group.setExclusive(True)
+        self._btn_group.addButton(self.btn_nav_inicio)
+        self._btn_group.addButton(self.btn_nav_agenda)
+        self._btn_group.addButton(self.btn_nav_hcd)
 
         # --- Navegación sidebar ---
         self.btn_nav_inicio.clicked.connect(self._ir_inicio)
@@ -170,7 +177,6 @@ class VentanaMedico(QMainWindow, Form):
             self.tabla_episodios_hcd.setItem(row, 0, self._item(ep.get('fecha', '')))
             self.tabla_episodios_hcd.setItem(row, 1, self._item(ep.get('tipo', '')))
             self.tabla_episodios_hcd.setItem(row, 2, self._item(ep.get('diagnostico', '')))
-            self.tabla_episodios_hcd.setItem(row, 3, self._item(ep.get('estado', '')))
         self.tabla_episodios_hcd.resizeColumnsToContents()
 
     def _on_episodio_seleccionado(self):
@@ -188,7 +194,8 @@ class VentanaMedico(QMainWindow, Form):
             self.tabla_tratamientos_hcd.setItem(row, 0, self._item(t.get('medicamento', '')))
             self.tabla_tratamientos_hcd.setItem(row, 1, self._item(t.get('dosis', '')))
             self.tabla_tratamientos_hcd.setItem(row, 2, self._item(t.get('frecuencia', '')))
-            self.tabla_tratamientos_hcd.setItem(row, 3, self._item(t.get('estado', '')))
+            self.tabla_tratamientos_hcd.setItem(row, 3, self._item(t.get('via', '')))
+        self.tabla_tratamientos_hcd.resizeColumnsToContents()
 
     def _cerrar_detalle_hcd(self):
         self.txt_detalle_episodio.clear()
