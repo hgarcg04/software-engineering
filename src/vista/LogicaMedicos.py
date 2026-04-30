@@ -8,6 +8,8 @@ from PyQt5 import uic
 from PyQt5.QtCore import QTimer, QDateTime
 from PyQt5.QtWidgets import QButtonGroup
 
+from datetime import datetime, timedelta
+
 from src.vista.LogicaDialogoReceta import DialogoReceta
 
 ui_path = os.path.join(os.path.dirname(__file__), "Ui/VistaMedico.ui")
@@ -23,6 +25,7 @@ class VentanaMedico(QMainWindow, Form):
         self.setupUi(self)
         self._controlador = None
         self._cita_activa = None   # dict con los datos de la cita seleccionada
+        self._citas_agenda_hoy = {}
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self._actualizar_fecha_hora)
@@ -43,7 +46,7 @@ class VentanaMedico(QMainWindow, Form):
         # --- Inicio: selección de cita ---
         self.tabla_agenda_hoy.itemSelectionChanged.connect(self._on_cita_seleccionada)
         self.btn_iniciar_consulta.clicked.connect(self._abrir_consulta)
-        self.btn_ver_hcd_inicio.clicked.connect(self._ir_hcd)
+        self.btn_ver_hcd_inicio.clicked.connect(self._ver_hcd_paciente_agenda)
 
         # --- Consulta ---
         self.btn_volver_consulta.clicked.connect(self._ir_inicio)
@@ -87,17 +90,37 @@ class VentanaMedico(QMainWindow, Form):
     # ── Inicio ───────────────────────────────────────────────────
 
     def cargar_agenda_hoy(self, lista_citas):
-        """
-        Recibe lista de dicts con claves: hora, paciente, motivo, estado, id_cita, id_paciente
-        """
+
         self.tabla_agenda_hoy.setRowCount(0)
+        self._citas_agenda_hoy = {}
+
+        # Generar todos los slots de 08:00 a 20:00 cada 30 min
+        inicio = datetime.strptime("08:00", "%H:%M")
+        fin = datetime.strptime("20:00", "%H:%M")
+        slots = []
+        actual = inicio
+        while actual < fin:
+            slots.append(actual.strftime("%H:%M"))
+            actual += timedelta(minutes=30)
+
+        # Crear dict hora -> cita usando solo HH:MM
         for cita in lista_citas:
+            hora_clave = str(cita['hora'])[:5]
+            self._citas_agenda_hoy[hora_clave] = cita
+
+        # Rellenar la tabla con todos los slots
+        for slot in slots:
             row = self.tabla_agenda_hoy.rowCount()
             self.tabla_agenda_hoy.insertRow(row)
-            self.tabla_agenda_hoy.setItem(row, 0, self._item(cita.get('hora', '')))
-            self.tabla_agenda_hoy.setItem(row, 1, self._item(cita.get('paciente', '')))
-            self.tabla_agenda_hoy.setItem(row, 2, self._item(cita.get('motivo', '')))
-            self.tabla_agenda_hoy.setItem(row, 3, self._item(cita.get('estado', '')))
+            self.tabla_agenda_hoy.setItem(row, 0, self._item(slot))
+            if slot in self._citas_agenda_hoy:
+                cita = self._citas_agenda_hoy[slot]
+                self.tabla_agenda_hoy.setItem(row, 1, self._item(cita.get('paciente', '')))
+                self.tabla_agenda_hoy.setItem(row, 2, self._item(cita.get('motivo', '')))
+            else:
+                self.tabla_agenda_hoy.setItem(row, 1, self._item(''))
+                self.tabla_agenda_hoy.setItem(row, 2, self._item(''))
+
         self.tabla_agenda_hoy.resizeColumnsToContents()
 
     def _on_cita_seleccionada(self):
@@ -238,6 +261,30 @@ class VentanaMedico(QMainWindow, Form):
             return
         paciente = self._pacientes_busqueda[fila]
         self._controlador.cargar_episodios_paciente(paciente)
+
+    def _ver_hcd_paciente_agenda(self):
+        fila = self.tabla_agenda_hoy.currentRow()
+        print(f"Fila seleccionada: {fila}")
+        if fila < 0:
+            return
+        hora = self.tabla_agenda_hoy.item(fila, 0).text()[:5]
+        print(f"Hora: {hora}")
+        print(f"Citas disponibles: {self._citas_agenda_hoy}")
+        if hora not in self._citas_agenda_hoy:
+            print("Hora no encontrada en citas")
+            return
+        cita = self._citas_agenda_hoy[hora]
+        print(f"Cita encontrada: {cita}")
+        self._ir_hcd()
+        if self._controlador:
+            self._controlador.cargar_hcd_desde_agenda(cita['id_paciente'])
+
+    def abrir_receta(self, cita):
+        print("Cita recibida:", cita)
+        dialogo = DialogoReceta(parent=self._vista, paciente_vo=None)
+        dialogo.lbl_pac_nombre.setText(cita.get('paciente', ''))
+        dialogo.controlador = self
+        dialogo.exec_()
 
     @property
     def controlador(self):

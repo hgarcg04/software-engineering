@@ -1,6 +1,7 @@
 from src.vista.LogicaDialogoReceta import DialogoReceta
 from src.modelo.VO.EpisodiosVO import EpisodioVO
 from src.modelo.VO.TratamientosVO import TratamientoVO
+from src.modelo.dao.PacientesDaoJDBC import PacientesDaoJDBC
 
 
 class ControladorMedicos:
@@ -72,11 +73,12 @@ class ControladorMedicos:
     # ── Receta ───────────────────────────────────────────────────
 
     def abrir_receta(self, cita):
-        """
-        Abre el diálogo de receta pasándole el paciente activo.
-        """
-        dialogo = DialogoReceta(parent=self._vista, paciente_nombre=cita.get('nombre', ''))
+        dialogo = DialogoReceta(parent=self._vista, paciente_vo=None)
+        dialogo.lbl_pac_nombre.setText(cita.get('paciente', ''))
+        dialogo._id_paciente = cita.get('id_paciente')
         dialogo.controlador = self
+        medicamentos = self._modelo.obtenerMedicamentos()
+        dialogo.cargar_medicamentos(medicamentos)
         dialogo.exec_()
 
     """ def guardar_receta(self, id_medicamento, dosis, frecuencia, via, fecha_inicio, fecha_fin, notas, id_paciente):
@@ -129,3 +131,10 @@ class ControladorMedicos:
         episodios = self._modelo.obtenerEpisodios(pacienteVO.id_paciente)
         self._episodios_actuales = episodios if episodios else []
         self._vista.cargar_episodios_hcd(pacienteVO.nombre_completo, self._episodios_actuales)
+
+    def cargar_hcd_desde_agenda(self, id_paciente):
+        dao = PacientesDaoJDBC()
+        # Buscamos por id directamente
+        pacientes = dao.buscar_paciente_por_id(id_paciente)
+        if pacientes:
+            self.cargar_episodios_paciente(pacientes[0])

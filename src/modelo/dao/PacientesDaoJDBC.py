@@ -25,6 +25,14 @@ class PacientesDaoJDBC(Conexion):
         LEFT JOIN Personal as per ON px.medico_asignado = per.id_empleado
         WHERE px.nif LIKE ? OR px.nombre LIKE ? OR px.apellido1 LIKE ? OR px.apellido2 LIKE ?
     """
+
+    SQL_BUSCAR_POR_ID = """
+        SELECT px.id_paciente, px.nif, px.nombre, px.apellido1, px.apellido2,
+            px.fecha_nacimiento, px.genero, px.fecha_registro, per.apellidos
+        FROM Pacientes as px
+        LEFT JOIN Personal as per ON px.medico_asignado = per.id_empleado
+        WHERE px.id_paciente = ?
+    """
     
 
     def devuelve_pacientes_ingresados(self, UserVO):
@@ -83,4 +91,27 @@ class PacientesDaoJDBC(Conexion):
             return pacientes
         except Exception as e:
             print("Error buscando paciente:", e)
+            return []
+        
+    def buscar_paciente_por_id(self, id_paciente):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_BUSCAR_POR_ID, (id_paciente,))
+            row = cursor.fetchone()
+            if row:
+                return [PacientesVO(
+                    id_episodio=None,
+                    nif=row[1],
+                    nombre=row[2],
+                    apellido1=row[3],
+                    apellido2=row[4],
+                    fecha_nacimiento=row[5],
+                    genero=row[6],
+                    fecha_registro=row[7],
+                    medico_asignado=row[8],
+                    id_paciente=row[0]
+                )]
+            return []
+        except Exception as e:
+            print("Error buscando paciente por id:", e)
             return []
