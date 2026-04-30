@@ -513,7 +513,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedPanel">
         <property name="currentIndex">
-         <number>4</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="page_inicio">
          <layout class="QVBoxLayout" name="inicioLayout">
@@ -1111,7 +1111,7 @@
               </column>
               <column>
                <property name="text">
-                <string>Dosis pautada</string>
+                <string>Dosis pautada (Unidades)</string>
                </property>
               </column>
              </widget>
@@ -1379,13 +1379,6 @@
             <item>
              <layout class="QHBoxLayout">
               <item>
-               <widget class="QLineEdit" name="search_bar_episodios">
-                <property name="placeholderText">
-                 <string>Buscar paciente por nombre o DNI...</string>
-                </property>
-               </widget>
-              </item>
-              <item>
                <spacer>
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1421,17 +1414,17 @@
               </column>
               <column>
                <property name="text">
-                <string>Diagnóstico</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
                 <string>Tipo</string>
                </property>
               </column>
               <column>
                <property name="text">
                 <string>Estado</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Médico</string>
                </property>
               </column>
              </widget>

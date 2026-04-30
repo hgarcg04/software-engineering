@@ -73,6 +73,8 @@ class VentanaEnfermeros(QMainWindow, Form):
         self.btn_cerrar_detalles_ingreso.clicked.connect(lambda: self._navegar(PAGE_DETALLES))
         self.btn_nuevo_registro.clicked.connect(lambda: self.edit_valor_constante.setFocus())
 
+        self.btn_nav_episodios.clicked.connect(self.obtener_episodios)
+
         self.btn_logout.clicked.connect(self.cerrar_sesion)
 
         # --- Gestion tabla pacientes ---
@@ -99,6 +101,8 @@ class VentanaEnfermeros(QMainWindow, Form):
         # --- PDF ----
         self.btn_exportar_pdf.clicked.connect(self.exportar_informe_pdf)
 
+        
+
         # -----------------------------------------------------------------------------
         # INICIALIZACIONES
         # -----------------------------------------------------------------------------
@@ -110,6 +114,7 @@ class VentanaEnfermeros(QMainWindow, Form):
         self._tratamiento_activo = None
         self._ultima_toma = None
         self._tomas_sesion_actual = []
+        self._episodios = []
 
         self.btn_nuevo_registro.setEnabled(False)
         self.btn_suministrar.setEnabled(False)
@@ -536,7 +541,7 @@ class VentanaEnfermeros(QMainWindow, Form):
 
 
 
-    # ----------------------------------------------------------------------------------------------------------------------------------------------------------
+    # -------------------------------------------------------------------ca---------------------------------------------------------------------------------------
     #                                                      PÁGINA DE SUMINISTRO DE MEDICACIÓN
     # ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -641,6 +646,34 @@ class VentanaEnfermeros(QMainWindow, Form):
                 self.tabla_tomas_sesion.setItem(fila, 2, item2) 
 
             
+    # ----------------------------------------------------------------------------------------------------------------------------------------------------------
+    #                                                      PÁGINA DE CONSULTADA DE EPISODIOS
+    # ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+    def obtener_episodios(self):
+        if self.controlador:
+            if self._paciente_activo:
+                print(f"Se llama al controlador para ver episodios del paciente con id: {self._paciente_activo.id_paciente}")
+                self.controlador.obtener_episodios(self._paciente_activo.id_paciente)
+        
+    def mostrar_episodios(self, lista):
+        self.tabla_episodios.setRowCount(len(lista))
+        
+        for fila, ep in enumerate(lista):
+
+            datos = [
+                ep.fecha_hora_inicio, ep.tipo, " - ", ep.med_apellidos
+            ]
+            
+            for col, valor in enumerate(datos):
+                item = QTableWidgetItem(str(valor))
+                item.setTextAlignment(Qt.AlignCenter)
+                item.setData(Qt.UserRole, ep)  
+                self.tabla_episodios.setItem(fila, col, item)          
+
+
+
 
     # ---------------------------------------------------------------------------------------------------------------------------------------------------------------
     #                                                                            CONTROLADOR 

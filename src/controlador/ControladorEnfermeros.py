@@ -78,3 +78,8 @@ class ControladorEnfermeros:
 
     def actualizar_stock(self, id_tratamiento, cantidad):
         self._modelo.actualizarStock(id_tratamiento, cantidad)
+    
+    def obtener_episodios(self, id_paciente):
+        lista_episodios = self._modelo.obtenerEpisodios(id_paciente)
+        print(lista_episodios)
+        self._vista.mostrar_episodios(lista_episodios)

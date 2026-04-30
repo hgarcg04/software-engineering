@@ -1,4 +1,5 @@
 from src.modelo.Conexion.Conexion import Conexion
+from src.modelo.VO.EpisodiosVO import EpisodioVO
 
 class EpisodiosDaoJDBC(Conexion):
 
@@ -31,13 +32,17 @@ class EpisodiosDaoJDBC(Conexion):
     """
 
     SQL_SELECT_EPISODIOS = """
-        SELECT ep.id_episodio, ep.fecha_hora_inicio, ep.fecha_hora_fin, ep.tipo,
-            c.diagnostico
-        FROM Episodios as ep
-        LEFT JOIN Consultas as c ON ep.id_episodio = c.id_episodio
-        WHERE ep.id_paciente = ?
-        ORDER BY ep.fecha_hora_inicio DESC
-    """
+                            SELECT ep.id_paciente, px.medico_asignado, c.diagnostico, ep.tipo, ep.id_episodio, ep.fecha_hora_inicio,
+                            ep.fecha_hora_fin, med.apellidos
+                                    
+                            FROM Episodios as ep
+                            LEFT JOIN Consultas as c ON ep.id_episodio = c.id_episodio
+                            LEFT join Pacientes as px ON ep.id_paciente = px.id_paciente
+                            LEFT join Personal as med ON px.medico_asignado = med.id_empleado
+                            WHERE ep.id_paciente = ?
+                            ORDER BY ep.fecha_hora_inicio DESC
+
+                            """
 
     SQL_SELECT_DETALLE_EPISODIO = """
         SELECT ep.id_episodio, ep.fecha_hora_inicio, ep.fecha_hora_fin, ep.tipo,
@@ -100,13 +105,11 @@ class EpisodiosDaoJDBC(Conexion):
             cursor.execute(self.SQL_SELECT_EPISODIOS, (id_paciente,))
             rows = cursor.fetchall()
             for row in rows:
-                episodios.append({
-                    'id_episodio':      row[0],
-                    'fecha':            str(row[1])[:16],   # YYYY-MM-DD HH:MM
-                    'fecha_fin':        str(row[2])[:16] if row[2] else 'Abierto',
-                    'tipo':             row[3] if row[3] else '',
-                    'diagnostico':      row[4] if row[4] else ''
-                })
+                episodio = EpisodioVO(id_paciente=row[0], id_medico=row[1], diagnostico=row[2],
+                                      tipo=row[3], id_episodio=row[4], fecha_hora_inicio=row[5],
+                                       fecha_hora_fin=row[6], med_apellidos=row[7] )
+                episodios.append(episodio)
+
             return episodios
         except Exception as e:
             print("Error obteniendo episodios:", e)
