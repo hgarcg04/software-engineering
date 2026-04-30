@@ -73,12 +73,18 @@ class ControladorMedicos:
     # ── Receta ───────────────────────────────────────────────────
 
     def abrir_receta(self, cita):
+        print("Paciente en cita:", cita.get('paciente', ''))
         dialogo = DialogoReceta(parent=self._vista, paciente_vo=None)
         dialogo.lbl_pac_nombre.setText(cita.get('paciente', ''))
+        print("Texto puesto en label:", cita.get('paciente', ''))
         dialogo._id_paciente = cita.get('id_paciente')
         dialogo.controlador = self
         medicamentos = self._modelo.obtenerMedicamentos()
-        dialogo.cargar_medicamentos(medicamentos)
+        # Convertir a lista de dicts para el diálogo
+        lista_dicts = [{'id_medicamento': m.id_medicamento, 'nombre': m.nombre,
+                        'categoria': m.categoria if m.categoria else '',
+                        'stock': m.stock} for m in medicamentos]
+        dialogo.cargar_medicamentos(lista_dicts)
         dialogo.exec_()
 
     """ def guardar_receta(self, id_medicamento, dosis, frecuencia, via, fecha_inicio, fecha_fin, notas, id_paciente):

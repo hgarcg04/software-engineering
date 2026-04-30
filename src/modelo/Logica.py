@@ -59,7 +59,6 @@ class Logica():
         dao.ingresar_paciente(id_paciente, id_medico)
 
     #def guardarTratamiento(self, tratamientoVO):
-    #    from src.modelo.dao.TratamientosDaoJDBC import TratamientosDaoJDBC
     #    dao = TratamientosDaoJDBC()
     #    dao.guardar_tratamiento(tratamientoVO)
 
@@ -67,20 +66,18 @@ class Logica():
         dao = PacientesDaoJDBC()
         return dao.buscar_paciente(texto)
 
-    #def obtenerEpisodios(self, id_paciente):
-    #    from src.modelo.dao.EpisodiosDaoJDBC import EpisodiosDaoJDBC
-    #    dao = EpisodiosDaoJDBC()
-    #    return dao.obtener_episodios(id_paciente)
-
     def obtenerEpisodios(self, id_paciente):
         from src.modelo.dao.EpisodiosDaoJDBC import EpisodiosDaoJDBC
         dao = EpisodiosDaoJDBC()
         return dao.obtener_episodios(id_paciente)
     
     def obtenerTratamientos_por_episodio(self, id_episodio):
-        from src.modelo.dao.TratamientosDaoJDBC import TratamientosDaoJDBC
         dao = TratamientosDaoJDBC()
         return dao.obtener_tratamientos_por_episodio(id_episodio)
+    
+    def obtenerMedicamentos(self):
+        dao = MedicamentosDaoJDBC()
+        return dao.obtener_medicamentos()
 
     def actualizarStock(self, id_medicamento, cantidad):
         dao = MedicamentosDaoJDBC()

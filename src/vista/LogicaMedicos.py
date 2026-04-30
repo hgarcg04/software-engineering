@@ -133,19 +133,16 @@ class VentanaMedico(QMainWindow, Form):
         fila = self.tabla_agenda_hoy.currentRow()
         if fila < 0:
             return
-        self._cita_activa = {
-            'nombre':  self.tabla_agenda_hoy.item(fila, 1).text(),
-            'hora':    self.tabla_agenda_hoy.item(fila, 0).text(),
-            'motivo':  self.tabla_agenda_hoy.item(fila, 2).text(),
-        }
-        self.lbl_cita_nombre.setText(self._cita_activa['nombre'])
-        self.lbl_cita_hora.setText(self._cita_activa['hora'])
-        self.lbl_cita_motivo.setText(self._cita_activa['motivo'])
+        hora = self.tabla_agenda_hoy.item(fila, 0).text()[:5]
+        if hora not in self._citas_agenda_hoy:
+            return
+        self._cita_activa = self._citas_agenda_hoy[hora]  # dict completo con id_paciente, id_cita, paciente...
+        self.lbl_cita_nombre.setText(self._cita_activa.get('paciente', ''))
+        self.lbl_cita_hora.setText(self._cita_activa.get('hora', ''))
+        self.lbl_cita_motivo.setText(self._cita_activa.get('motivo', ''))
         self.edit_sintomas.clear()
         self.edit_diagnostico.clear()
         self.stackedPanel.setCurrentIndex(3)
-        self._marcar_nav(None)
-
     # ── Consulta ─────────────────────────────────────────────────
 
     def _abrir_dialogo_receta(self):

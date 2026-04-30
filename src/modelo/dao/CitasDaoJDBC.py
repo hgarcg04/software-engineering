@@ -29,6 +29,7 @@ class CitasDaoJDBC(Conexion):
             cursor.execute(self.SQL_AGENDA_HOY, (userVO.id_empleado,))
             rows = cursor.fetchall()
             for row in rows:
+                print(f"Row completa: {row}")    
                 citas.append({
                     'id_cita':     row[0],
                     'fecha':       str(row[1]),
