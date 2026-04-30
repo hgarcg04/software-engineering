@@ -24,8 +24,11 @@ class DialogoHistorico(QDialog, Form):
         self._paciente = paciente
         self._controlador = None
 
+        desde = f"{paciente.fecha_inicio_ingreso} {paciente.hora_inicio_ingreso}"
+        desde_qt = QDateTime.fromString(desde, "yyyy-MM-dd HH:mm:ss")
+
         ahora = QDateTime.currentDateTime()
-        self.date_desde.setDateTime(ahora.addDays(-7))  
+        self.date_desde.setDateTime(desde_qt)  
         self.date_hasta.setDateTime(ahora)   
 
         self.lbl_paciente.setText(f"Paciente: {paciente.nombre_completo} | IngresoID: {paciente.id_ingreso} | Episodio: {paciente.id_episodio}")

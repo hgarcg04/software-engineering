@@ -197,14 +197,14 @@ class VentanaEnfermeros(QMainWindow, Form):
         self.tabla_pacientes.setRowCount(len(lista))
         
         for fila, pac in enumerate(lista):
-            fecha_inicio_epi = str(pac.fecha_ingreso)[:16] if pac.fecha_ingreso else "—"
+            fecha_inicio_ingreso = f"{pac.fecha_inicio_ingreso[:16]} {pac.hora_inicio_ingreso[:5]}" if pac.fecha_inicio_ingreso else "—"
 
             datos = [
                 pac.nif,
                 pac.nombre_completo,
                 pac.num_habitacion,
                 pac.medico_asignado,
-                str(fecha_inicio_epi)
+                str(fecha_inicio_ingreso)
             ]
             
             for col, valor in enumerate(datos):
@@ -302,11 +302,12 @@ class VentanaEnfermeros(QMainWindow, Form):
         self.lbl_det_fnac.setText(str(pac.fecha_nacimiento))
         self.lbl_det_genero.setText(str(pac.genero))
         self.lbl_det_habitacion.setText(str(pac.num_habitacion))
-        self.lbl_det_fingreso.setText(str(pac.fecha_ingreso)[:16] if pac.fecha_ingreso else "—")
+        self.lbl_det_fingreso.setText(str(pac.fecha_inicio_ingreso)[:16] if pac.fecha_inicio_ingreso else "—")
         self.lbl_det_medico.setText(str(pac.medico_asignado))
         self.lbl_det_dieta.setText(str(pac.dieta) if pac.dieta else "—")
         ahora = QDateTime.currentDateTime().toString("dd/MM/yyyy HH:mm")
         self.lbl_inf_fecha_gen.setText(f"Generado el: {ahora}")
+        self.lbl_det_observaciones.setText(pac.observaciones)
     
 
     def exportar_informe_pdf(self):
@@ -361,7 +362,7 @@ class VentanaEnfermeros(QMainWindow, Form):
     
         # --- SECCIÓN: DATOS DEL PACIENTE ---
         historia.append(Paragraph("DATOS DEL PACIENTE"))
-        historia.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#dde3ea')))
+        historia.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#0cb868')))
         historia.append(Spacer(1, 0.2*cm))
     
         datos_paciente = [
@@ -376,10 +377,10 @@ class VentanaEnfermeros(QMainWindow, Form):
     
         # --- SECCIÓN: DATOS DEL INGRESO ---
         historia.append(Paragraph("DATOS DEL INGRESO"))
-        historia.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#dde3ea')))
+        historia.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#0cb868')))
         historia.append(Spacer(1, 0.2*cm))
     
-        fecha_ingreso = str(pac.fecha_ingreso)[:16] if pac.fecha_ingreso else "—"
+        fecha_ingreso = str(pac.fecha_inicio_ingreso)[:16] if pac.fecha_inicio_ingreso else "—"
         dieta = str(pac.dieta) if pac.dieta else "—"
     
         datos_ingreso = [
@@ -391,8 +392,15 @@ class VentanaEnfermeros(QMainWindow, Form):
         tabla_ing = Table(datos_ingreso, colWidths=[4*cm, 4.5*cm, 4*cm, 4.5*cm])
         historia.append(tabla_ing)
         historia.append(Spacer(1, 1*cm))
-    
+
+        # --- OBSERVACIONES ---
+
+        historia.append(Paragraph("ANOTACIONES AL INGRESAR"))
+        historia.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0cb868")))
+        historia.append(Spacer(1, 0.2*cm))
         
+        historia.append(Paragraph(str(pac.observaciones)))
+    
     
         doc.build(historia)
     
@@ -573,10 +581,9 @@ class VentanaEnfermeros(QMainWindow, Form):
 
     def on_confirmar_administracion_clicked(self):
 
-
-
         observaciones = self.edit_notas_toma.toPlainText()
         self.controlador.guardar_nueva_toma(self._enfermero.id_empleado, self._tratamiento_activo.id_tratamiento, observaciones)
+        self.controlador.actualizar_stock(self._tratamiento_activo.id_medicamento, -self._tratamiento_activo.dosis)
 
         self.actualizar_ultima_toma()
         self.actualizar_tomas_sesion_actual()
@@ -586,7 +593,7 @@ class VentanaEnfermeros(QMainWindow, Form):
 
     def parpadear(self, n_veces, encendido):
         # Funcion para que el enfermero pueda ver que se ha registrado una nueva confirmación de 
-        # suministro de medicación.
+        # administración de medicación.
 
         fila_nueva_toma = 0 # fila que va a parpadear
 
@@ -605,7 +612,7 @@ class VentanaEnfermeros(QMainWindow, Form):
                 item.setBackground(color)
         
         # definimos tiempo entre color y no color
-
+        
         QTimer.singleShot(300, lambda: self.parpadear(n_veces - 1, not encendido)) 
 
         

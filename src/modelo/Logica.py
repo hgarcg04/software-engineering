@@ -1,11 +1,10 @@
 from src.modelo.dao.UserDaoJDBC import UserDaoJDBC
-from src.modelo.dao.PacientesDaoJDBC import PacientesDaoJDBC
 from src.modelo.dao.ConstanteDaoJDBC import ConstanteDaoJDBC
 from src.modelo.dao.TratamientosDaoJDBC import TratamientosDaoJDBC
 from src.modelo.dao.TomasDaoJDBC import TomasDaoJDBC
 from src.modelo.dao.CitasDaoJDBC import CitasDaoJDBC
 from src.modelo.dao.PacientesDaoJDBC import PacientesDaoJDBC
-from src.modelo.dao.PacientesDaoJDBC import PacientesDaoJDBC
+from src.modelo.dao.MedicamentosDaoJDBC import MedicamentosDaoJDBC
 
 class Logica():
     
@@ -82,4 +81,8 @@ class Logica():
         from src.modelo.dao.TratamientosDaoJDBC import TratamientosDaoJDBC
         dao = TratamientosDaoJDBC()
         return dao.obtener_tratamientos_por_episodio(id_episodio)
+
+    def actualizarStock(self, id_medicamento, cantidad):
+        dao = MedicamentosDaoJDBC()
+        dao.actualizar_stock(id_medicamento, cantidad)
 
