@@ -2,6 +2,7 @@ from src.vista.LogicaDialogoReceta import DialogoReceta
 from src.modelo.VO.EpisodiosVO import EpisodioVO
 from src.modelo.VO.TratamientosVO import TratamientoVO
 from src.modelo.dao.PacientesDaoJDBC import PacientesDaoJDBC
+from src.modelo.VO.CitasVO import CitaVO
 
 
 class ControladorMedicos:
@@ -54,30 +55,27 @@ class ControladorMedicos:
         El controlador construye el VO y llama al modelo.
         """
         episodioVO = EpisodioVO(
-            id_paciente=cita.get('id_paciente'),
+            id_paciente=cita.id_paciente,
             id_medico=self._user_vo.id_empleado,
-            sintomas=sintomas,
             diagnostico=diagnostico,
             tipo=tipo,
-            id_cita=cita.get('id_cita')
+            id_episodio=None,           # lo asigna la BD
+            fecha_hora_inicio=None,     # lo asigna la BD con GETDATE()
+            med_apellidos=self._user_vo.apellidos,
+            sintomas=sintomas
         )
-        self._modelo.guardarEpisodio(episodioVO)
-
-    def ingresar_paciente(self, cita):
-        """
-        Marca al paciente como ingresado.
-        Parámetros: cita (dict) con id_paciente.
-        """
-        self._modelo.ingresarPaciente(cita.get('id_paciente'), self._user_vo.id_empleado)
+    
+    def ingresar_paciente(self, cita_vo):
+        self._modelo.ingresarPaciente(cita_vo.id_paciente, self._user_vo.id_empleado)
 
     # ── Receta ───────────────────────────────────────────────────
 
     def abrir_receta(self, cita):
-        print("Paciente en cita:", cita.get('paciente', ''))
+        print("Paciente en cita:", cita.paciente_nombre)
         dialogo = DialogoReceta(parent=self._vista, paciente_vo=None)
-        dialogo.lbl_pac_nombre.setText(cita.get('paciente', ''))
-        print("Texto puesto en label:", cita.get('paciente', ''))
-        dialogo._id_paciente = cita.get('id_paciente')
+        dialogo.lbl_pac_nombre.setText(cita.paciente_nombre)
+        print("Texto puesto en label:", cita.paciente_nombre)
+        dialogo._id_paciente = cita.id_paciente
         dialogo.controlador = self
         medicamentos = self._modelo.obtenerMedicamentos()
         # Convertir a lista de dicts para el diálogo
@@ -85,7 +83,7 @@ class ControladorMedicos:
                         'categoria': m.categoria if m.categoria else '',
                         'stock': m.stock} for m in medicamentos]
         dialogo.cargar_medicamentos(lista_dicts)
-        dialogo.exec_()
+        dialogo.exec_() # Puedo cambiar desde aquí la referencia a la vista
 
     """ def guardar_receta(self, id_medicamento, dosis, frecuencia, via, fecha_inicio, fecha_fin, notas, id_paciente):
         tratamientoVO = TratamientoVO(
@@ -124,12 +122,12 @@ class ControladorMedicos:
             return
         ep = self._episodios_actuales[fila]
         texto = (
-            f"Tipo: {ep.get('tipo', '')}\n"
-            f"Fecha inicio: {ep.get('fecha', '')}\n"
-            f"Fecha fin: {ep.get('fecha_fin', '')}\n\n"
-            f"Diagnóstico:\n{ep.get('diagnostico', '')}"
+            f"Tipo: {ep.tipo}\n"
+            f"Fecha inicio: {ep.fecha_hora_inicio}\n"
+            f"Fecha fin: {ep.fecha_hora_fin}\n\n"
+            f"Diagnóstico:\n{ep.diagnostico}"
         )
-        tratamientos = self._modelo.obtenerTratamientos_por_episodio(ep.get('id_episodio'))
+        tratamientos = self._modelo.obtenerTratamientos_por_episodio(ep.id_episodio)
         self._vista.mostrar_detalle_episodio(texto, tratamientos if tratamientos else [])
         
     def cargar_episodios_paciente(self, pacienteVO):

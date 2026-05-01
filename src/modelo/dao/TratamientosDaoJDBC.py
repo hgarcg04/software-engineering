@@ -26,6 +26,13 @@ class TratamientosDaoJDBC(Conexion):
         WHERE I.id_episodio = ?
     """
 
+    SQL_INSERT_TRATAMIENTO = """
+        INSERT INTO Tratamientos 
+        (id_ingreso, id_medico, id_medicamento, dosis, frecuencia, notas,
+        fecha_inicio, fecha_fin, activo, via_administracion)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+
     def devuelve_tratamientos(self, pacienteVO):
         tratamientos = []
         cursor = self.getCursor()
@@ -65,3 +72,24 @@ class TratamientosDaoJDBC(Conexion):
         except Exception as e:
             print("Error obteniendo tratamientos por episodio:", e)
             return []
+        
+    def guardar_tratamiento(self, tratamientoVO):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_INSERT_TRATAMIENTO, (
+                tratamientoVO.id_ingreso,
+                tratamientoVO.id_medico,
+                tratamientoVO.id_medicamento,
+                tratamientoVO.dosis,
+                tratamientoVO.frecuencia,
+                tratamientoVO.notas,
+                tratamientoVO.fecha_inicio,
+                tratamientoVO.fecha_fin,
+                tratamientoVO.activo,
+                tratamientoVO.via_administracion
+            ))
+            self.conexion.commit()
+            print("Tratamiento guardado con éxito")
+        except Exception as e:
+            print("Error guardando tratamiento:", e)
+            self.conexion.rollback()

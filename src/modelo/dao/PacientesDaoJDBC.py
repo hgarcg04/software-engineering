@@ -34,6 +34,12 @@ class PacientesDaoJDBC(Conexion):
         LEFT JOIN Personal as per ON px.medico_asignado = per.id_empleado
         WHERE px.id_paciente = ?
     """
+
+    SQL_INGRESAR_PACIENTE = """
+        UPDATE Pacientes 
+        SET hospitalizado = 1 
+        WHERE id_paciente = ?
+    """
     
 
     def devuelve_pacientes_ingresados(self, UserVO):
@@ -122,3 +128,16 @@ class PacientesDaoJDBC(Conexion):
         except Exception as e:
             print("Error buscando paciente por id:", e)
             return []
+
+    def ingresar_paciente(self, id_paciente, id_medico):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_INGRESAR_PACIENTE, (id_paciente,))
+            self.conexion.commit()
+            print(f"Paciente {id_paciente} ingresado con éxito.")
+        
+        except Exception as e:
+            self.conexion.rollback()
+            print(f"Error al ingresar el paciente: {e}")
+        finally:
+            cursor.close() # revisar porque esto no lo termino de entender

@@ -52,12 +52,10 @@ class MedicamentosDaoJDBC(Conexion):
         except Exception as e:
             print(f"Error al añadir/quitar {cantidad} unidades del medicamento con id {id_medicamento}: ", e)
 
-    
+
     def set_alerta_stock(self, id_medicamento, bit):
         cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_UPDATE_ALERTA_STOCK, (bit, id_medicamento, ))
         except Exception as e:
             print(f"Error al cambiar la alerta de {not bit} a {bit}: ", e)
-            
-
