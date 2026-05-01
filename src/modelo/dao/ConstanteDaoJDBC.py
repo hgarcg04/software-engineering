@@ -10,7 +10,7 @@ class ConstanteDaoJDBC(Conexion):
             
     
     SQL_SELECT = """ 
-                SELECT c.Tipo, Valor, Observaciones, c.id_enfermero, c.id_ingreso, px.nif, ep.id_episodio, fecha, hora
+                SELECT c.Tipo, Valor,  c.Observaciones, c.id_enfermero, c.id_ingreso, px.nif, ep.id_episodio, c.fecha, c.hora
                 FROM Constantes as c
 
                 inner join Ingresos as I on I.id_ingreso = c.id_ingreso

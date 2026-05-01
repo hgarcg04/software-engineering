@@ -45,6 +45,7 @@ class TomasDaoJDBC(Conexion):
             tomas = []
             try:
                 # Ejecutamos la consulta filtrada directamente en SQL
+                print(f"se piden las tomas de hoy del ingreso con id {pacienteVO.id_ingreso}")
                 cursor.execute(self.SQL_SELECT_HOY, (pacienteVO.id_ingreso,))
                 rows = cursor.fetchall()
                 for row in rows:

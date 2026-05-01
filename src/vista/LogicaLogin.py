@@ -5,6 +5,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import uic
+from PyQt5.QtCore import QTimer
 
 ui_path = os.path.join(os.path.dirname(__file__), "Ui/VistaLogin.ui")
 Form, Window = uic.loadUiType(ui_path)
@@ -42,8 +43,9 @@ class MiVentana(QMainWindow, Form):
         self.edit_user.setFocus()
 
         
-    def cerrar(self):      
-        self.close()
+    def cerrar(self):   
+        QTimer.singleShot(500, self.close)   
+    
 
       
     @property

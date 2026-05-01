@@ -15,72 +15,18 @@
   </property>
   <property name="styleSheet">
    <string notr="true">
-    /* Fondo exterior: Azul suave degradado */
-    QMainWindow { 
-        background-color: #a2bdf2; 
-    }
-    
-    /* Tarjeta Blanca Principal */
-    #mainCard { 
-        background-color: #ffffff; 
-        border-radius: 40px; 
-    }
-
-    /* Panel Izquierdo: Verde Pastel */
-    #leftPanel {
-        background-color: #d8f3ed;
-        border-top-left-radius: 40px;
-        border-bottom-left-radius: 40px;
-    }
-
-    /* Títulos y Etiquetas */
-    #lbl_hello { 
-        color: #2d3436; 
-        font-family: 'Segoe UI Black', sans-serif; 
-        font-size: 55px; 
-    }
-    #lbl_subtitle { 
-        color: #636e72; 
-        font-family: 'Segoe UI', sans-serif; 
-        font-size: 18px; 
-    }
-    #lbl_logo_text { 
-        color: #2d3436; 
-        font-family: 'Segoe UI Semibold'; 
-        font-size: 24px; 
-    }
-    #lbl_kura { color: #00b894; font-weight: bold; } /* Verde del logo */
-
-    /* Campos de Entrada */
-    QLineEdit {
-        border: 1px solid #dfe6e9;
-        border-radius: 10px;
-        padding: 12px;
-        background-color: #ffffff;
-        font-size: 14px;
-        color: #2d3436;
-    }
-    QLineEdit:focus {
-        border: 1px solid #6a9edb;
-    }
-
-    /* Botón Log In: Azul Redondeado */
-    #btn_login {
-        background-color: #6a9edb;
-        color: white;
-        border-radius: 22px;
-        padding: 12px;
-        font-family: 'Segoe UI Semibold';
-        font-size: 16px;
-    }
+    QMainWindow { background-color: #a2bdf2; }
+    #mainCard { background-color: #ffffff; border-radius: 40px; }
+    #leftPanel { background-color: #d8f3ed; border-top-left-radius: 40px; border-bottom-left-radius: 40px; }
+    #lbl_hello { color: #2d3436; font-family: 'Segoe UI Black', sans-serif; font-size: 55px; }
+    #lbl_subtitle { color: #636e72; font-family: 'Segoe UI', sans-serif; font-size: 18px; }
+    #lbl_logo_text { color: #2d3436; font-family: 'Segoe UI Semibold'; font-size: 24px; }
+    #lbl_kura { color: #00b894; font-weight: bold; }
+    QLineEdit { border: 1px solid #dfe6e9; border-radius: 10px; padding: 12px; background-color: #ffffff; font-size: 14px; color: #2d3436; }
+    QLineEdit:focus { border: 1px solid #6a9edb; }
+    #btn_login { background-color: #6a9edb; color: white; border-radius: 22px; padding: 12px; font-family: 'Segoe UI Semibold'; font-size: 16px; }
     #btn_login:hover { background-color: #5a8dc7; }
-
-    /* Enlaces Inferiores */
-    #lbl_forgot, #lbl_signup { 
-        color: #00b894; 
-        font-size: 13px;
-        font-weight: bold;
-    }
+    #lbl_forgot, #lbl_signup { color: #00b894; font-size: 13px; font-weight: bold; }
    </string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -88,152 +34,34 @@
     <item row="0" column="0">
      <widget class="QFrame" name="mainCard">
       <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
+       <property name="spacing"><number>0</number></property>
+       <property name="leftMargin"><number>0</number></property>
+       <property name="topMargin"><number>0</number></property>
+       <property name="rightMargin"><number>0</number></property>
+       <property name="bottomMargin"><number>0</number></property>
        <item>
         <widget class="QFrame" name="leftPanel">
-         <property name="palette">
-          <palette>
-           <active>
-            <colorrole role="Button">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>173</red>
-               <green>224</green>
-               <blue>207</blue>
-              </color>
-             </brush>
-            </colorrole>
-            <colorrole role="Base">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>173</red>
-               <green>224</green>
-               <blue>207</blue>
-              </color>
-             </brush>
-            </colorrole>
-            <colorrole role="Window">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>173</red>
-               <green>224</green>
-               <blue>207</blue>
-              </color>
-             </brush>
-            </colorrole>
-           </active>
-           <inactive>
-            <colorrole role="Button">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>173</red>
-               <green>224</green>
-               <blue>207</blue>
-              </color>
-             </brush>
-            </colorrole>
-            <colorrole role="Base">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>173</red>
-               <green>224</green>
-               <blue>207</blue>
-              </color>
-             </brush>
-            </colorrole>
-            <colorrole role="Window">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>173</red>
-               <green>224</green>
-               <blue>207</blue>
-              </color>
-             </brush>
-            </colorrole>
-           </inactive>
-           <disabled>
-            <colorrole role="Button">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>173</red>
-               <green>224</green>
-               <blue>207</blue>
-              </color>
-             </brush>
-            </colorrole>
-            <colorrole role="Base">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>173</red>
-               <green>224</green>
-               <blue>207</blue>
-              </color>
-             </brush>
-            </colorrole>
-            <colorrole role="Window">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>173</red>
-               <green>224</green>
-               <blue>207</blue>
-              </color>
-             </brush>
-            </colorrole>
-           </disabled>
-          </palette>
-         </property>
          <property name="styleSheet">
           <string notr="true">background-color: rgb(173, 224, 207);</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
-          <property name="spacing">
-           <number>10</number>
-          </property>
-          <property name="leftMargin">
-           <number>60</number>
-          </property>
-          <property name="topMargin">
-           <number>80</number>
-          </property>
+          <property name="spacing"><number>10</number></property>
+          <property name="leftMargin"><number>60</number></property>
+          <property name="topMargin"><number>80</number></property>
           <item>
            <widget class="QLabel" name="lbl_hello">
-            <property name="text">
-             <string>BIENVENIDO!</string>
-            </property>
+            <property name="text"><string>BIENVENIDO!</string></property>
            </widget>
           </item>
           <item>
            <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
+            <property name="orientation"><enum>Qt::Vertical</enum></property>
+            <property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property>
            </spacer>
           </item>
           <item>
            <widget class="QLabel" name="label">
-            <property name="text">
-             <string/>
-            </property>
+            <property name="text"><string/></property>
             <property name="pixmap">
              <pixmap resource="../imagenes/recursos.qrc">:/img/doctor-señalando.jpg</pixmap>
             </property>
@@ -241,31 +69,14 @@
           </item>
           <item>
            <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
+            <property name="orientation"><enum>Qt::Vertical</enum></property>
+            <property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property>
            </spacer>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_4"/>
-          </item>
-          <item>
            <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
+            <property name="orientation"><enum>Qt::Vertical</enum></property>
+            <property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property>
            </spacer>
           </item>
          </layout>
@@ -274,26 +85,14 @@
        <item>
         <widget class="QFrame" name="rightPanel">
          <layout class="QVBoxLayout" name="verticalLayout_3">
-          <property name="spacing">
-           <number>20</number>
-          </property>
-          <property name="leftMargin">
-           <number>80</number>
-          </property>
-          <property name="topMargin">
-           <number>80</number>
-          </property>
-          <property name="rightMargin">
-           <number>80</number>
-          </property>
-          <property name="bottomMargin">
-           <number>80</number>
-          </property>
+          <property name="spacing"><number>20</number></property>
+          <property name="leftMargin"><number>80</number></property>
+          <property name="topMargin"><number>80</number></property>
+          <property name="rightMargin"><number>80</number></property>
+          <property name="bottomMargin"><number>80</number></property>
           <item alignment="Qt::AlignHCenter">
            <widget class="QLabel" name="lbl_logo_text">
-            <property name="text">
-             <string/>
-            </property>
+            <property name="text"><string/></property>
             <property name="pixmap">
              <pixmap resource="../imagenes/recursos.qrc">:/img/Logo_aplicacion.jpg</pixmap>
             </property>
@@ -301,58 +100,83 @@
           </item>
           <item>
            <spacer name="s1">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
+            <property name="orientation"><enum>Qt::Vertical</enum></property>
+            <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
            </spacer>
           </item>
           <item>
-           <widget class="QLineEdit" name="edit_user">
-            <property name="echoMode">
-             <enum>QLineEdit::Normal</enum>
-            </property>
-            <property name="placeholderText">
-             <string>Nombre de usuario</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout">
+            <item>
+             <spacer>
+              <property name="orientation"><enum>Qt::Horizontal</enum></property>
+              <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="edit_user">
+              <property name="maximumWidth"><number>450</number></property>
+              <property name="echoMode"><enum>QLineEdit::Normal</enum></property>
+              <property name="placeholderText"><string>Nombre de usuario</string></property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation"><enum>Qt::Horizontal</enum></property>
+              <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+             </spacer>
+            </item>
+           </layout>
           </item>
           <item>
-           <widget class="QLineEdit" name="edit_pass">
-            <property name="echoMode">
-             <enum>QLineEdit::Password</enum>
-            </property>
-            <property name="placeholderText">
-             <string>Contraseña</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout">
+            <item>
+             <spacer>
+              <property name="orientation"><enum>Qt::Horizontal</enum></property>
+              <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="edit_pass">
+              <property name="maximumWidth"><number>450</number></property>
+              <property name="echoMode"><enum>QLineEdit::Password</enum></property>
+              <property name="placeholderText"><string>Contraseña</string></property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation"><enum>Qt::Horizontal</enum></property>
+              <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+             </spacer>
+            </item>
+           </layout>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_login">
-            <property name="cursor">
-             <cursorShape>ArrowCursor</cursorShape>
-            </property>
-            <property name="text">
-             <string>Iniciar Sesión</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout">
+            <item>
+             <spacer>
+              <property name="orientation"><enum>Qt::Horizontal</enum></property>
+              <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_login">
+              <property name="maximumWidth"><number>450</number></property>
+              <property name="cursor"><cursorShape>ArrowCursor</cursorShape></property>
+              <property name="text"><string>Iniciar Sesión</string></property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation"><enum>Qt::Horizontal</enum></property>
+              <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+             </spacer>
+            </item>
+           </layout>
           </item>
           <item>
            <spacer name="s2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
+            <property name="orientation"><enum>Qt::Vertical</enum></property>
+            <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
            </spacer>
           </item>
          </layout>
