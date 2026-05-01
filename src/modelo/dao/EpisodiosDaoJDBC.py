@@ -37,8 +37,8 @@ class EpisodiosDaoJDBC(Conexion):
                                     
                             FROM Episodios as ep
                             LEFT JOIN Consultas as c ON ep.id_episodio = c.id_episodio
-                            LEFT join Pacientes as px ON ep.id_paciente = px.id_paciente
-                            LEFT join Personal as med ON px.medico_asignado = med.id_empleado
+                            INNER join Pacientes as px ON ep.id_paciente = px.id_paciente
+                            INNER join Personal as med ON px.medico_asignado = med.id_empleado
                             WHERE ep.id_paciente = ?
                             ORDER BY ep.fecha_hora_inicio DESC
 
@@ -107,7 +107,7 @@ class EpisodiosDaoJDBC(Conexion):
             for row in rows:
                 episodio = EpisodioVO(id_paciente=row[0], id_medico=row[1], diagnostico=row[2],
                                       tipo=row[3], id_episodio=row[4], fecha_hora_inicio=row[5],
-                                       fecha_hora_fin=row[6], med_apellidos=row[7] )
+                                       fecha_hora_fin=row[6], med_apellidos=row[7])
                 episodios.append(episodio)
 
             return episodios
