@@ -2,6 +2,7 @@ import os
 from PyQt5.QtWidgets import QDialog
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import Qt
 
 ui_path = os.path.join(os.path.dirname(__file__), "Ui/DialogoReceta.ui")
 Form, _ = uic.loadUiType(ui_path)
@@ -15,11 +16,11 @@ class DialogoReceta(QDialog, Form):
         self._id_medicamento_seleccionado = None
         self._id_paciente = None
         self.lbl_pac_nombre.setText('— Sin paciente —')
-        self._id_medicamento_seleccionado = None
+        self._medicamento_seleccionado = None
         self._id_paciente = None
         self._medicamentos = []
 
-        self.tabla_medicamentos.itemSelectionChanged.connect(self._on_medicamento_seleccionado)
+        self.tabla_medicamentos.cellClicked.connect(self._on_medicamento_seleccionado)
         self.search_bar.textChanged.connect(self._filtrar_medicamentos)
 
         self.btn_prescribir.clicked.connect(self._guardar)
@@ -34,7 +35,9 @@ class DialogoReceta(QDialog, Form):
         for med in lista:
             row = self.tabla_medicamentos.rowCount()
             self.tabla_medicamentos.insertRow(row)
-            self.tabla_medicamentos.setItem(row, 0, self._item(med.nombre))
+            item_nombre = self._item(med.nombre)
+            item_nombre.setData(Qt.UserRole, med)
+            self.tabla_medicamentos.setItem(row, 0, item_nombre)
             self.tabla_medicamentos.setItem(row, 1, self._item(med.categoria))
         self.tabla_medicamentos.resizeColumnsToContents()
 
@@ -42,14 +45,14 @@ class DialogoReceta(QDialog, Form):
         filtrados = [m for m in self._medicamentos if texto.lower() in m.nombre.lower() or texto.lower() in m.categoria.lower()]
         self._mostrar_medicamentos(filtrados)
 
-    def _on_medicamento_seleccionado(self):
-        fila = self.tabla_medicamentos.currentRow()
-        if fila < 0:
+    def _on_medicamento_seleccionado(self, fila):
+        med = self.tabla_medicamentos.item(fila, 0)
+        if med is None:
             return
-        med = self._medicamentos[fila]
-        self._id_medicamento_seleccionado = med.id_medicamento
-        self.lbl_med_seleccionado.setText(med.nombre)
-        self.btn_prescribir.setEnabled(True)
+        self._medicamento_seleccionado = med.data(Qt.UserRole)
+        if self._medicamento_seleccionado:
+            self.lbl_med_seleccionado.setText(self._medicamento_seleccionado.nombre)
+            self.btn_prescribir.setEnabled(True)
 
     def _item(self, texto):
         from PyQt5.QtWidgets import QTableWidgetItem

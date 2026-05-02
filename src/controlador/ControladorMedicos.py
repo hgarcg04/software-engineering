@@ -46,17 +46,6 @@ class ControladorMedicos:
     # ── Consulta ─────────────────────────────────────────────────
 
     def guardar_consulta(self, sintomas, diagnostico, tipo, cita):
-        """
-        Guarda el episodio clínico de la consulta.
-
-        Parámetros que recibe guardar_consulta():
-          - sintomas   (str)  texto libre con los síntomas
-          - diagnostico (str) texto libre con el diagnóstico
-          - tipo        (str) 'Consulta' | 'Urgencia' | 'Revisión'
-          - cita        (dict) con al menos: id_cita, id_paciente
-
-        El controlador construye el VO y llama al modelo.
-        """
         episodioVO = EpisodioVO(
             id_paciente=cita.id_paciente,
             id_medico=self._user_vo.id_empleado,

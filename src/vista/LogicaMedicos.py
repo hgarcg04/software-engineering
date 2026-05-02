@@ -4,9 +4,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import pyqtSignal, QTimer, QDateTime, QDate
-from PyQt5.QtWidgets import QButtonGroup
+from PyQt5.QtWidgets import QButtonGroup, QTableWidgetItem
 from PyQt5 import uic
 from datetime import datetime, timedelta
+from PyQt5.QtGui import QColor
+
 
 ui_path = os.path.join(os.path.dirname(__file__), "Ui/VistaMedico.ui")
 Form, Window = uic.loadUiType(ui_path)
@@ -101,9 +103,12 @@ class VentanaMedico(QMainWindow, Form):
     def cargar_agenda_hoy(self, lista_citas):
         self.tabla_agenda_hoy.setRowCount(0)
         self._citas_agendas_hoy = {} # Por si coincide que se pasa de día y no se reinicia, te imaginas? que guapo
+        self.tabla_agenda_hoy.verticalHeader().setDefaultSectionSize(45) # Para establecer la altura de las filas
+        self.tabla_agenda_hoy.verticalHeader().setVisible(False) # Para que no se vea el índice de la fila que no queda bien
 
         inicio = datetime.strptime("08:00", "%H:%M")
         fin = datetime.strptime("20:00", "%H:%M")
+        hora_actual = datetime.now().strftime("%H:%M")
         slots = []
         actual = inicio
         while actual < fin:
@@ -122,6 +127,10 @@ class VentanaMedico(QMainWindow, Form):
                 cita_vo = self._citas_agenda_hoy[slot]
                 self.tabla_agenda_hoy.setItem(row, 1, self._item(cita_vo.paciente_nombre))
                 self.tabla_agenda_hoy.setItem(row, 2, self._item(cita_vo.motivo if cita.motivo else ""))
+                for col in range(3):
+                    self.tabla_agenda_hoy.item(row, col).setBackground(
+                        __import__('PyQt5.QtGui', fromlist=['QColor']).QColor('#d8f3ed')
+                    )
             else:
                 self.tabla_agenda_hoy.setItem(row, 1, self._item(''))
                 self.tabla_agenda_hoy.setItem(row, 2, self._item(''))

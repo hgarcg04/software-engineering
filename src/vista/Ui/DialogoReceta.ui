@@ -71,7 +71,7 @@
         font-size: 13px;
     }
     QTableWidget::item { padding: 8px; }
-    QTableWidget::item:selected { background-color: #d8f3ed; color: #2d3436; }
+    QTableWidget::item:selected { background-color: #00a381; color: white; }
     QHeaderView::section {
         background-color: #f8fafc;
         color: #636e72;
