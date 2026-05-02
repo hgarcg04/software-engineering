@@ -52,6 +52,11 @@ class EpisodiosDaoJDBC(Conexion):
         WHERE ep.id_episodio = ?
     """
 
+    SQL_INSERT_CONSULTA_EXISTENTE = """
+        INSERT INTO Consultas (id_episodio, diagnostico)
+        VALUES (?, ?)
+    """
+
     def guardar_episodio(self, episodioVO):
         cursor = self.getCursor()
         try:
@@ -132,3 +137,13 @@ class EpisodiosDaoJDBC(Conexion):
         except Exception as e:
             print("Error obteniendo detalle episodio:", e)
             return None
+        
+    def guardar_consulta_en_episodio(self, id_episodio, diagnostico, sintomas=None):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_INSERT_CONSULTA_EXISTENTE, (id_episodio, diagnostico))
+            self.conexion.commit()
+            print("Consulta añadida a episodio existente con éxito")
+        except Exception as e:
+            print("Error guardando consulta en episodio existente:", e)
+            self.conexion.rollback()

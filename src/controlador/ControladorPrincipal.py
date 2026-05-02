@@ -51,7 +51,7 @@ class ControladorPrincipal:
         elif self.usuario_actualVO.rol == 'medico': #Comprobar minuscula o mayuscula
             self._ventana_medico = VentanaMedico()
 
-            self._ventana_medico.showFullScreen() # esto abre la ventana en pantalla completa. (ache y manu, si os molesta comentarlo y
+            # self._ventana_medico.showFullScreen() # esto abre la ventana en pantalla completa. (ache y manu, si os molesta comentarlo y
                                                   # lo descomentamos el dia de la presentación)
             self._ventana_medico.show()
             self._vista.cerrar()

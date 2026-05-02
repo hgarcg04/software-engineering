@@ -69,6 +69,10 @@ class Logica():
         dao = EpisodiosDaoJDBC()
         return dao.obtener_episodios(id_paciente)
     
+    def guardarConsultaEnEpisodio(self, id_episodio, diagnostico, sintomas=None):
+        dao = EpisodiosDaoJDBC()
+        dao.guardar_consulta_en_episodio(id_episodio, diagnostico, sintomas)
+    
     def obtenerTratamientos_por_episodio(self, id_episodio):
         dao = TratamientosDaoJDBC()
         return dao.obtener_tratamientos_por_episodio(id_episodio)

@@ -155,12 +155,30 @@ class VentanaMedico(QMainWindow, Form):
         hora = self.tabla_agenda_hoy.item(fila, 0).text()[:5]
         if hora not in self._citas_agenda_hoy:
             return
-        self._cita_activa = self._citas_agenda_hoy[hora]
-        self.lbl_cita_nombre.setText(self._cita_activa.paciente_nombre)
-        self.lbl_cita_hora.setText(str(self._cita_activa.hora)[:5])
-        self.lbl_cita_motivo.setText(self._cita_activa.motivo)
-        self.edit_sintomas.clear()
-        self.edit_diagnostico.clear()
+        cita = self._citas_agenda_hoy[hora]
+        if self._controlador:
+            self._controlador.abrir_seleccion_episodio(cita)
+        
+    def abrir_pagina_consulta(self, cita_vo, episodio_vo=None):
+        """
+        Llamado por el controlador tras elegir episodio.
+        Recibe la cita y opcionalmente el episodio seleccionado.
+        """
+        self._cita_activa = cita_vo
+        self.lbl_cita_nombre.setText(cita_vo.paciente_nombre)
+        self.lbl_cita_hora.setText(str(cita_vo.hora)[:5])
+        self.lbl_cita_motivo.setText(cita_vo.motivo if cita_vo.motivo else '')
+
+        if episodio_vo:
+            # Episodio existente: pre-rellenar el diagnóstico previo como referencia
+            self.edit_sintomas.clear()
+            self.edit_diagnostico.setPlainText(
+                f"[Continúa episodio del {str(episodio_vo.fecha_hora_inicio)[:10]}]\n"
+            )
+        else:
+            self.edit_sintomas.clear()
+            self.edit_diagnostico.clear()
+
         self.stackedPanel.setCurrentIndex(3)
 
     def _ver_hcd_paciente_agenda(self):

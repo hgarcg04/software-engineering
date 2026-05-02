@@ -25,7 +25,7 @@
     #lbl_col_titulo { font-family: 'Segoe UI Semibold'; font-size: 15px; color: #2d3436; }
     QTableWidget { background-color: #ffffff; border: 1px solid #dde3ea; border-radius: 10px; gridline-color: #f0f4f8; font-size: 13px; }
     QTableWidget::item { padding: 12px 8px; min-height: 40px }
-    QTableWidget::item:selected { background-color: #2ba88d; color: #2d3436; }
+    QTableWidget::item:selected { background-color: #70ab9f; color: #2d3436; }
     QHeaderView::section { background-color: #f8fafc; color: #636e72; font-family: 'Segoe UI Semibold'; font-size: 12px; padding: 8px; border: none; border-bottom: 1px solid #dde3ea; }
     #frame_cita_activa, #frame_pac_hcd { background-color: #d8f3ed; border: 1.5px solid #00b894; border-radius: 10px; padding: 4px 12px; }
     #lbl_cita_texto, #lbl_cita_texto2, #lbl_cita_texto3, #lbl_paciente_sel_texto { font-family: 'Segoe UI'; font-size: 13px; color: #636e72; }
@@ -341,7 +341,7 @@
             <item><widget class="QPushButton" name="btn_ingresar_paciente"><property name="text"><string>Ingresar paciente</string></property></widget></item>
             <item><widget class="QPushButton" name="btn_abrir_receta"><property name="text"><string>+ Recetar medicación</string></property></widget></item>
             <item><spacer><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property></spacer></item>
-            <item><widget class="QPushButton" name="btn_guardar_consulta"><property name="text"><string>Guardar episodio clínico</string></property></widget></item>
+            <item><widget class="QPushButton" name="btn_guardar_consulta"><property name="text"><string>Guardar consulta</string></property></widget></item>
            </layout>
           </item>
           <item><spacer><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property></spacer></item>
