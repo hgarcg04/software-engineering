@@ -234,11 +234,10 @@
          <property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property>
          <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
          <property name="selectionMode"><enum>QAbstractItemView::SingleSelection</enum></property>
-         <property name="columnCount"><number>3</number></property>
+         <property name="columnCount"><number>2</number></property>
          <attribute name="horizontalHeaderStretchLastSection"><bool>true</bool></attribute>
          <column><property name="text"><string>Medicamento</string></property></column>
          <column><property name="text"><string>Categoría</string></property></column>
-         <column><property name="text"><string>Stock</string></property></column>
         </widget>
        </item>
       </layout>

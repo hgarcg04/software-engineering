@@ -34,13 +34,12 @@ class DialogoReceta(QDialog, Form):
         for med in lista:
             row = self.tabla_medicamentos.rowCount()
             self.tabla_medicamentos.insertRow(row)
-            self.tabla_medicamentos.setItem(row, 0, self._item(med.get('nombre', '')))
-            self.tabla_medicamentos.setItem(row, 1, self._item(med.get('categoria', '')))
-            self.tabla_medicamentos.setItem(row, 2, self._item(str(med.get('stock', ''))))
+            self.tabla_medicamentos.setItem(row, 0, self._item(med.nombre))
+            self.tabla_medicamentos.setItem(row, 1, self._item(med.categoria))
         self.tabla_medicamentos.resizeColumnsToContents()
 
     def _filtrar_medicamentos(self, texto):
-        filtrados = [m for m in self._medicamentos if texto.lower() in m.get('nombre', '').lower() or texto.lower() in m.get('categoria', '').lower()]
+        filtrados = [m for m in self._medicamentos if texto.lower() in m.nombre.lower() or texto.lower() in m.categoria.lower()]
         self._mostrar_medicamentos(filtrados)
 
     def _on_medicamento_seleccionado(self):
@@ -48,8 +47,8 @@ class DialogoReceta(QDialog, Form):
         if fila < 0:
             return
         med = self._medicamentos[fila]
-        self._id_medicamento_seleccionado = med.get('id_medicamento')
-        self.lbl_med_seleccionado.setText(med.get('nombre', ''))
+        self._id_medicamento_seleccionado = med.id_medicamento
+        self.lbl_med_seleccionado.setText(med.nombre)
         self.btn_prescribir.setEnabled(True)
 
     def _item(self, texto):

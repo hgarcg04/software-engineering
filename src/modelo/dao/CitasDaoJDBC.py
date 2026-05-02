@@ -20,8 +20,9 @@ class CitasDaoJDBC(Conexion):
         INNER JOIN Pacientes as px ON c.id_paciente = px.id_paciente
         WHERE c.id_medico = ?
         AND c.fecha BETWEEN ? AND ?
-        ORDER BY c.fecha ASC, c.hora ASC
+        ORDER BY c.fecha ASC, c.hora ASC 
     """
+    # No se ordena bien la lista de citas totales
 
     def obtener_agenda_hoy(self, userVO):
         cursor = self.getCursor()
@@ -54,13 +55,16 @@ class CitasDaoJDBC(Conexion):
             cursor.execute(self.SQL_AGENDA_RANGO, (userVO.id_empleado, desde, hasta))
             rows = cursor.fetchall()
             for row in rows:
-                citas.append({
-                    'id_cita':     row[0],
-                    'fecha_hora':  f"{str(row[1])} {str(row[2])}",
-                    'paciente':    f"{row[3]} {row[4]} {row[5]}",
-                    'motivo':      row[6] if row[6] else '',
-                    'id_paciente': row[7]
-                })
+                citaVO = CitaVO(
+                    id_cita = row[0],
+                    fecha = row[1], # Antes devolvía fecha_hora juntos así que igual me da algún error
+                    hora = row[2],
+                    id_paciente = row[7],
+                    id_medico=userVO.id_empleado,
+                    paciente_nombre = f"{row[3]} {row[4]} {row[5]}",
+                    motivo = row[6] if row[6] else ""
+                )
+                citas.append(citaVO)
             return citas
         except Exception as e:
             print("Error obteniendo agenda:", e)

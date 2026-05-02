@@ -7,6 +7,7 @@ class MedicamentosDaoJDBC(Conexion):
                  SELECT id_medicamento, nombre, categoria,
                  descripcion, unidad_medida, stock, stock_minimo, alerta_stock
                  FROM Medicamentos
+                 ORDER BY nombre ASC
 
                  """
     

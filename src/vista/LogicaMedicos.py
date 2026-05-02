@@ -3,7 +3,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtCore import pyqtSignal, QTimer, QDateTime
+from PyQt5.QtCore import pyqtSignal, QTimer, QDateTime, QDate
 from PyQt5.QtWidgets import QButtonGroup
 from PyQt5 import uic
 from datetime import datetime, timedelta
@@ -89,6 +89,15 @@ class VentanaMedico(QMainWindow, Form):
     def _actualizar_fecha_hora(self):
         self.lbl_datetime.setText(QDateTime.currentDateTime().toString("dd/MM/yyyy  HH:mm"))
 
+    def establecer_rango_fechas_interfaz(self, fecha_desde_str, fecha_hasta_str):
+        # Convertimos los strings que vienen del controlador a objetos QDate
+        q_desde = QDate.fromString(fecha_desde_str, "yyyy-MM-dd")
+        q_hasta = QDate.fromString(fecha_hasta_str, "yyyy-MM-dd")
+        
+        # Los widgets del .ui se llaman date_desde y date_hasta
+        self.date_desde.setDate(q_desde)
+        self.date_hasta.setDate(q_hasta)
+
     def cargar_agenda_hoy(self, lista_citas):
         self.tabla_agenda_hoy.setRowCount(0)
         self._citas_agendas_hoy = {} # Por si coincide que se pasa de día y no se reinicia, te imaginas? que guapo
@@ -160,7 +169,6 @@ class VentanaMedico(QMainWindow, Form):
     # ── Consulta ─────────────────────────────────────────────────
 
     def _abrir_dialogo_receta(self):
-        """La vista solo delega al controlador, nunca abre diálogos directamente."""
         if self._controlador:
             self._controlador.abrir_receta(self._cita_activa)
 
@@ -191,7 +199,7 @@ class VentanaMedico(QMainWindow, Form):
         for cita in lista_citas:
             row = self.tabla_agenda.rowCount()
             self.tabla_agenda.insertRow(row)
-            self.tabla_agenda.setItem(row, 0, self._item(cita.get('fecha_hora', ''))) # Cambiar esto porque ahora están separados
+            self.tabla_agenda.setItem(row, 0, self._item(f"{str(cita.fecha)} {str(cita.hora)[:5]}")) # Cambiar esto porque ahora están separados
             self.tabla_agenda.setItem(row, 1, self._item(cita.paciente_nombre))
             self.tabla_agenda.setItem(row, 2, self._item(cita.motivo))
         self.tabla_agenda.resizeColumnsToContents()

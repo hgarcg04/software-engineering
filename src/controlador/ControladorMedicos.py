@@ -4,6 +4,8 @@ from src.modelo.VO.TratamientosVO import TratamientoVO
 from src.modelo.dao.PacientesDaoJDBC import PacientesDaoJDBC
 from src.modelo.VO.CitasVO import CitaVO
 
+from datetime import datetime, timedelta
+
 
 class ControladorMedicos:
     def __init__(self, vista, modelo, user_vo):
@@ -32,11 +34,12 @@ class ControladorMedicos:
     # ── Agenda completa ──────────────────────────────────────────
 
     def cargar_agenda_completa(self, desde=None, hasta=None):
-        """
-        Carga la agenda del médico filtrada por rango de fechas.
-        El modelo debe devolver una lista de dicts con:
-          fecha_hora, paciente, motivo, estado
-        """
+        if desde is None:
+            desde = datetime.now().strftime('%Y-%m-%d')
+        if hasta is None:
+            fecha_hasta = datetime.now() + timedelta(days=7)
+            hasta = fecha_hasta.strftime('%Y-%m-%d')
+        self._vista.establecer_rango_fechas_interfaz(desde, hasta)
         lista = self._modelo.obtenerAgenda(self._user_vo, desde, hasta)
         self._vista.cargar_agenda_completa(lista if lista else [])
 
@@ -78,11 +81,7 @@ class ControladorMedicos:
         dialogo._id_paciente = cita.id_paciente
         dialogo.controlador = self
         medicamentos = self._modelo.obtenerMedicamentos()
-        # Convertir a lista de dicts para el diálogo
-        lista_dicts = [{'id_medicamento': m.id_medicamento, 'nombre': m.nombre,
-                        'categoria': m.categoria if m.categoria else '',
-                        'stock': m.stock} for m in medicamentos]
-        dialogo.cargar_medicamentos(lista_dicts)
+        dialogo.cargar_medicamentos(medicamentos)
         dialogo.exec_() # Puedo cambiar desde aquí la referencia a la vista
 
     """ def guardar_receta(self, id_medicamento, dosis, frecuencia, via, fecha_inicio, fecha_fin, notas, id_paciente):
