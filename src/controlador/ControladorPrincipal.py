@@ -18,7 +18,7 @@ class ControladorPrincipal:
     
     def ventanaInciarSesion(self):
 
-        self._vista.showFullScreen()
+        self._vista.showMaximized()
         self._vista.show()
     
     
@@ -35,7 +35,7 @@ class ControladorPrincipal:
         elif self.usuario_actualVO.rol == 'enfermero':
             self._ventana_enfermero = VentanaEnfermeros()
             
-            self._ventana_enfermero.showFullScreen()
+            self._ventana_enfermero.showMaximized()
             self._ventana_enfermero.show()
 
             self._vista.cerrar()
@@ -52,7 +52,8 @@ class ControladorPrincipal:
             self._ventana_medico = VentanaMedico()
 
             # self._ventana_medico.showFullScreen() # esto abre la ventana en pantalla completa. (ache y manu, si os molesta comentarlo y
-                                                  # lo descomentamos el dia de la presentación)
+                                                    # lo descomentamos el dia de la presentación)
+            self._ventana_medico.showMaximized()
             self._ventana_medico.show()
             self._vista.cerrar()
 
@@ -64,8 +65,9 @@ class ControladorPrincipal:
 
         elif self.usuario_actualVO.rol == 'administrativo': #Comprobar minuscula o mayuscula
             self._ventana_administrativo = VentanaAdministrativos()
-            self._ventana_administrativo.showFullScreen() # esto abre la ventana en pantalla completa. (ache y manu, si os molesta comentarlo y
+            #self._ventana_administrativo.showFullScreen() # esto abre la ventana en pantalla completa. (ache y manu, si os molesta comentarlo y
                                                           # lo descomentamos el dia de la presentación)
+            self._ventana_administrativo.showMaximized()
             self._ventana_administrativo.show()
             self._vista.cerrar()
 

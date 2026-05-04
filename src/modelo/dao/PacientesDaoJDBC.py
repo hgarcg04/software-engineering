@@ -45,7 +45,7 @@ class PacientesDaoJDBC(Conexion):
             INSERT INTO Pacientes (nif, nombre, apellido1, apellido2,
             fecha_nacimiento, genero, fecha_registro, correo, direccion, alergias, telefono)
             VALUES (?, ?, ?, ?,
-            ?, ?, CAST(GETDATE()), ?, ?, ?, ?)
+            ?, ?, GETDATE(), ?, ?, ?, ?)
         """
     
     SQL_BUSCAR_NIF = "SELECT nif FROM Pacientes WHERE nif = ?"
