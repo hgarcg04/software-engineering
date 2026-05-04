@@ -89,3 +89,11 @@ class Logica():
         dao = MedicamentosDaoJDBC()
         dao.actualizar_stock(id_medicamento, cantidad)
 
+    def registrarPaciente(self, pacienteVO):
+        dao = PacientesDaoJDBC()
+        if dao.existe_paciente(pacienteVO.nif):
+            return False, "El paciente ya está registrado"
+        
+        dao.registrar_paciente(pacienteVO)
+        return True, "Paciente registrado correctamente"
+

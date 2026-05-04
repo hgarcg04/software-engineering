@@ -40,6 +40,15 @@ class PacientesDaoJDBC(Conexion):
         SET hospitalizado = 1 
         WHERE id_paciente = ?
     """
+
+    SQL_REGISTRAR_PACIENTE = """
+            INSERT INTO Pacientes (nif, nombre, apellido1, apellido2,
+            fecha_nacimiento, genero, fecha_registro, correo, direccion, alergias, telefono)
+            VALUES (?, ?, ?, ?,
+            ?, ?, CAST(GETDATE()), ?, ?, ?, ?)
+        """
+    
+    SQL_BUSCAR_NIF = "SELECT nif FROM Pacientes WHERE nif = ?"
     
 
     def devuelve_pacientes_ingresados(self, UserVO):
@@ -141,3 +150,28 @@ class PacientesDaoJDBC(Conexion):
             print(f"Error al ingresar el paciente: {e}")
         finally:
             cursor.close() # revisar porque esto no lo termino de entender
+    
+    def existe_paciente(self, nif):
+        cursor = self.getCursor()
+        cursor.execute(self.SQL_BUSCAR_NIF, (nif,))
+        return cursor.fetchone() is not None
+    
+    def registrar_paciente(self, pacienteVO):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_REGISTRAR_PACIENTE, (
+                pacienteVO.nif,
+                pacienteVO.nombre,
+                pacienteVO.apellido1,
+                pacienteVO.apellido2,
+                str(pacienteVO.fecha_nacimiento),
+                pacienteVO.genero,
+                pacienteVO.correo,
+                pacienteVO.direccion,
+                pacienteVO.alergias, 
+                pacienteVO.telefono
+            ))
+            
+        except Exception as e:
+            print("Error al registrar paciente: ", e)
+       

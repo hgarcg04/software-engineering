@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal
 
@@ -36,6 +36,9 @@ class VentanaAdministrativos(QMainWindow, Form):
 
         self.btn_logout.clicked.connect(self.cerrar_sesion)
 
+        #Guardar paciente registrado
+        self.btn_guardar_paciente.clicked.connect(self.registrar_paciente)
+
     def cerrar_sesion(self):
         print("Cerrando sesión...")
         self.signal_logout.emit()
@@ -57,6 +60,28 @@ class VentanaAdministrativos(QMainWindow, Form):
         ]
         for i, btn in enumerate(nav_btns):
             btn.setChecked(i == indice)
+
+    def registrar_paciente(self):
+        nif = self.input_dni_paciente.text()
+        nombre = self.input_nombre_paciente.text()
+        ap1 = self.input_ap1_paciente.text()
+        ap2 = self.input_ap2_paciente.text()
+        email = self.input_email_paciente.text()
+        telefono = self.input_telefono_paciente.text()
+        direccion = self.input_direccion_paciente.text()
+        alergias = self.input_alergias_paciente.text()
+        fecha_nacimiento = self.input_fnac_paciente.date().toPyDate()
+        genero = self.input_genero_paciente.currentText()
+
+        exito, mensaje = self.controlador.registrar_paciente(
+            nif, nombre, ap1, ap2, fecha_nacimiento, 
+            genero, email, direccion, alergias, telefono
+        )
+        
+        if exito:
+            QMessageBox.information(self, "Éxito", mensaje)
+        else:
+            QMessageBox.warning(self, "Error", mensaje)
 
     @property
     def controlador(self):

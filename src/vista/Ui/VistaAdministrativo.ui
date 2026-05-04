@@ -630,75 +630,109 @@
              </item>
              <item row="0" column="1">
               <widget class="QLineEdit" name="input_nombre_paciente">
-               <property name="placeholderText"><string>Ej: Ana García López</string></property>
+               <property name="placeholderText"><string>Ej:Ana</string></property>
               </widget>
              </item>
              <item row="1" column="0">
+              <widget class="QLabel" name="lbl_f_apellido1">
+               <property name="text"><string>Primer apellido *</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="input_ap1_paciente">
+               <property name="placeholderText"><string>Ej:García</string></property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="lbl_f_apellido2">
+               <property name="text"><string>Segundo apellido *</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="input_ap2_paciente">
+               <property name="placeholderText"><string>Ej:López</string></property>
+              </widget>
+             </item>
+             <item row="3" column="0">
               <widget class="QLabel" name="lbl_f_dni">
                <property name="text"><string>DNI *</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
-             <item row="1" column="1">
+             <item row="3" column="1">
               <widget class="QLineEdit" name="input_dni_paciente">
                <property name="placeholderText"><string>Ej: 12345678A</string></property>
                <property name="maxLength"><number>9</number></property>
               </widget>
              </item>
-             <item row="2" column="0">
+             <item row="4" column="0">
               <widget class="QLabel" name="lbl_f_fnac">
                <property name="text"><string>Fecha de nacimiento *</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
-             <item row="2" column="1">
+             <item row="4" column="1">
               <widget class="QDateEdit" name="input_fnac_paciente">
                <property name="calendarPopup"><bool>true</bool></property>
                <property name="displayFormat"><string>dd/MM/yyyy</string></property>
               </widget>
              </item>
-             <item row="3" column="0">
+             <item row="5" column="0">
               <widget class="QLabel" name="lbl_f_telefono">
                <property name="text"><string>Teléfono</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
-             <item row="3" column="1">
+             <item row="5" column="1">
               <widget class="QLineEdit" name="input_telefono_paciente">
-               <property name="placeholderText"><string>Ej: 612 345 678</string></property>
+               <property name="placeholderText"><string>Ej:612345678</string></property>
               </widget>
              </item>
-             <item row="4" column="0">
+             <item row="6" column="0">
               <widget class="QLabel" name="lbl_f_email">
                <property name="text"><string>Correo electrónico</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
-             <item row="4" column="1">
+             <item row="6" column="1">
               <widget class="QLineEdit" name="input_email_paciente">
                <property name="placeholderText"><string>Ej: paciente@correo.com</string></property>
               </widget>
              </item>
-             <item row="5" column="0">
+             <item row="7" column="0">
               <widget class="QLabel" name="lbl_f_direccion">
                <property name="text"><string>Dirección</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
-             <item row="5" column="1">
+             <item row="7" column="1">
               <widget class="QLineEdit" name="input_direccion_paciente">
                <property name="placeholderText"><string>Calle, número, ciudad</string></property>
               </widget>
              </item>
-             <item row="6" column="0">
+             <item row="8" column="0">
               <widget class="QLabel" name="lbl_f_alergias">
                <property name="text"><string>Alergias conocidas</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
-             <item row="6" column="1">
+             <item row="8" column="1">
               <widget class="QLineEdit" name="input_alergias_paciente">
                <property name="placeholderText"><string>Ej: penicilina, látex... (opcional)</string></property>
+              </widget>
+             </item>
+             <item row="9" column="0">
+              <widget class="QLabel" name="lbl_f_genero">
+               <property name="text"><string>Género *</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="9" column="1">
+              <widget class="QComboBox" name="input_genero_paciente">
+               <item><property name="text"><string>Hombre</string></property></item>
+               <item><property name="text"><string>Mujer</string></property></item>
               </widget>
              </item>
             </layout>
