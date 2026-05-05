@@ -22,6 +22,8 @@ class ConstanteDaoJDBC(Conexion):
                 ORDER BY fecha, hora
 
                  """
+
+
     def guardar_constante(self, ConstanteVO):
         cursor = self.getCursor()
         try:

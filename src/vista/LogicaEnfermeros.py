@@ -473,8 +473,7 @@ class VentanaEnfermeros(QMainWindow, Form):
         if respuesta == QMessageBox.Ok:
             #pasamos la lista al controlador
             if self._controlador:
-                print(f"({self._enfermero.id_empleado})Le paso al controlador la lista de constantes. ")
-                self._controlador.guardar_constante(self._constantes_pendientes, self._enfermero.id_empleado, self._paciente_activo.id_ingreso)
+                self._controlador.guardar_constante(self._constantes_pendientes, self._enfermero.id_empleado, self._paciente_activo.id_ingreso, )
 
             self._constantes_pendientes.clear()
             self._actualizar_tabla_pendientes()

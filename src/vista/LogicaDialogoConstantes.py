@@ -3,12 +3,14 @@ import os
 
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QMainWindow, QButtonGroup, QMessageBox, QTableWidgetItem, QDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QButtonGroup, QMessageBox, QTableWidgetItem, QDialog, QVBoxLayout
 from PyQt5.QtCore import QTimer, QDateTime, Qt, pyqtSignal
-from PyQt5.QtWidgets import QHeaderView
 
-from src.modelo.VO.UsuariosVO import UserVO
-from src.modelo.VO.ConstantesVO import ConstantesVO
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+
+
+
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
@@ -43,12 +45,9 @@ class DialogoHistorico(QDialog, Form):
         tipo  = self.combo_constante.currentText()
         desde = self.date_desde.dateTime().toString("yyyy-MM-dd HH:mm")
         hasta = self.date_hasta.dateTime().toString("yyyy-MM-dd HH:mm")
-        print("tipo:", tipo)
-        print("Desde: ",desde)
-        print("Hasta:", hasta)
-        print("Id episodio:", self._paciente.id_episodio)
-        if self._controlador:
-            self._controlador.consultar_historico(
+
+        if self.controlador:
+            self.controlador.consultar_historico(
                 self._paciente.id_episodio, tipo, desde, hasta
             )
         
@@ -75,7 +74,27 @@ class DialogoHistorico(QDialog, Form):
         self.btn_generar_grafico.setEnabled(len(lista) > 0)
     
     def _generar_grafico(self):
-        pass
+        tipo  = self.combo_constante.currentText()
+        desde = self.date_desde.dateTime().toString("yyyy-MM-dd HH:mm")
+        hasta = self.date_hasta.dateTime().toString("yyyy-MM-dd HH:mm")
+
+        if self.controlador:
+            self.controlador.generar_grafico(self._paciente.id_paciente, tipo, desde, hasta)
+
+    def mostrar_grafico(self, fig):
+        dialogo = QDialog(self)
+        dialogo.setWindowTitle(f'Gráfico de constantes')
+        dialogo.resize(1000, 700)
+
+        canvas = FigureCanvas(fig)
+        layout = QVBoxLayout()
+        toolbar = NavigationToolbar(canvas, dialogo)
+
+
+        layout.addWidget(toolbar)
+        layout.addWidget(canvas)
+        dialogo.setLayout(layout)
+        dialogo.exec_()
     
     @property
     def controlador(self):

@@ -62,8 +62,12 @@ class ControladorEnfermeros:
         """
         resultados = self._modelo.consultarHistoricoConstantes(id_episodio, tipo, desde, hasta)
         self._vista.cargar_resultados(resultados) # Hacemos que la ventana de dialogo muestre los resultados
-    
-    
+
+    def generar_grafico(self, id_episodio, tipo, desde, hasta):
+        grafico = self._modelo.generarGrafico(id_episodio, tipo, desde, hasta)
+        if grafico:
+            self._vista.mostrar_grafico(grafico)
+
     def guardar_nueva_toma(self, id_empleado, id_tratamiento, observaciones):
         tomaVO =TomaVO(id_empleado, id_tratamiento, observaciones)
         self._modelo.guardarNuevaToma(tomaVO)

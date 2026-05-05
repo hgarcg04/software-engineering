@@ -513,7 +513,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedPanel">
         <property name="currentIndex">
-         <number>3</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page_inicio">
          <layout class="QVBoxLayout" name="inicioLayout">
@@ -809,22 +809,27 @@
                <widget class="QComboBox" name="combo_constante">
                 <item>
                  <property name="text">
-                  <string>Temperatura</string>
+                  <string>Temperatura (ºC)</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>Frecuencia cardíaca</string>
+                  <string>Frecuencia cardíaca (lpm)</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>Tensión arterial</string>
+                  <string>Presión sistólica (mmHg)</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>Saturación de oxígeno</string>
+                  <string>Presión diastólica (mmHg)</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Saturación de oxígeno (%)</string>
                  </property>
                 </item>
                </widget>

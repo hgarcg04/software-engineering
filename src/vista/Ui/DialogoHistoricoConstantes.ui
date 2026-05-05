@@ -154,22 +154,27 @@
       <widget class="QComboBox" name="combo_constante">
        <item>
         <property name="text">
-         <string>Frecuencia cardíaca</string>
+         <string>Temperatura (ºC)</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Temperatura</string>
+         <string>Frecuencia cardíaca (lpm)</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Saturación de oxígeno</string>
+         <string>Saturación de oxígeno (%)</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Tensión arterial</string>
+         <string>Presión sistólica (mmHg)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Presión diastólica (mmHg)</string>
         </property>
        </item>
       </widget>
@@ -291,7 +296,7 @@
         <bool>true</bool>
        </property>
        <property name="styleSheet">
-        <string notr="true"></string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Generar Gráfico</string>
