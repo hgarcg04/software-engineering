@@ -9,4 +9,7 @@ class TomaVO:
         self.id_ingreso = id_ingreso
         self.nombre = nombre
 
+
+        self.fecha_hora = f"{str(self.fecha)} - {str(self.hora)}"
+
         

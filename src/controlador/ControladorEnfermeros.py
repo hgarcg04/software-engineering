@@ -1,11 +1,12 @@
 from src.modelo.VO.UsuariosVO import UserVO
 from src.modelo.VO.ConstantesVO import ConstantesVO
 from src.modelo.VO.TomaVO import TomaVO
+from src.modelo.LogicaGraficas import LogicaGraficas
 
 class ControladorEnfermeros:
-    def __init__(self, vista, dao, user_vo):
+    def __init__(self, vista, modelo, user_vo):
         self._vista = vista
-        self._modelo = dao
+        self._modelo = modelo
         self.user_vo = user_vo
 
         self._cargar_pacientes()
@@ -48,6 +49,7 @@ class ControladorEnfermeros:
             Cambiamos la ref de la vista VentanaEnfermeros -> DialogoHistorico
         """
         self._vista = dialogo
+
     
     def set_ventana_enfermeros(self, ventana):
         """
@@ -64,7 +66,8 @@ class ControladorEnfermeros:
         self._vista.cargar_resultados(resultados) # Hacemos que la ventana de dialogo muestre los resultados
 
     def generar_grafico(self, id_episodio, tipo, desde, hasta):
-        grafico = self._modelo.generarGrafico(id_episodio, tipo, desde, hasta)
+        modelo = LogicaGraficas()
+        grafico = modelo.generarGrafico(id_episodio, tipo, desde, hasta)
         if grafico:
             self._vista.mostrar_grafico(grafico)
 

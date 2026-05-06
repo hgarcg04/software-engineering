@@ -1,10 +1,9 @@
 import sys
 import os
 
-
 from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QMainWindow, QButtonGroup, QMessageBox, QTableWidgetItem, QDialog, QVBoxLayout
-from PyQt5.QtCore import QTimer, QDateTime, Qt, pyqtSignal
+from PyQt5.QtWidgets import QTableWidgetItem, QDialog, QVBoxLayout
+from PyQt5.QtCore import QDateTime, Qt
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
