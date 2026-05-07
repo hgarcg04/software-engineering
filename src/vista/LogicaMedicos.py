@@ -207,6 +207,7 @@ class VentanaMedico(QMainWindow, Form):
                 tipo=self.combo_tipo_episodio.currentText(),
                 cita=self._cita_activa
             )
+        self._ir_inicio()
 
     def _ingresar_paciente(self):
         if self._controlador:
