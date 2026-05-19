@@ -115,6 +115,13 @@
            <property name="class" stdset="0"><string>navBtn</string></property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="btn_ingr">
+           <property name="text"><string>  Pacientes Ingresados</string></property>
+           <property name="checkable"><bool>true</bool></property>
+           <property name="class" stdset="0"><string>navBtn</string></property>
+          </widget>
+         </item>
          <item><spacer><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property></spacer></item>
         </layout>
        </widget>
@@ -346,6 +353,83 @@
           </item>
           <item><spacer><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property></spacer></item>
          </layout>
+        </widget>
+
+        <!-- PAGE 4: INGRESOS -->
+        <widget class="QWidget" name="page_ingresos">
+        <layout class="QVBoxLayout" name="ingresosLayout">
+        <property name="leftMargin"><number>30</number></property>
+        <property name="topMargin"><number>30</number></property>
+        <property name="rightMargin"><number>30</number></property>
+        <property name="bottomMargin"><number>30</number></property>
+        
+        <item><widget class="QLabel" name="lbl_ingresos_title"><property name="text"><string>Gestión de Planta e Ingresos</string></property></widget></item>
+        <item><widget class="QLabel" name="lbl_ingresos_sub"><property name="text"><string>Control de pacientes actualmente ingresados e historial reciente de altas</string></property></widget></item>
+        
+        <vspace size="10"/>
+
+        <item>
+        <layout class="QHBoxLayout" name="buscadorGlobalLayout">
+            <item>
+            <widget class="QLineEdit" name="txt_buscar_general">
+            <property name="placeholderText"><string>Buscar paciente por nombre, apellidos o DNI (en ingresados o altas)...</string></property>
+            </widget>
+            </item>
+            <item>
+            <widget class="QPushButton" name="btn_buscar_general">
+            <property name="text"><string>Buscar</string></property>
+            </widget>
+            </item>
+        </layout>
+        </item>
+        
+        <vspace size="15"/>
+
+        <item>
+        <widget class="QTabWidget" name="tabWidget_ingresos">
+            <property name="currentIndex"><number>0</number></property>
+            
+            <widget class="QWidget" name="tab_actuales">
+            <attribute name="title"><string>Actualmente Ingresados</string></attribute>
+            <layout class="QVBoxLayout" name="tabActualesLayout">
+            <item>
+            <widget class="QTableWidget" name="tabla_ingresos">
+                <property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property>
+                <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
+                <property name="columnCount"><number>4</number></property>
+                <attribute name="horizontalHeaderStretchLastSection"><bool>true</bool></attribute>
+                <column><property name="text"><string>ID Ingreso</string></property></column>
+                <column><property name="text"><string>Habitación / Cama</string></property></column>
+                <column><property name="text"><string>Paciente</string></property></column>
+                <column><property name="text"><string>Fecha Ingreso</string></property></column>
+            </widget>
+            </item>
+            </layout>
+            </widget>
+
+            <widget class="QWidget" name="tab_altas_recientes">
+            <attribute name="title"><string>Altas Recientes (Última semana)</string></attribute>
+            <layout class="QVBoxLayout" name="tabAltasLayout">
+            <item>
+            <widget class="QTableWidget" name="tabla_altas_recientes">
+                <property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property>
+                <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
+                <property name="columnCount"><number>5</number></property>
+                <attribute name="horizontalHeaderStretchLastSection"><bool>true</bool></attribute>
+                <column><property name="text"><string>ID Ingreso</string></property></column>
+                <column><property name="text"><string>Paciente</string></property></column>
+                <column><property name="text"><string>Fecha Ingreso</string></property></column>
+                <column><property name="text"><string>Fecha Alta</string></property></column>
+                <column><property name="text"><string>Motivo de Alta</string></property></column>
+            </widget>
+            </item>
+            </layout>
+            </widget>
+
+        </widget>
+        </item>
+        
+        </layout>
         </widget>
 
        </widget>

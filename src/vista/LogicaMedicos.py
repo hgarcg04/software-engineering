@@ -38,11 +38,13 @@ class VentanaMedico(QMainWindow, Form):
         self._btn_group.addButton(self.btn_nav_inicio)
         self._btn_group.addButton(self.btn_nav_agenda)
         self._btn_group.addButton(self.btn_nav_hcd)
+        self._btn_group.addButton(self.btn_ingr)
 
         # Navegación sidebar
         self.btn_nav_inicio.clicked.connect(self._ir_inicio)
         self.btn_nav_agenda.clicked.connect(self._ir_agenda)
         self.btn_nav_hcd.clicked.connect(self._ir_hcd)
+        self.btn_ingr.clicked.connect(self._ir_ingresos)
 
         # Inicio
         self.tabla_agenda_hoy.itemSelectionChanged.connect(self._on_cita_seleccionada)
@@ -82,6 +84,10 @@ class VentanaMedico(QMainWindow, Form):
     def _ir_hcd(self):
         self.stackedPanel.setCurrentIndex(2)
         self.btn_nav_hcd.setChecked(True)
+
+    def _ir_ingresos(self):
+        self.stackedPanel.setCurrentIndex(4)
+        self.btn_ingr.setChecked(True)
 
     # ── Inicio ───────────────────────────────────────────────────
 
