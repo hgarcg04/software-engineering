@@ -5,7 +5,7 @@ class CitasDaoJDBC(Conexion):
 
     SQL_AGENDA_HOY = """
         SELECT c.id_cita, c.fecha, c.hora, px.nombre, px.apellido1, px.apellido2,
-            c.motivo, px.id_paciente
+            c.motivo, px.id_paciente, px.hospitalizado
         FROM Citas as c
         INNER JOIN Pacientes as px ON c.id_paciente = px.id_paciente
         WHERE c.id_medico = ?
@@ -40,7 +40,8 @@ class CitasDaoJDBC(Conexion):
                     paciente_nombre=nombre_completo, # Atributo extra para la vista
                     motivo=row[6],
                     id_paciente=row[7],
-                    id_medico=userVO.id_empleado
+                    id_medico=userVO.id_empleado,
+                    hospitalizado=row[8]
                 )
                 citas.append(citaVO)
             return citas

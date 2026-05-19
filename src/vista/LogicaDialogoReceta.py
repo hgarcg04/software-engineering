@@ -59,20 +59,29 @@ class DialogoReceta(QDialog, Form):
         return QTableWidgetItem(str(texto))
 
     def _guardar(self):
-        # Validación básica
-        if not self.edit_dosis.text() or not self.edit_frecuencia.text():
-            QMessageBox.warning(self, "Campos vacíos", "Rellena al menos la dosis y la frecuencia.")
+        # Validación de contenidos vacíos
+        if not self.edit_dosis.text():
+            QMessageBox.warning(self, "Campos vacíos", "Rellena el campo de dosis.")
             return
         
-        if self.controlador:
-            self.controlador.guardar_receta(
-                id_medicamento=self._id_medicamento_seleccionado,
-                dosis=self.edit_dosis.text(),
-                frecuencia=self.edit_frecuencia.text(),
-                via=self.combo_via.currentText(),
-                fecha_inicio=self.date_inicio.date().toString('yyyy-MM-dd'),
-                fecha_fin=self.date_fin.date().toString('yyyy-MM-dd'),
-                notas=self.edit_notas.toPlainText(),
-                id_paciente=self._id_paciente
-            )
-        self.accept()
+        if not self.edit_frecuencia.text():
+            QMessageBox.warning(self, "Campos vacíos", "Rellena el campo de frecuencia.")
+            return
+        
+        try:
+            dosis = int(self.edit_dosis.text())
+            if self.controlador:
+                self.controlador.guardar_receta(
+                    id_medicamento=self._id_medicamento_seleccionado,
+                    dosis=dosis,
+                    frecuencia=self.edit_frecuencia.text(),
+                    via=self.combo_via.currentText(),
+                    fecha_inicio=self.date_inicio.date().toString('yyyy-MM-dd'),
+                    fecha_fin=self.date_fin.date().toString('yyyy-MM-dd'),
+                    notas=self.edit_notas.toPlainText(),
+                    id_paciente=self._id_paciente
+                )
+            self.accept()
+
+        except ValueError:
+            QMessageBox.warning(self, "Error de tipo", "La dosis debe ser un número entero.")
