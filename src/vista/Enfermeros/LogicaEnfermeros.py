@@ -16,15 +16,11 @@ from reportlab.lib import colors
 from reportlab.lib.units import cm
 
 
-
-
-
-
 from src.vista.LogicaDialogoConstantes import DialogoHistorico
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
-ui_path = os.path.join(os.path.dirname(__file__), "Ui/VistaEnfermero.ui")
+ui_path = os.path.join(os.path.dirname(__file__), "../Ui/VistaEnfermero.ui")
 
 
 
