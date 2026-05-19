@@ -90,7 +90,9 @@ class TomasDaoJDBC(Conexion):
         return None
 
     def obtener_tomas_epidio(self, PacienteVO):
-        cursor = self.getCursor()
+        """cursor = self.getCursor()
         try:
-            cursor.execute(self.SQL_SELECT_TOMAS_EPISODIO, (PacienteVO.id_epidio),)
+            cursor.execute(self.SQL_SELECT_TOMAS_EPISODIO, (PacienteVO.id_epidio),)"""
+        pass
+
         
