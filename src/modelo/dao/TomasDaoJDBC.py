@@ -93,6 +93,4 @@ class TomasDaoJDBC(Conexion):
         cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_SELECT_TOMAS_EPISODIO, (PacienteVO.id_epidio),)
-        except Exception as e:
-            print(e)
         
