@@ -8,3 +8,4 @@ class CitaVO:
         self.motivo = motivo
         self.paciente_nombre = paciente_nombre
         self.hospitalizado = hospitalizado
+        self.id_ingreso = None
