@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from PyQt5.QtCore import pyqtSignal, QTimer, QDateTime, QDate
 from PyQt5.QtWidgets import QButtonGroup, QTableWidgetItem
 from PyQt5 import uic
@@ -207,10 +207,24 @@ class VentanaMedico(QMainWindow, Form):
                 tipo=self.combo_tipo_episodio.currentText(),
                 cita=self._cita_activa
             )
+        self._ir_inicio()
 
     def _ingresar_paciente(self):
-        if self._controlador:
-            self._controlador.ingresar_paciente(self._cita_activa)
+
+        if self._cita_activa.hospitalizado:
+            QMessageBox.warning(self, "Operación inválida", f"El paciente {self._cita_activa.paciente_nombre} ya está hospitalizado.")
+        
+        else:
+            respuesta = QMessageBox.question(
+                self, "Confirmar ingresos",
+                f"Se van a ingresar al siguiente paciente {self._cita_activa.paciente_nombre}\n\n¿Deseas continuar?",
+                QMessageBox.Ok | QMessageBox.Cancel )
+
+            if respuesta == QMessageBox.Ok:
+                #pasamos la lista al controlador
+                if self._controlador:
+                    self._controlador.ingresar_paciente(self._cita_activa)
+
 
     # ── Agenda completa ──────────────────────────────────────────
 

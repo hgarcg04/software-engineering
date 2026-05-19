@@ -40,11 +40,7 @@ class ControladorMedicos:
 
     # ── Consulta ─────────────────────────────────────────────────
 
-    def abrir_seleccion_episodio(self, cita_vo):
-        """
-        Abre el diálogo para que el médico elija episodio existente o nuevo.
-        Llamado desde LogicaMedicos._abrir_consulta().
-        """
+    def abrir_seleccion_episodio(self, cita_vo): # Llamado por LogicaMedicos._abrir_consulta()
         episodios = self._modelo.obtenerEpisodios(cita_vo.id_paciente)
 
         dialogo = DialogoEpisodio(
