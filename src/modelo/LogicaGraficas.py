@@ -13,14 +13,37 @@ class LogicaGraficas:
     def obtenerConstantesComoDataFrame(self, id_episodio, tipo, desde, hasta):
         dao = ConstanteDaoJDBC()
         constantes = dao.consultar_historico(id_episodio, tipo, desde, hasta)
-        df = pd.DataFrame([{
+        df_constantes = pd.DataFrame([{
             'datetime': pd.to_datetime(str(c.fecha) + ' ' + str(c.hora)),
             'tipo': c.tipo,
             'valor': c.valor,
         } for c in constantes])
-        print(df)
-        return df
 
+        return df_constantes
+
+    def devolver_datos_grafico(self, id_episodio, tipo, desde, hasta):
+        tomas_prueba = [
+            (pd.Timestamp('2026-05-05 00:40:00'), 'Paracetamol 1g'),
+            (pd.Timestamp('2026-05-05 00:38:00'), 'Ibuprofeno 650mg'),
+        ]
+        rangos = {
+            'normal': (36.0, 37.5),
+            'aviso': (37.5, 38.5),
+            'peligro_bajo': (35.0, 36.0),
+            'peligro_alto': (38.5, 42.0)
+        }
+
+        df_constantes = self.obtenerConstantesComoDataFrame(id_episodio, tipo, desde, hasta)
+
+        if df_constantes.empty:
+            print(f"No hay datos para {tipo} en el rango indicado.")
+            return
+
+        df_constantes = df_constantes.sort_values('datetime')
+
+        return df_constantes, tomas_prueba, rangos
+
+"""
     def generarGrafico(self, id_episodio, tipo, desde, hasta):
 
         tomas_prueba = [
@@ -92,6 +115,6 @@ class LogicaGraficas:
         plt.setp(ax.xaxis.get_majorticklabels(), rotation=30, ha='right')
         fig.tight_layout()
         return fig
-
+"""
     #def obtenerTomasComoDataFrame(self, id_episodio, tipo, desde, hasta):
 

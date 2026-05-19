@@ -89,10 +89,11 @@ class TomasDaoJDBC(Conexion):
         
         return None
 
-    def obtener_tomas_epidio(self, PacienteVO):
-        cursor = self.getCursor()
+    def obtener_tomas_episodio(self, PacienteVO):
+        """cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_SELECT_TOMAS_EPISODIO, (PacienteVO.id_epidio),)
         except Exception as e:
             print("Error al obtener las tomas de episodio: ", e)
-        
+            
+        """

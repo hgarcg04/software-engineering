@@ -1,7 +1,8 @@
-from src.modelo.VO.UsuariosVO import UserVO
+from vista.Enfermeros import LogicaGenerarGrafica
 from src.modelo.VO.ConstantesVO import ConstantesVO
 from src.modelo.VO.TomaVO import TomaVO
 from src.modelo.LogicaGraficas import LogicaGraficas
+from src.vista.Enfermeros.LogicaGenerarGrafica import LogicaGenerarGrafica
 
 class ControladorEnfermeros:
     def __init__(self, vista, modelo, user_vo):
@@ -67,9 +68,10 @@ class ControladorEnfermeros:
 
     def generar_grafico(self, id_episodio, tipo, desde, hasta):
         modelo = LogicaGraficas()
-        grafico = modelo.generarGrafico(id_episodio, tipo, desde, hasta)
-        if grafico:
-            self._vista.mostrar_grafico(grafico)
+        vista = LogicaGenerarGrafica()
+
+        df_constantes, tomas_prueba, rangos = modelo.devolver_datos_grafico(id_episodio, tipo, desde, hasta)
+        vista.generar_grafico(df_constantes, tomas_prueba, rangos, id_episodio, tipo)
 
     def guardar_nueva_toma(self, id_empleado, id_tratamiento, observaciones):
         tomaVO =TomaVO(id_empleado, id_tratamiento, observaciones)
