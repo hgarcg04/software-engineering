@@ -211,10 +211,16 @@
         background-color: #ffffff;
         border: 1px solid #dde3ea;
         border-radius: 10px;
-        font-family: 'Segoe UI Semibold';
-        font-size: 13px;
-        color: #2d3436;
         padding-top: 8px;
+    }
+    #groupBox_tablon::title {
+        font-family: 'Segoe UI Black';
+        font-size: 22px;
+        font-weight: bold;
+        color: #2d3436;
+        subcontrol-origin: margin;
+        subcontrol-position: top left;
+        padding: 0 8px;
     }
     #list_tablon {
         background-color: #f8fafc;
@@ -599,13 +605,13 @@
           <property name="bottomMargin"><number>30</number></property>
           <property name="spacing"><number>12</number></property>
           <item>
-           <widget class="QLabel" name="lbl_section_title">
-            <property name="class" stdset="0"><string>sectionTitle</string></property>
+           <widget class="QLabel" name="lbl_bienvenida_titulo">
             <property name="text"><string>Bienvenido/a al Panel Administrativo</string></property>
+            <property name="styleSheet"><string>font-family: 'Segoe UI Black'; font-size: 22px; font-weight: bold; color: #2d3436;</string></property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="lbl_section_sub">
+           <widget class="QLabel" name="lbl_bienvenida_sub">
             <property name="class" stdset="0"><string>sectionSub</string></property>
             <property name="text"><string>Selecciona una opción del menú para comenzar.</string></property>
            </widget>

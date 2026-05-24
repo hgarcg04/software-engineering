@@ -3,6 +3,7 @@
 
 from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
 from PyQt5.QtCore import QDate
+from src.vista.LogicaDialogoCalendario import DialogCalendario
 
 PAGE_PACIENTES = 1
 
@@ -27,7 +28,7 @@ class LogicaCitas:
         self.combo_especialidad.currentIndexChanged.connect(self._on_especialidad_cambiada)
         # IMPORTANTE: combo_medico_cita NO conecta a limpiar_horas para no
         # borrar las horas cargadas nada más seleccionar médico
-        self.btn_consultar_disponibilidad.clicked.connect(self._on_consultar_disponibilidad)
+        self.btn_consultar_disponibilidad.clicked.connect(self._on_abrir_calendario)
         self.btn_asignar_cita.clicked.connect(self._on_asignar_cita)
 
         # ── CU9 ──────────────────────────────────────────────────────────────
@@ -58,11 +59,14 @@ class LogicaCitas:
         if self._controlador:
             self._controlador.filtrar_medicos(especialidad)
 
-    def _on_consultar_disponibilidad(self):
+    def _on_abrir_calendario(self):
+        """Abre el diálogo de calendario semanal para elegir fecha y hora."""
         id_medico = self.combo_medico_cita.currentData()
-        fecha = self.input_fecha_cita.date().toPyDate()
+        if not id_medico:
+            QMessageBox.warning(self, "Sin médico", "Selecciona un médico primero.")
+            return
         if self._controlador:
-            self._controlador.consultar_disponibilidad(id_medico, fecha)
+            self._controlador.abrir_calendario(id_medico)
 
     def _on_asignar_cita(self):
         id_medico = self.combo_medico_cita.currentData()
@@ -73,6 +77,24 @@ class LogicaCitas:
             self._controlador.asignar_cita(id_medico, fecha, hora, motivo)
 
     # ── Métodos llamados por el controlador ───────────────────────────────────
+
+    def abrir_calendario_dialogo(self, id_medico, nombre_medico, modelo):
+        """
+        Instancia y abre el DialogCalendario modal.
+        Cuando el usuario elige una celda libre, rellena fecha y hora en el formulario.
+        """
+        dialogo = DialogCalendario(id_medico, nombre_medico, modelo, parent=self)
+        dialogo.hora_seleccionada.connect(self._on_hora_desde_calendario)
+        dialogo.exec_()
+
+    def _on_hora_desde_calendario(self, fecha, hora):
+        """Recibe fecha y hora del calendario y las vuelca en los widgets del formulario."""
+        from PyQt5.QtCore import QDate
+        self.input_fecha_cita.setDate(QDate(fecha.year, fecha.month, fecha.day))
+        # Cargar la hora directamente en el combo
+        self.combo_hora_cita.clear()
+        self.combo_hora_cita.addItem(hora, hora)
+        self.btn_asignar_cita.setEnabled(True)
 
     def cargar_especialidades(self, lista_especialidades):
         """Puebla el combo de especialidades."""

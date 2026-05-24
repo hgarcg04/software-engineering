@@ -10,6 +10,7 @@ class ControladorAdministrativos:
 
         # Estado interno de selección
         self._pacientes_busqueda = []
+        self._medicos_busqueda_cache = []  # caché de médicos cargados en el combo
         self._paciente_cita = None
         self._medicos_busqueda = []
         self._medico_agenda_id = None
@@ -53,6 +54,7 @@ class ControladorAdministrativos:
 
     def _filtrar_medicos_en_vista(self, especialidad):
         medicos = self._modelo.obtenerMedicosPorEspecialidad(especialidad)
+        self._medicos_busqueda_cache = medicos  # caché para recuperar nombre en abrir_calendario
         self._vista.cargar_medicos(medicos)
 
     def limpiar_horas(self):
@@ -84,24 +86,14 @@ class ControladorAdministrativos:
         self._paciente_cita = None
         self._vista.limpiar_seleccion_paciente()
 
-    def consultar_disponibilidad(self, id_medico, fecha):
-        if not id_medico:
-            self._vista.mostrar_error("Sin médico", "Selecciona un médico primero.")
-            return
-
-        horas = self._modelo.consultarDisponibilidad(id_medico, fecha)
-
-        if horas is None:
-            # El día está bloqueado en BloqueosAgenda
-            self._vista.mostrar_info("Día bloqueado",
-                                     "El médico tiene la agenda bloqueada ese día.")
-            self._vista.limpiar_horas()
-        elif not horas:
-            self._vista.mostrar_info("Sin huecos",
-                                     "No hay horas disponibles para ese día.")
-            self._vista.limpiar_horas()
-        else:
-            self._vista.cargar_horas_disponibles(horas)
+    def abrir_calendario(self, id_medico):
+        """Busca el nombre del médico seleccionado y abre el calendario semanal."""
+        nombre_medico = ""
+        for m in self._medicos_busqueda_cache:
+            if m[0] == id_medico:
+                nombre_medico = f"{m[2]}, {m[1]}"
+                break
+        self._vista.abrir_calendario_dialogo(id_medico, nombre_medico, self._modelo)
 
     def asignar_cita(self, id_medico, fecha, hora, motivo):
         if not self._paciente_cita:

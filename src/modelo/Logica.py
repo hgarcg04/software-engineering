@@ -113,6 +113,14 @@ class Logica():
         dao = CitasDaoJDBC()
         return dao.consultar_disponibilidad(id_medico, fecha)
 
+    def obtenerCitasSemana(self, id_medico, fecha_inicio, fecha_fin):
+        dao = CitasDaoJDBC()
+        return dao.obtener_citas_semana(id_medico, fecha_inicio, fecha_fin)
+
+    def obtenerDiasBloqueadosSemana(self, id_medico, fecha_inicio, fecha_fin):
+        dao = CitasDaoJDBC()
+        return dao.obtener_dias_bloqueados_semana(id_medico, fecha_inicio, fecha_fin)
+
     def asignarCita(self, id_paciente, id_medico, fecha, hora, motivo):
         dao = CitasDaoJDBC()
         dao.asignar_cita(id_paciente, id_medico, fecha, hora, motivo)

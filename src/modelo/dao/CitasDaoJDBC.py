@@ -43,16 +43,19 @@ class CitasDaoJDBC(Conexion):
         ORDER BY p.apellidos ASC
     """
 
-    # Horas ya ocupadas por citas confirmadas para un médico en una fecha
-    SQL_HORAS_OCUPADAS = """
-        SELECT hora
-        FROM Citas
-        WHERE id_medico = ? AND fecha = ?
+    # Citas ya confirmadas para un médico en una semana (para el calendario)
+    SQL_CITAS_SEMANA = """
+        SELECT c.fecha, c.hora, px.nombre, px.apellido1, px.apellido2, c.motivo
+        FROM Citas AS c
+        INNER JOIN Pacientes AS px ON c.id_paciente = px.id_paciente
+        WHERE c.id_medico = ?
+        AND c.fecha BETWEEN ? AND ?
+        ORDER BY c.fecha ASC, c.hora ASC
     """
 
     # Comprueba si la fecha cae dentro de algún bloqueo manual del médico
     SQL_DIA_BLOQUEADO = """
-        SELECT 1
+        SELECT fecha_inicio, fecha_fin
         FROM BloqueosAgenda
         WHERE id_medico = ?
         AND ? BETWEEN fecha_inicio AND fecha_fin
@@ -160,39 +163,84 @@ class CitasDaoJDBC(Conexion):
             print("Error obteniendo médicos:", e)
             return []
 
-    def consultar_disponibilidad(self, id_medico, fecha):
-        # Devuelve las horas libres del médico en esa fecha (franjas de 30 min, 08:00-14:00)
-        # Devuelve None si el día entero está bloqueado manualmente
+    @staticmethod
+    def _hora_a_str(valor):
+        """
+        Convierte el valor de hora devuelto por jaydebeapi/JDBC a string 'HH:MM'.
+        JDBC devuelve java.sql.Time, que jaydebeapi convierte a datetime.time o str
+        con formato variable ('HH:MM:SS' o 'HH:MM'). Normalizamos siempre a 'HH:MM'.
+        """
+        if valor is None:
+            return None
+        s = str(valor)
+        # Elimina microsegundos si los hay: '08:00:00.0' → '08:00:00'
+        s = s.split('.')[0]
+        # Toma solo HH:MM
+        partes = s.strip().split(':')
+        if len(partes) >= 2:
+            return f"{partes[0].zfill(2)}:{partes[1].zfill(2)}"
+        return s[:5]
+
+    def obtener_citas_semana(self, id_medico, fecha_inicio, fecha_fin):
+        """
+        Devuelve lista de dicts con las citas de la semana para el calendario.
+        Cada dict: {fecha, hora, paciente, motivo}
+        """
         cursor = self.getCursor()
         try:
-            cursor.execute(self.SQL_DIA_BLOQUEADO, (id_medico, fecha))
-            if cursor.fetchone():
-                return None
-
-            cursor.execute(self.SQL_HORAS_OCUPADAS, (id_medico, fecha))
-            horas_ocupadas = {str(row[0])[:5] for row in cursor.fetchall()}
-
-            franjas = [
-                f"{h:02d}:{m:02d}"
-                for h in range(8, 15)
-                for m in (0, 30)
-                if not (h == 14 and m == 30)
-            ]
-            return [h for h in franjas if h not in horas_ocupadas]
+            cursor.execute(self.SQL_CITAS_SEMANA, (id_medico, str(fecha_inicio), str(fecha_fin)))
+            rows = cursor.fetchall()
+            citas = []
+            for row in rows:
+                citas.append({
+                    'fecha': str(row[0]),
+                    'hora':  self._hora_a_str(row[1]),
+                    'paciente': f"{row[2]} {row[3]} {row[4]}".strip(),
+                    'motivo': row[5] or ''
+                })
+            return citas
         except Exception as e:
-            print("Error consultando disponibilidad:", e)
+            print("Error obteniendo citas semana:", e)
             return []
 
+    def obtener_dias_bloqueados_semana(self, id_medico, fecha_inicio, fecha_fin):
+        """
+        Devuelve el conjunto de fechas (str 'YYYY-MM-DD') bloqueadas en la semana.
+        """
+        cursor = self.getCursor()
+        try:
+            # Traemos todos los bloqueos que solapan con la semana
+            cursor.execute("""
+                SELECT fecha_inicio, fecha_fin
+                FROM BloqueosAgenda
+                WHERE id_medico = ?
+                AND fecha_fin >= ? AND fecha_inicio <= ?
+            """, (id_medico, str(fecha_inicio), str(fecha_fin)))
+            rows = cursor.fetchall()
+            from datetime import date, timedelta
+            bloqueados = set()
+            semana = [fecha_inicio + timedelta(days=i)
+                      for i in range((fecha_fin - fecha_inicio).days + 1)]
+            for row in rows:
+                fi = row[0] if isinstance(row[0], date) else date.fromisoformat(str(row[0]))
+                ff = row[1] if isinstance(row[1], date) else date.fromisoformat(str(row[1]))
+                for d in semana:
+                    if fi <= d <= ff:
+                        bloqueados.add(str(d))
+            return bloqueados
+        except Exception as e:
+            print("Error obteniendo días bloqueados:", e)
+            return set()
+
     def asignar_cita(self, id_paciente, id_medico, fecha, hora, motivo):
-        # Inserta la cita y confirma la transacción. Devuelve (bool, mensaje)
+        # Inserta la cita. Fechas y horas se pasan como str porque jaydebeapi
+        # no acepta datetime.date directamente con el driver MSSQL JDBC.
         cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_INSERTAR_CITA,
-                           (id_paciente, id_medico, fecha, hora, motivo))
-            self.conexion.commit()
+                           (id_paciente, id_medico, str(fecha), str(hora), motivo))
             return True, "Cita asignada correctamente."
         except Exception as e:
-            self.conexion.rollback()
             print("Error asignando cita:", e)
             return False, f"Error al asignar la cita: {e}"
 
@@ -214,7 +262,7 @@ class CitasDaoJDBC(Conexion):
         cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_CITAS_EN_RANGO,
-                           (id_medico, fecha_inicio, fecha_fin))
+                           (id_medico, str(fecha_inicio), str(fecha_fin)))
             row = cursor.fetchone()
             return row and row[0] > 0
         except Exception as e:
@@ -222,14 +270,12 @@ class CitasDaoJDBC(Conexion):
             return False
 
     def bloquear_agenda(self, id_medico, fecha_inicio, fecha_fin, motivo, observaciones):
-        # Inserta el bloqueo y confirma la transacción. Devuelve (bool, mensaje)
+        # Inserta el bloqueo. Fechas como str por compatibilidad con jaydebeapi/JDBC.
         cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_INSERTAR_BLOQUEO,
-                           (id_medico, fecha_inicio, fecha_fin, motivo, observaciones))
-            self.conexion.commit()
+                           (id_medico, str(fecha_inicio), str(fecha_fin), motivo, observaciones))
             return True, "Agenda bloqueada correctamente."
         except Exception as e:
-            self.conexion.rollback()
             print("Error bloqueando agenda:", e)
             return False, f"Error al bloquear la agenda: {e}"
