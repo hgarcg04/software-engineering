@@ -1,4 +1,4 @@
-from vista.Enfermeros import LogicaGenerarGrafica
+from src.vista.Enfermeros import LogicaGenerarGrafica
 from src.modelo.VO.ConstantesVO import ConstantesVO
 from src.modelo.VO.TomaVO import TomaVO
 from src.modelo.LogicaGraficas import LogicaGraficas

@@ -11,8 +11,6 @@ from src.modelo.dao.EpisodiosDaoJDBC import EpisodiosDaoJDBC
 
 
 
-
-
 class Logica():
     
     def comprobarLogin(self, loginVO):
@@ -97,9 +95,36 @@ class Logica():
 
     def registrarPaciente(self, pacienteVO):
         dao = PacientesDaoJDBC()
-        if dao.existe_paciente(pacienteVO.nif):
-            return False, "El paciente ya está registrado"
-        
         dao.registrar_paciente(pacienteVO)
-        return True, "Paciente registrado correctamente"
 
+    def existePaciente(self, nif):
+        dao = PacientesDaoJDBC()
+        return dao.existe_paciente(nif)
+
+    def obtenerEspecialidades(self):
+        dao = CitasDaoJDBC()
+        return dao.obtener_especialidades()
+
+    def obtenerMedicosPorEspecialidad(self, especialidad=None):
+        dao = CitasDaoJDBC()
+        return dao.obtener_medicos_por_especialidad(especialidad)
+
+    def consultarDisponibilidad(self, id_medico, fecha):
+        dao = CitasDaoJDBC()
+        return dao.consultar_disponibilidad(id_medico, fecha)
+
+    def asignarCita(self, id_paciente, id_medico, fecha, hora, motivo):
+        dao = CitasDaoJDBC()
+        dao.asignar_cita(id_paciente, id_medico, fecha, hora, motivo)
+
+    def buscarMedico(self, texto):
+        dao = CitasDaoJDBC()
+        return dao.buscar_medico(texto)
+
+    def bloquearAgenda(self, id_medico, fecha_inicio, fecha_fin, motivo, observaciones):
+        dao = CitasDaoJDBC()
+        dao.bloquear_agenda(id_medico, fecha_inicio, fecha_fin, motivo, observaciones)
+
+    def hayCitasEnRango(self, id_medico, fecha_inicio, fecha_fin):
+        dao = CitasDaoJDBC()
+        return dao.hay_citas_en_rango(id_medico, fecha_inicio, fecha_fin)
