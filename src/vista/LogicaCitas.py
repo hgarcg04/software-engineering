@@ -22,9 +22,12 @@ class LogicaCitas:
         self.input_fecha_cita.setDate(QDate.currentDate())
 
         # ── CU4 ──────────────────────────────────────────────────────────────
-        self.btn_buscar_paciente.clicked.connect(self._on_buscar_paciente)
+        # Filtrado en tiempo real al escribir en el buscador
+        self.search_bar.textChanged.connect(self._on_texto_busqueda_cambiado)
         self.tabla_pacientes_cita.itemSelectionChanged.connect(self._on_paciente_seleccionado)
         self.btn_deseleccionar.clicked.connect(self._on_deseleccionar_paciente)
+        self.btn_paciente_no_encontrado.clicked.connect(self._on_paciente_no_encontrado)
+        self.btn_paciente_no_encontrado.setVisible(False)
         self.combo_especialidad.currentIndexChanged.connect(self._on_especialidad_cambiada)
         # IMPORTANTE: combo_medico_cita NO conecta a limpiar_horas para no
         # borrar las horas cargadas nada más seleccionar médico
@@ -41,10 +44,15 @@ class LogicaCitas:
     # CU4: Asignar Citas — callbacks
     # ═════════════════════════════════════════════════════════════════════════
 
-    def _on_buscar_paciente(self):
-        texto = self.search_bar.text().strip()
+    def _on_texto_busqueda_cambiado(self, texto):
+        """Delega el filtrado al controlador cada vez que cambia el texto."""
         if self._controlador:
-            self._controlador.buscar_paciente_cita(texto)
+            self._controlador.filtrar_pacientes(texto)
+
+    def _on_paciente_no_encontrado(self):
+        """El controlador decide la redirección; la vista solo captura el evento."""
+        if self._controlador:
+            self._controlador.ir_a_registro_paciente()
 
     def _on_paciente_seleccionado(self):
         fila = self.tabla_pacientes_cita.currentRow()
@@ -136,14 +144,18 @@ class LogicaCitas:
         self.tabla_pacientes_cita.resizeColumnsToContents()
 
     def mostrar_paciente_seleccionado(self, nombre_completo):
+        """Actualiza el nombre en el frame; el frame siempre es visible."""
         self.lbl_paciente_sel_nombre.setText(nombre_completo)
-        self.frame_paciente_seleccionado.setVisible(True)
 
     def limpiar_seleccion_paciente(self):
-        self.lbl_paciente_sel_nombre.setText("")
-        self.frame_paciente_seleccionado.setVisible(False)
+        """Resetea el nombre a 'Ninguno' sin ocultar el frame ni el botón deseleccionar."""
+        self.lbl_paciente_sel_nombre.setText("Ninguno")
         self.tabla_pacientes_cita.setRowCount(0)
         self.search_bar.clear()
+
+    def mostrar_btn_no_encontrado(self, visible):
+        """Muestra u oculta el botón de paciente no encontrado según el resultado."""
+        self.btn_paciente_no_encontrado.setVisible(visible)
 
     def cargar_horas_disponibles(self, lista_horas):
         """
@@ -181,17 +193,11 @@ class LogicaCitas:
         self.combo_medico_cita.setCurrentIndex(0)
         self.input_fecha_cita.setDate(__import__('PyQt5.QtCore', fromlist=['QDate']).QDate.currentDate())
         self.btn_asignar_cita.setEnabled(False)
+        self.btn_paciente_no_encontrado.setVisible(False)
 
-    def redirigir_a_registro_paciente(self):
-        """Ofrece ir a registrar el paciente si no se encuentra en la BD."""
-        resp = QMessageBox.question(
-            self, "Paciente no encontrado",
-            "No se encontró ningún paciente con ese criterio.\n"
-            "¿Deseas registrar un nuevo paciente ahora?",
-            QMessageBox.Yes | QMessageBox.No
-        )
-        if resp == QMessageBox.Yes:
-            self._navegar(PAGE_PACIENTES)
+    def navegar_a_registro(self):
+        """Llamado por el controlador para ir a la pestaña de registro de paciente."""
+        self._navegar(PAGE_PACIENTES)
 
     # ═════════════════════════════════════════════════════════════════════════
     # CU9: Bloquear Agenda — callbacks

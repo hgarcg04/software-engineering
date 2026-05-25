@@ -44,10 +44,11 @@ class ControladorAdministrativos:
     # ── CU4: Asignar Citas ────────────────────────────────────────────────────
 
     def inicializar_combos_cita(self):
-        """Carga especialidades y médicos al entrar en la pestaña de Citas."""
+        """Carga especialidades, médicos y todos los pacientes al entrar en Citas."""
         especialidades = self._modelo.obtenerEspecialidades()
         self._vista.cargar_especialidades(especialidades)
         self._filtrar_medicos_en_vista(None)
+        self.cargar_todos_pacientes()
 
     def filtrar_medicos(self, especialidad):
         self._filtrar_medicos_en_vista(especialidad)
@@ -60,22 +61,36 @@ class ControladorAdministrativos:
     def limpiar_horas(self):
         self._vista.limpiar_horas()
 
-    def buscar_paciente_cita(self, texto):
+    def cargar_todos_pacientes(self):
+        """Carga todos los pacientes al entrar en la pestaña de Citas."""
+        todos = self._modelo.buscarPaciente("")
+        self._pacientes_busqueda = todos
+        self._vista.cargar_resultados_busqueda_paciente(todos)
+        self._vista.mostrar_btn_no_encontrado(False)
+
+    def filtrar_pacientes(self, texto):
         """
-        Busca pacientes. Si no hay resultados ofrece ir a registro (extensión CU4).
+        Filtra la lista de pacientes localmente a medida que el usuario escribe.
+        Si no hay resultados muestra el botón de paciente no encontrado.
         """
-        if not texto:
-            self._vista.mostrar_error("Búsqueda vacía",
-                                      "Introduce un NIF, nombre o apellido.")
+        if not texto.strip():
+            # Sin texto: mostrar todos
+            self._vista.cargar_resultados_busqueda_paciente(self._pacientes_busqueda)
+            self._vista.mostrar_btn_no_encontrado(False)
             return
 
-        resultados = self._modelo.buscarPaciente(texto)
-        if not resultados:
-            self._vista.redirigir_a_registro_paciente()
-            return
+        texto_lower = texto.lower()
+        filtrados = [
+            p for p in self._pacientes_busqueda
+            if texto_lower in p.nif.lower()
+            or texto_lower in p.nombre.lower()
+            or texto_lower in (p.apellido1 or "").lower()
+            or texto_lower in (p.apellido2 or "").lower()
+        ]
 
-        self._pacientes_busqueda = resultados
-        self._vista.cargar_resultados_busqueda_paciente(resultados)
+        self._vista.cargar_resultados_busqueda_paciente(filtrados)
+        # Mostrar botón no encontrado solo si la búsqueda activa no da resultados
+        self._vista.mostrar_btn_no_encontrado(len(filtrados) == 0)
 
     def seleccionar_paciente(self, fila):
         if fila < len(self._pacientes_busqueda):
@@ -85,6 +100,11 @@ class ControladorAdministrativos:
     def deseleccionar_paciente(self):
         self._paciente_cita = None
         self._vista.limpiar_seleccion_paciente()
+        self.cargar_todos_pacientes()
+
+    def ir_a_registro_paciente(self):
+        """Redirige a la pestaña de registro cuando el paciente no existe."""
+        self._vista.navegar_a_registro()
 
     def abrir_calendario(self, id_medico):
         """Busca el nombre del médico seleccionado y abre el calendario semanal."""
@@ -123,12 +143,13 @@ class ControladorAdministrativos:
         self._modelo.asignarCita(self._paciente_cita.id_paciente, id_medico, fecha, hora)
         self._paciente_cita = None
         self._vista.confirmar_cita_asignada()
+        self.cargar_todos_pacientes()
 
     def limpiar_formulario_cita(self):
         """Resetea todos los campos de la pestaña de citas al estado inicial."""
         self._paciente_cita = None
-        self._pacientes_busqueda = []
         self._vista._limpiar_todo_citas()
+        self.cargar_todos_pacientes()
 
     # ── CU9: Bloquear Agenda ──────────────────────────────────────────────────
 

@@ -194,6 +194,18 @@
     }
 
     /* === Botones de acción neutral === */
+    #btn_paciente_no_encontrado {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffc107;
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-family: 'Segoe UI Semibold';
+        font-size: 13px;
+        text-align: left;
+    }
+    #btn_paciente_no_encontrado:hover { background-color: #ffe69c; }
+
     #btn_limpiar_formulario, #btn_cancelar, #btn_nuevo_paciente, #btn_limpiar_cita {
         background-color: #dfe6e9;
         color: #2d3436;
@@ -931,6 +943,13 @@
               <column><property name="text"><string>DNI</string></property></column>
               <column><property name="text"><string>Paciente</string></property></column>
               <column><property name="text"><string>Nº Expediente</string></property></column>
+             </widget>
+            </item>
+            <!-- Botón que aparece solo cuando la búsqueda no da resultados -->
+            <item>
+             <widget class="QPushButton" name="btn_paciente_no_encontrado">
+              <property name="text"><string>Paciente no encontrado — Registrar nuevo paciente</string></property>
+              <property name="visible"><bool>false</bool></property>
              </widget>
             </item>
            </layout>

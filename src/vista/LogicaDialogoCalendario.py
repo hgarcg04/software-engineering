@@ -5,7 +5,7 @@ Cada celda puede estar: libre (verde), ocupada (rojo) o bloqueada (gris).
 Al hacer clic en una celda libre, emite la señal hora_seleccionada(fecha, hora).
 """
 
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QGridLayout,
     QPushButton, QLabel, QFrame, QSizePolicy, QWidget
@@ -20,6 +20,7 @@ FRANJAS = [f"{h:02d}:{m:02d}" for h in range(8, 15) for m in (0, 30)
 COLOR_LIBRE    = "#d8f3ed"
 COLOR_OCUPADA  = "#fde8e8"
 COLOR_BLOQUEADA= "#e8e8e8"
+COLOR_PASADA   = "#ececec"
 COLOR_HOVER    = "#00b894"
 BORDER_LIBRE   = "#00b894"
 BORDER_OCUPADA = "#e17055"
@@ -196,12 +197,22 @@ class DialogCalendario(QDialog):
         btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         btn.setMinimumHeight(36)
 
-        if bloqueado:
-            btn.setText("Bloqueado")
+        # Comprobar si la franja horaria ya ha pasado (solo relevante para hoy)
+        pasada = False
+        hoy = date.today()
+        if fecha == hoy and not bloqueado and not ocupada:
+            h, m = int(hora.split(':')[0]), int(hora.split(':')[1])
+            ahora = datetime.now()
+            if (ahora.hour, ahora.minute) >= (h, m):
+                pasada = True
+
+        if bloqueado or pasada:
+            btn.setText("Bloqueado" if bloqueado else "Pasada")
             btn.setEnabled(False)
-            estilo_base = (f"background:{COLOR_BLOQUEADA}; color:#888;"
+            color = COLOR_BLOQUEADA if bloqueado else COLOR_PASADA
+            estilo_base = (f"background:{color}; color:#aaa;"
                            f"border:1px solid {BORDER_BLOQUEADA}; border-radius:6px;"
-                           "font-size:11px;")
+                           "font-size:11px; font-style: italic;")
             btn.setStyleSheet(estilo_base)
         elif ocupada:
             # Mostrar nombre del paciente truncado
