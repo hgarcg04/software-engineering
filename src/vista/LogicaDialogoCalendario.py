@@ -1,10 +1,3 @@
-"""
-DialogCalendario — ventana modal con el calendario semanal del médico.
-Muestra 5 días (lun-vie) × franjas horarias (08:00-14:00 cada 30 min).
-Cada celda puede estar: libre (verde), ocupada (rojo) o bloqueada (gris).
-Al hacer clic en una celda libre, emite la señal hora_seleccionada(fecha, hora).
-"""
-
 from datetime import date, timedelta, datetime
 from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QGridLayout,
@@ -197,14 +190,19 @@ class DialogCalendario(QDialog):
         btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         btn.setMinimumHeight(36)
 
-        # Comprobar si la franja horaria ya ha pasado (solo relevante para hoy)
+        # Comprobar si la franja horaria ya ha pasado
         pasada = False
         hoy = date.today()
-        if fecha == hoy and not bloqueado and not ocupada:
-            h, m = int(hora.split(':')[0]), int(hora.split(':')[1])
-            ahora = datetime.now()
-            if (ahora.hour, ahora.minute) >= (h, m):
+        if not bloqueado and not ocupada:
+            if fecha < hoy:
+                # Día anterior: todas las franjas bloqueadas
                 pasada = True
+            elif fecha == hoy:
+                # Hoy: solo las franjas cuya hora ya pasó
+                h, m = int(hora.split(':')[0]), int(hora.split(':')[1])
+                ahora = datetime.now()
+                if (ahora.hour, ahora.minute) >= (h, m):
+                    pasada = True
 
         if bloqueado or pasada:
             btn.setText("Bloqueado" if bloqueado else "Pasada")
