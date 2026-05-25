@@ -30,6 +30,7 @@ class LogicaCitas:
         # borrar las horas cargadas nada más seleccionar médico
         self.btn_consultar_disponibilidad.clicked.connect(self._on_abrir_calendario)
         self.btn_asignar_cita.clicked.connect(self._on_asignar_cita)
+        self.btn_limpiar_cita.clicked.connect(self._on_limpiar_cita)
 
         # ── CU9 ──────────────────────────────────────────────────────────────
         self.btn_buscar_medico.clicked.connect(self._on_buscar_medico)
@@ -72,9 +73,8 @@ class LogicaCitas:
         id_medico = self.combo_medico_cita.currentData()
         hora = self.combo_hora_cita.currentData()
         fecha = self.input_fecha_cita.date().toPyDate()
-        motivo = self.input_motivo_cita.text().strip()
         if self._controlador:
-            self._controlador.asignar_cita(id_medico, fecha, hora, motivo)
+            self._controlador.asignar_cita(id_medico, fecha, hora)
 
     # ── Métodos llamados por el controlador ───────────────────────────────────
 
@@ -95,6 +95,10 @@ class LogicaCitas:
         self.combo_hora_cita.clear()
         self.combo_hora_cita.addItem(hora, hora)
         self.btn_asignar_cita.setEnabled(True)
+
+    def _on_limpiar_cita(self):
+        if self._controlador:
+            self._controlador.limpiar_formulario_cita()
 
     def cargar_especialidades(self, lista_especialidades):
         """Puebla el combo de especialidades."""
@@ -167,9 +171,16 @@ class LogicaCitas:
 
     def confirmar_cita_asignada(self):
         QMessageBox.information(self, "Cita asignada", "La cita se ha asignado correctamente.")
+        self._limpiar_todo_citas()
+
+    def _limpiar_todo_citas(self):
+        """Resetea todos los campos de la pestaña de citas a su estado inicial."""
         self.limpiar_seleccion_paciente()
-        self.input_motivo_cita.clear()
         self.limpiar_horas()
+        self.combo_especialidad.setCurrentIndex(0)
+        self.combo_medico_cita.setCurrentIndex(0)
+        self.input_fecha_cita.setDate(__import__('PyQt5.QtCore', fromlist=['QDate']).QDate.currentDate())
+        self.btn_asignar_cita.setEnabled(False)
 
     def redirigir_a_registro_paciente(self):
         """Ofrece ir a registrar el paciente si no se encuentra en la BD."""

@@ -95,7 +95,7 @@ class ControladorAdministrativos:
                 break
         self._vista.abrir_calendario_dialogo(id_medico, nombre_medico, self._modelo)
 
-    def asignar_cita(self, id_medico, fecha, hora, motivo):
+    def asignar_cita(self, id_medico, fecha, hora):
         if not self._paciente_cita:
             self._vista.mostrar_error("Sin paciente",
                                       "Selecciona primero un paciente de la tabla.")
@@ -120,9 +120,15 @@ class ControladorAdministrativos:
             )
             return
 
-        self._modelo.asignarCita(self._paciente_cita.id_paciente, id_medico, fecha, hora, motivo)
+        self._modelo.asignarCita(self._paciente_cita.id_paciente, id_medico, fecha, hora)
         self._paciente_cita = None
         self._vista.confirmar_cita_asignada()
+
+    def limpiar_formulario_cita(self):
+        """Resetea todos los campos de la pestaña de citas al estado inicial."""
+        self._paciente_cita = None
+        self._pacientes_busqueda = []
+        self._vista._limpiar_todo_citas()
 
     # ── CU9: Bloquear Agenda ──────────────────────────────────────────────────
 

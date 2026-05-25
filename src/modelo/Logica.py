@@ -101,31 +101,41 @@ class Logica():
         dao = PacientesDaoJDBC()
         return dao.existe_paciente(nif)
 
+    # --- CU4: Asignar Citas ---
+
     def obtenerEspecialidades(self):
+        # Devuelve las especialidades disponibles para el combo de la vista
         dao = CitasDaoJDBC()
         return dao.obtener_especialidades()
 
     def obtenerMedicosPorEspecialidad(self, especialidad=None):
+        # Devuelve los médicos filtrados por especialidad (None = todos)
         dao = CitasDaoJDBC()
         return dao.obtener_medicos_por_especialidad(especialidad)
 
     def consultarDisponibilidad(self, id_medico, fecha):
+        # Devuelve horas libres del médico en esa fecha, o None si el día está bloqueado
         dao = CitasDaoJDBC()
         return dao.consultar_disponibilidad(id_medico, fecha)
 
     def obtenerCitasSemana(self, id_medico, fecha_inicio, fecha_fin):
+        # Devuelve lista de dicts {fecha, hora, paciente, motivo} para el calendario
         dao = CitasDaoJDBC()
         return dao.obtener_citas_semana(id_medico, fecha_inicio, fecha_fin)
 
     def obtenerDiasBloqueadosSemana(self, id_medico, fecha_inicio, fecha_fin):
+        # Devuelve conjunto de fechas bloqueadas en el rango para el calendario
         dao = CitasDaoJDBC()
         return dao.obtener_dias_bloqueados_semana(id_medico, fecha_inicio, fecha_fin)
 
-    def asignarCita(self, id_paciente, id_medico, fecha, hora, motivo):
+    def asignarCita(self, id_paciente, id_medico, fecha, hora):
         dao = CitasDaoJDBC()
-        dao.asignar_cita(id_paciente, id_medico, fecha, hora, motivo)
+        dao.asignar_cita(id_paciente, id_medico, fecha, hora)
+
+    # --- CU9: Bloquear Agenda ---
 
     def buscarMedico(self, texto):
+        # Búsqueda de médicos por nombre o apellidos
         dao = CitasDaoJDBC()
         return dao.buscar_medico(texto)
 
@@ -134,5 +144,6 @@ class Logica():
         dao.bloquear_agenda(id_medico, fecha_inicio, fecha_fin, motivo, observaciones)
 
     def hayCitasEnRango(self, id_medico, fecha_inicio, fecha_fin):
+        # Expone la consulta al DAO para que el controlador pueda validar
         dao = CitasDaoJDBC()
         return dao.hay_citas_en_rango(id_medico, fecha_inicio, fecha_fin)

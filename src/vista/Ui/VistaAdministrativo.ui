@@ -194,7 +194,7 @@
     }
 
     /* === Botones de acción neutral === */
-    #btn_limpiar_formulario, #btn_cancelar, #btn_nuevo_paciente {
+    #btn_limpiar_formulario, #btn_cancelar, #btn_nuevo_paciente, #btn_limpiar_cita {
         background-color: #dfe6e9;
         color: #2d3436;
         border: none;
@@ -204,7 +204,7 @@
         font-size: 13px;
     }
     #btn_limpiar_formulario:hover, #btn_cancelar:hover,
-    #btn_nuevo_paciente:hover { background-color: #b2bec3; }
+    #btn_nuevo_paciente:hover, #btn_limpiar_cita:hover { background-color: #b2bec3; }
 
     /* === Tablón de comunicación === */
     #groupBox_tablon {
@@ -1000,17 +1000,7 @@
                  <item><property name="text"><string>-- Consultar disponibilidad primero --</string></property></item>
                 </widget>
                </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="lbl_cf_motivo">
-                 <property name="text"><string>Motivo de la cita</string></property>
-                 <property name="class" stdset="0"><string>formLabel</string></property>
-                </widget>
-               </item>
-               <item row="4" column="1">
-                <widget class="QLineEdit" name="input_motivo_cita">
-                 <property name="placeholderText"><string>Descripción breve del motivo (opcional)</string></property>
-                </widget>
-               </item>
+
               </layout>
              </item>
              <item>
@@ -1019,10 +1009,19 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="btn_asignar_cita">
-               <property name="enabled"><bool>false</bool></property>
-               <property name="text"><string>Confirmar cita</string></property>
-              </widget>
+              <layout class="QHBoxLayout">
+               <item>
+                <widget class="QPushButton" name="btn_limpiar_cita">
+                 <property name="text"><string>Limpiar</string></property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_asignar_cita">
+                 <property name="enabled"><bool>false</bool></property>
+                 <property name="text"><string>Confirmar cita</string></property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
               <spacer>

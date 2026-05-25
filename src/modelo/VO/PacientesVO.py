@@ -4,7 +4,7 @@ class PacientesVO:
                  num_habitacion=None, fecha_inicio_ep=None,
                  dieta=None, id_ingreso=None, id_paciente=None,
                  fecha_inicio=None, hora_inicio=None, fecha_fin=None,hora_fin=None, observaciones=None,
-                 direccion = None, telefono = None, id_episodio = None, fecha_registro = None, medico_asignado = None, alergias = None, correo = None): 
+                 direccion = None, telefono = None, id_episodio = None, fecha_registro = None, medico_asignado = None, alergias = None, correo = None, hospitalizado = None): 
         self.id_episodio = id_episodio
         self.nif = nif
         self.nombre = nombre
@@ -28,11 +28,10 @@ class PacientesVO:
         self.telefono = telefono
         self.alergias = alergias
         self.correo = correo
+        self.hospitalizado = hospitalizado
     
     @property
 
     def nombre_completo(self):
         apellidos = f"{self.apellido1} {self.apellido2}".strip()
         return f"{apellidos}, {self.nombre}"
-
-    

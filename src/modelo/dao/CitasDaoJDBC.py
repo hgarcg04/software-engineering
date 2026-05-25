@@ -5,7 +5,7 @@ class CitasDaoJDBC(Conexion):
 
     SQL_AGENDA_HOY = """
         SELECT c.id_cita, c.fecha, c.hora, px.nombre, px.apellido1, px.apellido2,
-            c.motivo, px.id_paciente, px.hospitalizado
+            px.id_paciente, px.hospitalizado
         FROM Citas as c
         INNER JOIN Pacientes as px ON c.id_paciente = px.id_paciente
         WHERE c.id_medico = ?
@@ -15,7 +15,7 @@ class CitasDaoJDBC(Conexion):
 
     SQL_AGENDA_RANGO = """
         SELECT c.id_cita, c.fecha, c.hora, px.nombre, px.apellido1, px.apellido2,
-            c.motivo, px.id_paciente
+            px.id_paciente
         FROM Citas as c
         INNER JOIN Pacientes as px ON c.id_paciente = px.id_paciente
         WHERE c.id_medico = ?
@@ -45,7 +45,7 @@ class CitasDaoJDBC(Conexion):
 
     # Citas ya confirmadas para un médico en una semana (para el calendario)
     SQL_CITAS_SEMANA = """
-        SELECT c.fecha, c.hora, px.nombre, px.apellido1, px.apellido2, c.motivo
+        SELECT c.fecha, c.hora, px.nombre, px.apellido1, px.apellido2
         FROM Citas AS c
         INNER JOIN Pacientes AS px ON c.id_paciente = px.id_paciente
         WHERE c.id_medico = ?
@@ -63,8 +63,8 @@ class CitasDaoJDBC(Conexion):
 
     # Inserta una nueva cita vinculada a paciente y médico
     SQL_INSERTAR_CITA = """
-        INSERT INTO Citas (id_paciente, id_medico, fecha, hora, motivo)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO Citas (id_paciente, id_medico, fecha, hora)
+        VALUES (?, ?, ?, ?)
     """
 
     # --- CU9: Bloquear Agenda ---
@@ -105,11 +105,11 @@ class CitasDaoJDBC(Conexion):
                     id_cita=row[0],
                     fecha=str(row[1]),
                     hora=str(row[2]),
-                    paciente_nombre=nombre_completo, # Atributo extra para la vista
-                    motivo=row[6],
-                    id_paciente=row[7],
+                    paciente_nombre=nombre_completo,
+                    motivo="",
+                    id_paciente=row[6],
                     id_medico=userVO.id_empleado,
-                    hospitalizado=row[8]
+                    hospitalizado=row[7]
                 )
                 citas.append(citaVO)
             return citas
@@ -126,12 +126,12 @@ class CitasDaoJDBC(Conexion):
             for row in rows:
                 citaVO = CitaVO(
                     id_cita = row[0],
-                    fecha = row[1], # Antes devolvía fecha_hora juntos así que igual me da algún error
+                    fecha = row[1],
                     hora = row[2],
-                    id_paciente = row[7],
+                    id_paciente = row[6],
                     id_medico=userVO.id_empleado,
                     paciente_nombre = f"{row[3]} {row[4]} {row[5]}",
-                    motivo = row[6] if row[6] else ""
+                    motivo = ""
                 )
                 citas.append(citaVO)
             return citas
@@ -195,8 +195,7 @@ class CitasDaoJDBC(Conexion):
                 citas.append({
                     'fecha': str(row[0]),
                     'hora':  self._hora_a_str(row[1]),
-                    'paciente': f"{row[2]} {row[3]} {row[4]}".strip(),
-                    'motivo': row[5] or ''
+                    'paciente': f"{row[2]} {row[3]} {row[4]}".strip()
                 })
             return citas
         except Exception as e:
@@ -232,13 +231,13 @@ class CitasDaoJDBC(Conexion):
             print("Error obteniendo días bloqueados:", e)
             return set()
 
-    def asignar_cita(self, id_paciente, id_medico, fecha, hora, motivo):
+    def asignar_cita(self, id_paciente, id_medico, fecha, hora):
         # Inserta la cita. Fechas y horas se pasan como str porque jaydebeapi
         # no acepta datetime.date directamente con el driver MSSQL JDBC.
         cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_INSERTAR_CITA,
-                           (id_paciente, id_medico, str(fecha), str(hora), motivo))
+                           (id_paciente, id_medico, str(fecha), str(hora)))
             return True, "Cita asignada correctamente."
         except Exception as e:
             print("Error asignando cita:", e)

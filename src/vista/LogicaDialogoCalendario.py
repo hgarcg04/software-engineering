@@ -40,6 +40,8 @@ class DialogCalendario(QDialog):
         # Semana actual: empieza en el lunes de hoy
         hoy = date.today()
         self._lunes = hoy - timedelta(days=hoy.weekday())
+        self._hora_pendiente = None   # (fecha, hora) elegida pero aún sin confirmar
+        self._btn_pendiente = None    # botón actualmente marcado como seleccionado
 
         self.setWindowTitle("Seleccionar hora de cita")
         self.setMinimumSize(900, 560)
@@ -103,7 +105,22 @@ class DialogCalendario(QDialog):
         self._grid.setSpacing(4)
         root.addWidget(self._grid_widget)
 
-        # Botón cerrar
+        # Footer: botón OK (deshabilitado hasta elegir hora) + Cancelar
+        self._btn_ok = QPushButton("Confirmar hora")
+        self._btn_ok.setEnabled(False)
+        self._btn_ok.setStyleSheet("""
+            QPushButton {
+                background-color: #00b894; color: white;
+                border-radius: 8px; padding: 8px 18px;
+                font-family: 'Segoe UI Semibold'; font-size: 13px;
+            }
+            QPushButton:hover { background-color: #00a381; }
+            QPushButton:disabled {
+                background-color: #b2d8d0; color: #ffffff;
+            }
+        """)
+        self._btn_ok.clicked.connect(self._confirmar)
+
         btn_cerrar = QPushButton("Cancelar")
         btn_cerrar.setStyleSheet("""
             QPushButton {
@@ -114,9 +131,11 @@ class DialogCalendario(QDialog):
             QPushButton:hover { background-color: #b2bec3; }
         """)
         btn_cerrar.clicked.connect(self.reject)
+
         footer = QHBoxLayout()
         footer.addStretch()
         footer.addWidget(btn_cerrar)
+        footer.addWidget(self._btn_ok)
         root.addLayout(footer)
 
     # ── Carga y pintado del grid ──────────────────────────────────────────────
@@ -202,14 +221,40 @@ class DialogCalendario(QDialog):
                            "font-size:11px; font-family:'Segoe UI Semibold';")
             btn.setStyleSheet(estilo_base)
             btn.setCursor(Qt.PointingHandCursor)
-            btn.clicked.connect(lambda _, f=fecha, h=hora: self._elegir(f, h))
+            btn.clicked.connect(lambda _, f=fecha, h=hora, b=btn: self._elegir(f, h, b))
 
         return btn
 
-    def _elegir(self, fecha, hora):
-        """Emite la señal con la fecha y hora elegidas y cierra el diálogo."""
-        self.hora_seleccionada.emit(fecha, hora)
-        self.accept()
+    def _elegir(self, fecha, hora, boton):
+        """Marca el botón elegido y habilita el botón Confirmar hora."""
+        # Restaurar estilo del botón anteriormente seleccionado
+        if self._btn_pendiente and self._btn_pendiente is not boton:
+            self._btn_pendiente.setStyleSheet(
+                f"background:{COLOR_LIBRE}; color:#00a381;"
+                f"border:1px solid {BORDER_LIBRE}; border-radius:6px;"
+                "font-size:11px; font-family:'Segoe UI Semibold';"
+            )
+            self._btn_pendiente.setText("Libre")
+
+        # Marcar el nuevo botón como seleccionado
+        boton.setStyleSheet(
+            "background:#00b894; color:white;"
+            "border:2px solid #00a381; border-radius:6px;"
+            "font-size:12px; font-family:'Segoe UI Semibold';"
+        )
+        boton.setText("✓ Elegido")
+        boton.setCursor(Qt.PointingHandCursor)
+
+        self._hora_pendiente = (fecha, hora)
+        self._btn_pendiente = boton
+        self._btn_ok.setEnabled(True)
+
+    def _confirmar(self):
+        """Emite la señal con la hora elegida y cierra el diálogo."""
+        if self._hora_pendiente:
+            fecha, hora = self._hora_pendiente
+            self.hora_seleccionada.emit(fecha, hora)
+            self.accept()
 
     # ── Navegación semanal ────────────────────────────────────────────────────
 

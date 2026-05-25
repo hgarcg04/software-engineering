@@ -29,7 +29,7 @@ class PacientesDaoJDBC(Conexion):
 
     SQL_BUSCAR_POR_ID = """
         SELECT px.id_paciente, px.nif, px.nombre, px.apellido1, px.apellido2,
-            px.fecha_nacimiento, px.genero, px.fecha_registro, per.apellidos
+            px.fecha_nacimiento, px.genero, px.fecha_registro, per.apellidos, px.hospitalizado
         FROM Pacientes as px
         LEFT JOIN Personal as per ON px.medico_asignado = per.id_empleado
         WHERE px.id_paciente = ?
@@ -131,7 +131,8 @@ class PacientesDaoJDBC(Conexion):
                     genero=row[6],
                     fecha_registro=row[7],
                     medico_asignado=row[8],
-                    id_paciente=row[0]
+                    id_paciente=row[0],
+                    hospitalizado=row[9]
                 )]
             return []
         except Exception as e:
@@ -174,4 +175,3 @@ class PacientesDaoJDBC(Conexion):
             
         except Exception as e:
             print("Error al registrar paciente: ", e)
-       
