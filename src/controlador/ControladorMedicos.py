@@ -88,18 +88,19 @@ class ControladorMedicos:
     # ── Receta ───────────────────────────────────────────────────
 
     def abrir_receta(self, cita):
-        dialogo = DialogoReceta(parent=self._vista, paciente_vo=None)
+        dialogo = DialogoReceta(parent=self._vista, cita_vo=cita)
         dialogo.lbl_pac_nombre.setText(cita.paciente_nombre)
         dialogo._id_paciente = cita.id_paciente
+        dialogo._id_ingreso = cita.id_ingreso
         dialogo.controlador = self
         medicamentos = self._modelo.obtenerMedicamentos()
         dialogo.cargar_medicamentos(medicamentos)
         dialogo.exec_()
 
-    def guardar_receta(self, id_medicamento, dosis, frecuencia, via, fecha_inicio, fecha_fin, notas, id_paciente):
+    def guardar_receta(self, id_medicamento, dosis, frecuencia, via, fecha_inicio, fecha_fin, notas, id_paciente, id_ingreso):
         tratamientoVO = TratamientoVO(
             id_tratamiento=None,
-            id_ingreso=None,
+            id_ingreso=id_ingreso,
             id_medico=self._user_vo.id_empleado,
             id_medicamento=id_medicamento,
             dosis=dosis,

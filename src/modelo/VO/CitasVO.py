@@ -1,5 +1,5 @@
 class CitaVO:
-    def __init__(self, id_cita, id_medico, id_paciente, fecha, hora, motivo, paciente_nombre, hospitalizado):
+    def __init__(self, id_cita, id_medico, id_paciente, fecha, hora, motivo, paciente_nombre, hospitalizado=0):
         self.id_cita = id_cita
         self.id_medico = id_medico
         self.id_paciente = id_paciente

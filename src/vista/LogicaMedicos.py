@@ -113,7 +113,7 @@ class VentanaMedico(QMainWindow, Form):
         self.tabla_agenda_hoy.verticalHeader().setVisible(False) # Para que no se vea el índice de la fila que no queda bien
 
         inicio = datetime.strptime("08:00", "%H:%M")
-        fin = datetime.strptime("20:00", "%H:%M")
+        fin = datetime.strptime("14:00", "%H:%M")
         hora_actual = datetime.now().strftime("%H:%M")
         slots = []
         actual = inicio
@@ -214,7 +214,6 @@ class VentanaMedico(QMainWindow, Form):
                 cita=self._cita_activa
             )
         self._ir_inicio()
-
     def _ingresar_paciente(self):
 
         if self._cita_activa.hospitalizado:

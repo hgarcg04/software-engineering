@@ -96,5 +96,4 @@ class ControladorPrincipal:
         
         self._vista.limpiar_campos()
 
-        self._vista.show() 
-        print("Sesión cerrada correctamente.")
+        self._vista.show()
