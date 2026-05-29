@@ -9,7 +9,3 @@ class MedicamentoVO:
         self.stock = stock
         self.stock_minimo = stock_minimo
         self.alerta_stock = alerta_stock
-
-    meducicamentoVO = MedicamentoVO(nghj)
-
-    meducicamentoVO.nombree

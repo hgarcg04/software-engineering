@@ -36,8 +36,13 @@ class LogicaCitas:
         self.btn_limpiar_cita.clicked.connect(self._on_limpiar_cita)
 
         # ── CU9 ──────────────────────────────────────────────────────────────
+        manana = QDate.currentDate().addDays(1)
+        self.input_fecha_inicio_bloqueo.setDate(manana)
+        self.input_fecha_fin_bloqueo.setDate(manana)
+        self.search_medico.textChanged.connect(self._on_texto_medico_cambiado)
         self.btn_buscar_medico.clicked.connect(self._on_buscar_medico)
         self.tabla_medicos_agenda.itemSelectionChanged.connect(self._on_medico_agenda_seleccionado)
+        self.btn_deseleccionar_medico.clicked.connect(self._on_deseleccionar_medico)
         self.btn_bloquear_agenda.clicked.connect(self._on_bloquear_agenda)
 
     # ═════════════════════════════════════════════════════════════════════════
@@ -203,6 +208,11 @@ class LogicaCitas:
     # CU9: Bloquear Agenda — callbacks
     # ═════════════════════════════════════════════════════════════════════════
 
+    def _on_texto_medico_cambiado(self, texto):
+        """Filtra la tabla de médicos en tiempo real mientras el usuario escribe."""
+        if self._controlador:
+            self._controlador.filtrar_medicos_agenda(texto)
+
     def _on_buscar_medico(self):
         texto = self.search_medico.text().strip()
         if self._controlador:
@@ -212,6 +222,10 @@ class LogicaCitas:
         fila = self.tabla_medicos_agenda.currentRow()
         if fila >= 0 and self._controlador:
             self._controlador.seleccionar_medico_agenda(fila)
+
+    def _on_deseleccionar_medico(self):
+        if self._controlador:
+            self._controlador.deseleccionar_medico_agenda()
 
     def _on_bloquear_agenda(self):
         fecha_inicio = self.input_fecha_inicio_bloqueo.date().toPyDate()
@@ -241,15 +255,21 @@ class LogicaCitas:
 
     def mostrar_medico_seleccionado(self, nombre_completo):
         self.lbl_medico_sel_nombre.setText(nombre_completo)
-        self.frame_medico_seleccionado.setVisible(True)
+        self.btn_deseleccionar_medico.setVisible(True)
+
+    def limpiar_seleccion_medico(self):
+        """Resetea solo la selección de médico; mantiene tabla y buscador intactos."""
+        self.lbl_medico_sel_nombre.setText("Ninguno")
+        self.btn_deseleccionar_medico.setVisible(False)
 
     def confirmar_agenda_bloqueada(self):
         QMessageBox.information(self, "Agenda bloqueada", "Las fechas han sido bloqueadas correctamente.")
-        self.lbl_medico_sel_nombre.setText("")
-        self.frame_medico_seleccionado.setVisible(False)
-        self.tabla_medicos_agenda.setRowCount(0)
-        self.search_medico.clear()
+        manana = QDate.currentDate().addDays(1)
+        self.lbl_medico_sel_nombre.setText("Ninguno")
+        self.btn_deseleccionar_medico.setVisible(False)
         self.input_observaciones_bloqueo.clear()
+        self.input_fecha_inicio_bloqueo.setDate(manana)
+        self.input_fecha_fin_bloqueo.setDate(manana)
 
     # ── Utilidades ────────────────────────────────────────────────────────────
 

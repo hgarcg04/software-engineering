@@ -274,7 +274,9 @@ class CitasDaoJDBC(Conexion):
         try:
             cursor.execute(self.SQL_INSERTAR_BLOQUEO,
                            (id_medico, str(fecha_inicio), str(fecha_fin), motivo, observaciones))
+            self.conexion.commit()
             return True, "Agenda bloqueada correctamente."
         except Exception as e:
+            self.conexion.rollback()
             print("Error bloqueando agenda:", e)
             return False, f"Error al bloquear la agenda: {e}"

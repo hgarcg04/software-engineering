@@ -2,3 +2,10 @@
 [2026-05-29 11:34:11] LOGOUT | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-05-29 11:52:17] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-05-29 11:52:19] LOGOUT | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 12:41:25] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-29 12:46:27] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-29 12:47:14] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-29 12:49:15] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 12:49:18] LOGOUT | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 12:49:24] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-29 12:51:41] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo

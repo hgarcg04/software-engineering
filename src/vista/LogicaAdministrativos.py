@@ -77,6 +77,9 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas):
         if indice == PAGE_CITAS and self._controlador:
             self._controlador.inicializar_combos_cita()
 
+        if indice == PAGE_AGENDA and self._controlador:
+            self._controlador.cargar_todos_medicos()
+
     # ── Inicio: nombre de usuario y reloj ─────────────────────────────────────
 
     def cargar_datos_iniciales(self, userVO):

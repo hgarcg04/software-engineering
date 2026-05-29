@@ -146,7 +146,7 @@
         font-size: 14px;
         color: #00a381;
     }
-    #btn_deseleccionar {
+    #btn_deseleccionar, #btn_deseleccionar_medico {
         background-color: transparent;
         color: #e17055;
         border: 1px solid #e17055;
@@ -154,7 +154,7 @@
         padding: 3px 10px;
         font-size: 12px;
     }
-    #btn_deseleccionar:hover { background-color: #ffecea; }
+    #btn_deseleccionar:hover, #btn_deseleccionar_medico:hover { background-color: #ffecea; }
 
     /* === Botones primarios verdes === */
     #btn_registrar_paciente, #btn_asignar_cita, #btn_generar_credenciales,
@@ -1107,6 +1107,12 @@
                  </property>
                 </spacer>
                </item>
+               <item>
+                <widget class="QPushButton" name="btn_deseleccionar_medico">
+                 <property name="text"><string>Deseleccionar</string></property>
+                 <property name="visible"><bool>false</bool></property>
+                </widget>
+               </item>
               </layout>
              </widget>
             </item>
@@ -1232,7 +1238,6 @@
              </item>
              <item>
               <widget class="QPushButton" name="btn_bloquear_agenda">
-               <property name="enabled"><bool>false</bool></property>
                <property name="text"><string>Bloquear agenda</string></property>
               </widget>
              </item>

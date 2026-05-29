@@ -141,7 +141,7 @@ class Logica():
 
     def bloquearAgenda(self, id_medico, fecha_inicio, fecha_fin, motivo, observaciones):
         dao = CitasDaoJDBC()
-        dao.bloquear_agenda(id_medico, fecha_inicio, fecha_fin, motivo, observaciones)
+        return dao.bloquear_agenda(id_medico, fecha_inicio, fecha_fin, motivo, observaciones)
 
     def hayCitasEnRango(self, id_medico, fecha_inicio, fecha_fin):
         # Expone la consulta al DAO para que el controlador pueda validar

@@ -153,14 +153,30 @@ class ControladorAdministrativos:
 
     # ── CU9: Bloquear Agenda ──────────────────────────────────────────────────
 
-    def buscar_medico_agenda(self, texto):
-        if not texto:
-            self._vista.mostrar_error("Búsqueda vacía",
-                                      "Introduce el nombre o apellidos del médico.")
-            return
+    def cargar_todos_medicos(self):
+        """Carga todos los médicos al entrar en la pestaña de Bloquear Agenda."""
+        todos = self._modelo.buscarMedico("")
+        self._medicos_busqueda = todos
+        self._vista.cargar_resultados_busqueda_medico(todos)
 
+    def filtrar_medicos_agenda(self, texto):
+        """Filtra localmente la lista de médicos a medida que el usuario escribe."""
+        if not texto.strip():
+            self._vista.cargar_resultados_busqueda_medico(self._medicos_busqueda)
+            return
+        texto_lower = texto.lower()
+        filtrados = [
+            m for m in self._medicos_busqueda
+            if texto_lower in m[1].lower()          # nombre
+            or texto_lower in m[2].lower()          # apellidos
+            or texto_lower in (m[3] or "").lower()  # especialidad
+        ]
+        self._vista.cargar_resultados_busqueda_medico(filtrados)
+
+    def buscar_medico_agenda(self, texto):
+        """Búsqueda explícita (botón Buscar). Actualiza la caché y la tabla."""
         resultados = self._modelo.buscarMedico(texto)
-        if not resultados:
+        if not resultados and texto:
             self._vista.mostrar_info("Sin resultados",
                                      "No se encontró ningún médico con ese criterio.")
         self._medicos_busqueda = resultados
@@ -171,6 +187,11 @@ class ControladorAdministrativos:
             medico = self._medicos_busqueda[fila]
             self._medico_agenda_id = medico[0]
             self._vista.mostrar_medico_seleccionado(f"{medico[2]}, {medico[1]}")
+
+    def deseleccionar_medico_agenda(self):
+        """Limpia la selección de médico sin borrar la tabla ni el buscador."""
+        self._medico_agenda_id = None
+        self._vista.limpiar_seleccion_medico()
 
     def bloquear_agenda(self, fecha_inicio, fecha_fin, motivo, observaciones):
         if not self._medico_agenda_id:
@@ -184,7 +205,7 @@ class ControladorAdministrativos:
             self._vista.mostrar_error("Fechas incorrectas",
                                       "La fecha de inicio es posterior a la fecha de fin.")
             return
-        if fecha_inicio <= hoy or fecha_fin <= hoy:
+        if fecha_inicio <= hoy:
             self._vista.mostrar_error("Fechas incorrectas",
                                       "Solo se pueden bloquear fechas futuras.")
             return
@@ -197,8 +218,11 @@ class ControladorAdministrativos:
                                       "Ya hay consultas asignadas en las fechas solicitadas.")
             return
 
-        self._modelo.bloquearAgenda(
+        exito, msg = self._modelo.bloquearAgenda(
             self._medico_agenda_id, fecha_inicio, fecha_fin, motivo, observaciones
         )
-        self._medico_agenda_id = None
-        self._vista.confirmar_agenda_bloqueada()
+        if exito:
+            self._medico_agenda_id = None
+            self._vista.confirmar_agenda_bloqueada()
+        else:
+            self._vista.mostrar_error("Error en base de datos", msg)
