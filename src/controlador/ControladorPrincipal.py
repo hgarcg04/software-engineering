@@ -53,8 +53,8 @@ class ControladorPrincipal:
             self._ventana_enfermero.signal_logout.connect(self.volver_al_login)
 
            
-            modelo = Logica()
-            controlador = ControladorEnfermeros(self._ventana_enfermero, modelo, self.usuario_actualVO)
+
+            controlador = ControladorEnfermeros(self._ventana_enfermero, self._modelo, self.usuario_actualVO)
             self._ventana_enfermero.controlador = controlador
 
         elif self.usuario_actualVO.rol == 'medico': #Comprobar minuscula o mayuscula
@@ -69,8 +69,8 @@ class ControladorPrincipal:
 
             self._ventana_medico.signal_logout.connect(self.volver_al_login)
 
-            modelo = Logica()
-            controlador = ControladorMedicos(self._ventana_medico, modelo, self.usuario_actualVO)
+
+            controlador = ControladorMedicos(self._ventana_medico, self._modelo, self.usuario_actualVO)
             self._ventana_medico.controlador = controlador
 
         elif self.usuario_actualVO.rol == 'administrativo': #Comprobar minuscula o mayuscula
@@ -84,8 +84,8 @@ class ControladorPrincipal:
 
             self._ventana_administrativo.signal_logout.connect(self.volver_al_login)
 
-            modelo = Logica()
-            controlador = ControladorAdministrativos(self._ventana_administrativo, modelo, self.usuario_actualVO)
+
+            controlador = ControladorAdministrativos(self._ventana_administrativo, self._modelo, self.usuario_actualVO)
             self._ventana_administrativo.controlador = controlador
 
 
