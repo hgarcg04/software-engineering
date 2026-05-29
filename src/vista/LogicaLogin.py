@@ -3,7 +3,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))  
 
 
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5 import uic
 from PyQt5.QtCore import QTimer
 
@@ -41,6 +41,9 @@ class MiVentana(QMainWindow, Form):
         self.edit_user.clear()
         self.edit_pass.clear()
         self.edit_user.setFocus()
+
+    def lanzar_warning(self):
+        QMessageBox.warning(self, "Inicio de sesión incorrecto", f"Usuario y/o contraseña incorrectos.")
 
         
     def cerrar(self):   

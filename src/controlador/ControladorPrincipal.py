@@ -6,7 +6,7 @@ from src.modelo.Logica import Logica
 from src.controlador.ControladorEnfermeros import ControladorEnfermeros
 from src.controlador.ControladorAdministrativos import ControladorAdministrativos
 from src.controlador.ControladorMedicos import ControladorMedicos
-from src.modelo.Logger import Logger
+from src.modelo.SingletonLog import SingletonLog
 
 
 class ControladorPrincipal:
@@ -15,7 +15,7 @@ class ControladorPrincipal:
         self._vista = ref_vista
         self._modelo = ref_modelo
         self.usuario_actualVO = None
-        self._logger = Logger()
+        self._logger = SingletonLog()
     
     def ventanaInciarSesion(self):
 
@@ -31,10 +31,17 @@ class ControladorPrincipal:
                 
 
         if self.usuario_actualVO is None:
+            self._logger.registrar_login_incorrecto(loginVO)
             print("Usuario y/o contraseña incorrectos.")
+
+            self._vista.lanzar_warning()
+
+            self._vista.limpiar_campos()
+            self._vista.show()
+
         
         elif self.usuario_actualVO.rol == 'enfermero':
-            self._logger.registrar_login(self.usuario_actualVO)
+            self._logger.registrar_login_correcto(self.usuario_actualVO)
             self._ventana_enfermero = VentanaEnfermeros()
             
             self._ventana_enfermero.showMaximized()
@@ -51,7 +58,7 @@ class ControladorPrincipal:
             self._ventana_enfermero.controlador = controlador
 
         elif self.usuario_actualVO.rol == 'medico': #Comprobar minuscula o mayuscula
-            self._logger.registrar_login(self.usuario_actualVO)
+            self._logger.registrar_login_correcto(self.usuario_actualVO)
             self._ventana_medico = VentanaMedico()
 
             # self._ventana_medico.showFullScreen() # esto abre la ventana en pantalla completa. (ache y manu, si os molesta comentarlo y
@@ -67,7 +74,7 @@ class ControladorPrincipal:
             self._ventana_medico.controlador = controlador
 
         elif self.usuario_actualVO.rol == 'administrativo': #Comprobar minuscula o mayuscula
-            self._logger.registrar_login(self.usuario_actualVO)
+            self._logger.registrar_login_correcto(self.usuario_actualVO)
             self._ventana_administrativo = VentanaAdministrativos()
             #self._ventana_administrativo.showFullScreen() # esto abre la ventana en pantalla completa. (ache y manu, si os molesta comentarlo y
                                                           # lo descomentamos el dia de la presentación)
@@ -80,11 +87,8 @@ class ControladorPrincipal:
             modelo = Logica()
             controlador = ControladorAdministrativos(self._ventana_administrativo, modelo, self.usuario_actualVO)
             self._ventana_administrativo.controlador = controlador
-            
-        else:
-            print(f"Login correcto. Bienvenido/a, {self.usuario_actualVO.nombre} (ID: {self.usuario_actualVO.id_empleado}). Rol: {self.usuario_actualVO.rol}")
 
-            self._vista.cerrar()
+
 
     def volver_al_login(self):
         self._logger.registrar_logout(self.usuario_actualVO)

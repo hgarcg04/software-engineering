@@ -1,2 +1,4 @@
 [2026-05-29 11:34:00] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-05-29 11:34:11] LOGOUT | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 11:52:17] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 11:52:19] LOGOUT | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
