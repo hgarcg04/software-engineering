@@ -38,3 +38,15 @@
 [2026-05-29 19:20:35] LOGOUT | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-05-29 19:20:38] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
 [2026-05-29 19:23:15] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 19:39:53] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 19:44:45] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-29 19:49:30] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-29 19:50:17] LOGOUT | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-29 19:50:19] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 20:08:58] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 20:30:03] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 20:34:47] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 20:37:14] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-30 08:19:28] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-30 08:21:55] LOGOUT | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-30 08:21:56] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
