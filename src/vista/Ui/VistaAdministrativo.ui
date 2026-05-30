@@ -1287,34 +1287,45 @@
              <property name="verticalSpacing"><number>14</number></property>
              <item row="0" column="0">
               <widget class="QLabel" name="lbl_pf_nombre">
-               <property name="text"><string>Nombre completo *</string></property>
+               <property name="text"><string>Nombre *</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
              <item row="0" column="1">
               <widget class="QLineEdit" name="input_nombre_personal">
-               <property name="placeholderText"><string>Nombre y apellidos</string></property>
+               <property name="placeholderText"><string>Nombre</string></property>
               </widget>
              </item>
              <item row="1" column="0">
+              <widget class="QLabel" name="lbl_pf_apellidos">
+               <property name="text"><string>Apellidos *</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="input_apellidos_personal">
+               <property name="placeholderText"><string>Apellidos</string></property>
+              </widget>
+             </item>
+             <item row="2" column="0">
               <widget class="QLabel" name="lbl_pf_dni">
                <property name="text"><string>DNI *</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
-             <item row="1" column="1">
+             <item row="2" column="1">
               <widget class="QLineEdit" name="input_dni_personal">
                <property name="placeholderText"><string>Ej: 12345678A</string></property>
                <property name="maxLength"><number>9</number></property>
               </widget>
              </item>
-             <item row="2" column="0">
+             <item row="3" column="0">
               <widget class="QLabel" name="lbl_pf_rol">
                <property name="text"><string>Rol *</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
-             <item row="2" column="1">
+             <item row="3" column="1">
               <widget class="QComboBox" name="combo_rol_personal">
                <item><property name="text"><string>-- Seleccionar rol --</string></property></item>
                <item><property name="text"><string>Médico</string></property></item>
@@ -1322,13 +1333,13 @@
                <item><property name="text"><string>Administrativo/a</string></property></item>
               </widget>
              </item>
-             <item row="3" column="0">
+             <item row="4" column="0">
               <widget class="QLabel" name="lbl_pf_especialidad">
                <property name="text"><string>Especialidad</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
-             <item row="3" column="1">
+             <item row="4" column="1">
               <widget class="QComboBox" name="combo_especialidad_personal">
                <item><property name="text"><string>-- No aplica --</string></property></item>
                <item><property name="text"><string>Medicina General</string></property></item>
@@ -1339,13 +1350,13 @@
                <item><property name="text"><string>Oncología</string></property></item>
               </widget>
              </item>
-             <item row="4" column="0">
+             <item row="5" column="0">
               <widget class="QLabel" name="lbl_pf_email">
                <property name="text"><string>Correo electrónico *</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
-             <item row="4" column="1">
+             <item row="5" column="1">
               <widget class="QLineEdit" name="input_email_personal">
                <property name="placeholderText"><string>correo@hospital.es</string></property>
               </widget>

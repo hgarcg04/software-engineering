@@ -1,5 +1,7 @@
 from src.modelo.VO.PacientesVO import PacientesVO
 from datetime import date
+import secrets
+import string
 
 
 class ControladorAdministrativos:
@@ -226,3 +228,51 @@ class ControladorAdministrativos:
             self._vista.confirmar_agenda_bloqueada()
         else:
             self._vista.mostrar_error("Error en base de datos", msg)
+    
+    #Generar Credenciales
+
+    def generar_credenciales(self, nombre, apellidos, dni, rol, especialidad, email):
+        # Validacion: campos obligatorios
+        if not nombre.strip() or not apellidos.strip():
+            return False, "El nombre y los apellidos son obligatorios.", None
+        if not dni.strip():
+            return False, "El DNI es obligatorio.", None
+        if rol == '-- Seleccionar rol --':
+            return False, "Debes seleccionar un rol.", None
+        if not email.strip():
+            return False, "El correo electrónico es obligatorio.", None
+
+        # Validacion: el DNI no puede estar ya registrado (flujo alternativo CU5)
+        if self._modelo.existeEmpleado(dni):
+            return False, "Ya existe un empleado registrado con ese DNI.", None
+
+        # Mapeo rol elegible
+        mapa_roles = {
+            'Médico': 'medico',
+            'Enfermero/a': 'enfermero',
+            'Administrativo/a': 'administrativo',
+        }
+        rol_bd = mapa_roles.get(rol, rol.lower())
+
+        # Especialidad solo aplica a medicos
+        esp = especialidad if rol_bd == 'medico' and especialidad != '-- No aplica --' else None
+
+        # Generar nombre de usuario: primera letra nombre + apellidos sin espacios, minusculas
+        nombre_usuario = (nombre[0] + apellidos.replace(' ', '')).lower()
+
+        # Generar password aleatoria: 10 caracteres (letras + digitos)
+        alfabeto = string.ascii_letters + string.digits
+        password_generada = ''.join(secrets.choice(alfabeto) for _ in range(10))
+
+        exito, val1, val2 = self._modelo.generarCredenciales(
+            dni, nombre, apellidos, nombre_usuario,
+            password_generada, email, rol_bd, esp
+        )
+
+        if exito:
+            return True, nombre_usuario, password_generada
+        else:
+            return False, val1, None  # val1 contiene el mensaje de error
+
+    def limpiar_formulario_credencial(self):
+        self._vista.limpiar_formulario_credencial()

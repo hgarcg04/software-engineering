@@ -50,3 +50,4 @@
 [2026-05-30 08:19:28] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
 [2026-05-30 08:21:55] LOGOUT | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
 [2026-05-30 08:21:56] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-30 08:44:38] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
