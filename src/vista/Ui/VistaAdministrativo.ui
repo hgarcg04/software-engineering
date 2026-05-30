@@ -206,7 +206,7 @@
     }
     #btn_paciente_no_encontrado:hover { background-color: #ffe69c; }
 
-    #btn_limpiar_formulario, #btn_cancelar, #btn_nuevo_paciente, #btn_limpiar_cita {
+    #btn_limpiar_formulario, #btn_cancelar, #btn_nuevo_paciente, #btn_limpiar_cita, #btn_limpiar_credencial {
         background-color: #dfe6e9;
         color: #2d3436;
         border: none;
@@ -216,7 +216,8 @@
         font-size: 13px;
     }
     #btn_limpiar_formulario:hover, #btn_cancelar:hover,
-    #btn_nuevo_paciente:hover, #btn_limpiar_cita:hover { background-color: #b2bec3; }
+    #btn_nuevo_paciente:hover, #btn_limpiar_cita:hover,
+    #btn_limpiar_credencial:hover { background-color: #b2bec3; }
 
     /* === Tablón de comunicación === */
     #groupBox_tablon {

@@ -228,8 +228,7 @@ class ControladorAdministrativos:
             self._vista.confirmar_agenda_bloqueada()
         else:
             self._vista.mostrar_error("Error en base de datos", msg)
-    
-    #Generar Credenciales
+    # ── CU5: Generar Credenciales ─────────────────────────────────────────────
 
     def generar_credenciales(self, nombre, apellidos, dni, rol, especialidad, email):
         # Validacion: campos obligatorios
@@ -246,7 +245,7 @@ class ControladorAdministrativos:
         if self._modelo.existeEmpleado(dni):
             return False, "Ya existe un empleado registrado con ese DNI.", None
 
-        # Mapeo rol elegible
+        # Mapeo rol legible -> valor BD
         mapa_roles = {
             'Médico': 'medico',
             'Enfermero/a': 'enfermero',

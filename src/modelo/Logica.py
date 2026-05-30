@@ -147,3 +147,15 @@ class Logica():
         # Expone la consulta al DAO para que el controlador pueda validar
         dao = CitasDaoJDBC()
         return dao.hay_citas_en_rango(id_medico, fecha_inicio, fecha_fin)
+
+    # --- CU5: Generar Credenciales ---
+
+    def existeEmpleado(self, dni):
+        dao = UserDaoJDBC()
+        return dao.existe_empleado(dni)
+
+    def generarCredenciales(self, dni, nombre, apellidos, nombre_usuario,
+                             password_generada, email, rol, especialidad=None):
+        dao = UserDaoJDBC()
+        return dao.generar_credenciales(dni, nombre, apellidos, nombre_usuario,
+                                        password_generada, email, rol, especialidad)

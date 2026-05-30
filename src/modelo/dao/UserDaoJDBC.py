@@ -25,4 +25,51 @@ class UserDaoJDBC(Conexion):
             return None
         
 
+    SQL_EXISTE_DNI = "SELECT id_empleado FROM Personal WHERE dni = ?"
 
+    SQL_INSERT_PERSONAL = """
+        INSERT INTO Personal (dni, nombre, apellidos, nombre_usuario, password_, email, rol)
+        OUTPUT INSERTED.id_empleado
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """
+
+    SQL_INSERT_MEDICO = "INSERT INTO Medicos (id_medico, especialidad) VALUES (?, ?)"
+
+    SQL_INSERT_ENFERMERO = "INSERT INTO Enfermeros (id_enfermero) VALUES (?)"
+
+    def existe_empleado(self, dni):
+        """Devuelve True si el DNI ya esta registrado en Personal."""
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_EXISTE_DNI, (dni,))
+            return cursor.fetchone() is not None
+        except Exception as e:
+            print("Error comprobando DNI:", e)
+            return False
+
+    def generar_credenciales(self, dni, nombre, apellidos, nombre_usuario,
+                              password_generada, email, rol, especialidad=None):
+        """
+        Inserta el nuevo empleado en Personal y, si es medico o enfermero,
+        en su tabla especifica. Devuelve (True, nombre_usuario, password)
+        o (False, mensaje_error, None).
+        """
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_INSERT_PERSONAL,
+                           (dni, nombre, apellidos, nombre_usuario,
+                            password_generada, email, rol))
+            row = cursor.fetchone()
+            id_empleado = row[0]
+
+            if rol == 'medico':
+                cursor.execute(self.SQL_INSERT_MEDICO, (id_empleado, especialidad))
+            elif rol == 'enfermero':
+                cursor.execute(self.SQL_INSERT_ENFERMERO, (id_empleado,))
+
+            self.conexion.commit()
+            return True, nombre_usuario, password_generada
+        except Exception as e:
+            self.conexion.rollback()
+            print("Error generando credenciales:", e)
+            return False, str(e), None
