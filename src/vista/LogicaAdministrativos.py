@@ -18,6 +18,9 @@ PAGE_AGENDA       = 3
 PAGE_CREDENCIALES = 4
 PAGE_MEDICAMENTOS = 5
 PAGE_BACKUP       = 6
+PAGE_PASSWORD     = 7
+
+
 
 Form, Window = uic.loadUiType(ui_path)
 
@@ -39,6 +42,8 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales)
         self.btn_nav_medicamentos.clicked.connect(lambda: self._navegar(PAGE_MEDICAMENTOS))
         self.btn_nav_backup.clicked.connect(lambda: self._navegar(PAGE_BACKUP))
 
+        self.btn_nav_password.clicked.connect(self._ir_password)
+
         self.btn_logout.clicked.connect(self.cerrar_sesion)
 
         # Guardar paciente registrado
@@ -55,6 +60,9 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales)
 
         # CU5: Generar Credenciales (mixin LogicaCredenciales)
         self._init_credenciales()
+
+        # --- Cambio contraseña -----
+        self.btn_pw_confirmar.clicked.connect(self._cambiar_password)
 
     def cerrar_sesion(self):
         print("Cerrando sesión...")
@@ -74,6 +82,7 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales)
             self.btn_nav_credenciales,
             self.btn_nav_medicamentos,
             self.btn_nav_backup,
+            self.btn_nav_password,
         ]
         for i, btn in enumerate(nav_btns):
             btn.setChecked(i == indice)
@@ -117,6 +126,44 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales)
             QMessageBox.information(self, "Éxito", mensaje)
         else:
             QMessageBox.warning(self, "Error", mensaje)
+
+
+    # ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+    #                                                                            CAMBIAR CONTRASEÑA
+    # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    def _ir_password(self):
+        self._navegar(PAGE_PASSWORD)
+        self.input_pw_nueva.clear()
+        self.input_pw_confirmar.clear()
+        self.lbl_pw_error_coincidencia.setVisible(False)
+        self.lbl_pw_error_igual.setVisible(False)
+        self.lbl_pw_ok.setVisible(False)
+
+    def _cambiar_password(self):
+        nueva = self.input_pw_nueva.text().strip()
+        confirmar = self.input_pw_confirmar.text().strip()
+
+        # Ocultar todos los mensajes
+        self.lbl_pw_error_coincidencia.setVisible(False)
+        self.lbl_pw_error_igual.setVisible(False)
+        self.lbl_pw_ok.setVisible(False)
+
+        if nueva != confirmar:
+            self.lbl_pw_error_coincidencia.setVisible(True)
+            self.input_pw_nueva.clear()
+            self.input_pw_confirmar.clear()
+            return
+
+
+        self.controlador.cambiar_password(nueva, self.userVO)
+        print("Boton de cambar contraseña presionado")
+        self.lbl_pw_ok.setVisible(True)
+        self.input_pw_nueva.clear()
+        self.input_pw_confirmar.clear()
+
+
+
 
     # ── Property controlador ──────────────────────────────────────────────────
 

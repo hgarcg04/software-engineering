@@ -28,6 +28,8 @@ class ControladorPrincipal:
         loginVO = LoginVO(texto_nombre, texto_password)
 
         self.usuario_actualVO =  self._modelo.comprobarLogin(loginVO) # Objeto UserVO
+
+
                 
 
         if self.usuario_actualVO is None:
@@ -54,7 +56,7 @@ class ControladorPrincipal:
 
            
 
-            controlador = ControladorEnfermeros(self._ventana_enfermero, self._modelo, self.usuario_actualVO)
+            controlador = ControladorEnfermeros(self._ventana_enfermero, self._modelo, self.usuario_actualVO, self)
             self._ventana_enfermero.controlador = controlador
 
         elif self.usuario_actualVO.rol == 'medico': #Comprobar minuscula o mayuscula
@@ -70,7 +72,7 @@ class ControladorPrincipal:
             self._ventana_medico.signal_logout.connect(self.volver_al_login)
 
 
-            controlador = ControladorMedicos(self._ventana_medico, self._modelo, self.usuario_actualVO)
+            controlador = ControladorMedicos(self._ventana_medico, self._modelo, self.usuario_actualVO, self)
             self._ventana_medico.controlador = controlador
 
         elif self.usuario_actualVO.rol == 'administrativo': #Comprobar minuscula o mayuscula
@@ -85,7 +87,7 @@ class ControladorPrincipal:
             self._ventana_administrativo.signal_logout.connect(self.volver_al_login)
 
 
-            controlador = ControladorAdministrativos(self._ventana_administrativo, self._modelo, self.usuario_actualVO)
+            controlador = ControladorAdministrativos(self._ventana_administrativo, self._modelo, self.usuario_actualVO, self)
             self._ventana_administrativo.controlador = controlador
 
 
@@ -97,3 +99,7 @@ class ControladorPrincipal:
         self._vista.limpiar_campos()
 
         self._vista.show()
+
+    def cambiar_password(self, nueva, userVO):
+        print(f"hola desde el controlador, voy a cambiar la contraseña a {nueva}")
+        self._modelo.cambiarPassword(nueva, userVO)

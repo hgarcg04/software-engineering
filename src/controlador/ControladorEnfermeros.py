@@ -5,10 +5,11 @@ from src.modelo.LogicaGraficas import LogicaGraficas
 from src.vista.Enfermeros.LogicaGenerarGrafica import LogicaGenerarGrafica
 
 class ControladorEnfermeros:
-    def __init__(self, vista, modelo, user_vo):
+    def __init__(self, vista, modelo, user_vo, controlador_principal=None):
         self._vista = vista
         self._modelo = modelo
         self.user_vo = user_vo
+        self.controlador_principal = controlador_principal
 
         self._cargar_pacientes()
 
@@ -92,3 +93,6 @@ class ControladorEnfermeros:
         lista_episodios = self._modelo.obtenerEpisodios(id_paciente)
         print(lista_episodios)
         self._vista.mostrar_episodios(lista_episodios)
+
+    def cambiar_password(self, nueva, enfermero):
+        self.controlador_principal.cambiar_password(nueva, enfermero)

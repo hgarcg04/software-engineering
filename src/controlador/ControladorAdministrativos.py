@@ -5,10 +5,11 @@ import string
 
 
 class ControladorAdministrativos:
-    def __init__(self, vista, modelo, user_vo):
+    def __init__(self, vista, modelo, user_vo, controlador_principal=None):
         self._vista = vista
         self._modelo = modelo
         self.user_vo = user_vo
+        self.controlador_principal = controlador_principal
 
         # Estado interno de selección
         self._pacientes_busqueda = []
@@ -275,3 +276,6 @@ class ControladorAdministrativos:
 
     def limpiar_formulario_credencial(self):
         self._vista.limpiar_formulario_credencial()
+
+    def cambiar_password(self, nueva, admin):
+        self.controlador_principal.cambiar_password(nueva, admin)

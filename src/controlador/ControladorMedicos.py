@@ -9,10 +9,12 @@ from datetime import datetime, timedelta
 
 
 class ControladorMedicos:
-    def __init__(self, vista, modelo, user_vo):
+    def __init__(self, vista, modelo, user_vo, controlador_principal=None):
         self._vista = vista
         self._modelo = modelo
         self._user_vo = user_vo
+        self.controlador_principal = controlador_principal
+
         self._episodios_actuales = []
         self._paciente_hcd_actual = None
         self._episodio_consulta_actual = None  # EpisodioVO activo en la consulta
@@ -151,3 +153,7 @@ class ControladorMedicos:
         pacientes = self._modelo.buscarPacientePorId(id_paciente)
         if pacientes:
             self.cargar_episodios_paciente(pacientes[0])
+
+
+    def cambiar_password(self, nueva, medico):
+        self.controlador_principal.cambiar_password(nueva, medico)
