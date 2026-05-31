@@ -97,6 +97,7 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales)
 
     def cargar_datos_iniciales(self, userVO):
         """Llamado por el controlador al asignarse. Muestra el nombre del administrativo."""
+        self.admin = userVO
         self.lbl_user_name.setText(f"Administrativo/a: {userVO.nombre} {userVO.apellidos}")
 
     def _actualizar_fecha_hora(self):
@@ -156,7 +157,7 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales)
             return
 
 
-        self.controlador.cambiar_password(nueva, self.userVO)
+        self.controlador.cambiar_password(nueva, self.admin)
         print("Boton de cambar contraseña presionado")
         self.lbl_pw_ok.setVisible(True)
         self.input_pw_nueva.clear()
