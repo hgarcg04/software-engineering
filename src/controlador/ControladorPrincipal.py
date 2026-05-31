@@ -87,7 +87,7 @@ class ControladorPrincipal:
             self._ventana_administrativo.signal_logout.connect(self.volver_al_login)
 
 
-            controlador = ControladorAdministrativos(self._ventana_administrativo, self._modelo, self.usuario_actualVO, self)
+            controlador = ControladorAdministrativos(self._ventana_administrativo, self._modelo, self.usuario_actualVO)
             self._ventana_administrativo.controlador = controlador
 
 

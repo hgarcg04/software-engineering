@@ -91,3 +91,9 @@
 [2026-05-31 01:51:43] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
 [2026-05-31 01:53:11] LOGOUT | id=6 | usuario=María Pérez Díaz | rol=enfermero
 [2026-05-31 01:53:16] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-01 00:09:05] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-06-01 00:10:15] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-06-01 00:11:56] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-01 00:12:04] LOGOUT | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-01 00:12:07] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-06-01 00:12:57] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo

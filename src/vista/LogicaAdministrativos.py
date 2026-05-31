@@ -18,9 +18,6 @@ PAGE_AGENDA       = 3
 PAGE_CREDENCIALES = 4
 PAGE_MEDICAMENTOS = 5
 PAGE_BACKUP       = 6
-PAGE_PASSWORD     = 7
-
-
 
 Form, Window = uic.loadUiType(ui_path)
 
@@ -42,12 +39,11 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales)
         self.btn_nav_medicamentos.clicked.connect(lambda: self._navegar(PAGE_MEDICAMENTOS))
         self.btn_nav_backup.clicked.connect(lambda: self._navegar(PAGE_BACKUP))
 
-        self.btn_nav_password.clicked.connect(self._ir_password)
-
         self.btn_logout.clicked.connect(self.cerrar_sesion)
 
-        # Guardar paciente registrado
+        # Guardar / limpiar formulario de registro de paciente
         self.btn_guardar_paciente.clicked.connect(self.registrar_paciente)
+        self.btn_limpiar_formulario.clicked.connect(self.limpiar_formulario_paciente)
 
         # Reloj en tiempo real
         self.timer = QTimer(self)
@@ -60,9 +56,6 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales)
 
         # CU5: Generar Credenciales (mixin LogicaCredenciales)
         self._init_credenciales()
-
-        # --- Cambio contraseña -----
-        self.btn_pw_confirmar.clicked.connect(self._cambiar_password)
 
     def cerrar_sesion(self):
         print("Cerrando sesión...")
@@ -82,7 +75,6 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales)
             self.btn_nav_credenciales,
             self.btn_nav_medicamentos,
             self.btn_nav_backup,
-            self.btn_nav_password,
         ]
         for i, btn in enumerate(nav_btns):
             btn.setChecked(i == indice)
@@ -97,7 +89,6 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales)
 
     def cargar_datos_iniciales(self, userVO):
         """Llamado por el controlador al asignarse. Muestra el nombre del administrativo."""
-        self.admin = userVO
         self.lbl_user_name.setText(f"Administrativo/a: {userVO.nombre} {userVO.apellidos}")
 
     def _actualizar_fecha_hora(self):
@@ -106,18 +97,50 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales)
 
     # ── Registrar Paciente ────────────────────────────────────────────────────
 
-    def registrar_paciente(self):
-        nif             = self.input_dni_paciente.text()
-        nombre          = self.input_nombre_paciente.text()
-        ap1             = self.input_ap1_paciente.text()
-        ap2             = self.input_ap2_paciente.text()
-        email           = self.input_email_paciente.text()
-        telefono        = self.input_telefono_paciente.text()
-        direccion       = self.input_direccion_paciente.text()
-        alergias        = self.input_alergias_paciente.text()
-        fecha_nacimiento = self.input_fnac_paciente.date().toPyDate()
-        genero          = self.input_genero_paciente.currentText()
+    # Todos los campos de texto del formulario son obligatorios
+    _CAMPOS_OBLIGATORIOS_PACIENTE = [
+        ("input_dni_paciente",       "NIF / DNI"),
+        ("input_nombre_paciente",    "Nombre"),
+        ("input_ap1_paciente",       "Primer apellido"),
+        ("input_ap2_paciente",       "Segundo apellido"),
+        ("input_email_paciente",     "Correo electrónico"),
+        ("input_telefono_paciente",  "Teléfono"),
+        ("input_direccion_paciente", "Dirección"),
+        ("input_alergias_paciente",  "Alergias (escribe 'Ninguna' si no tiene)"),
+    ]
 
+    def registrar_paciente(self):
+        # ── Validación de campos obligatorios ────────────────────────────────
+        campos_vacios = []
+        for attr, etiqueta in self._CAMPOS_OBLIGATORIOS_PACIENTE:
+            widget = getattr(self, attr)
+            if not widget.text().strip():
+                campos_vacios.append(etiqueta)
+                widget.setStyleSheet("border: 1px solid #e74c3c;")
+            else:
+                widget.setStyleSheet("")
+
+        if campos_vacios:
+            QMessageBox.warning(
+                self,
+                "Campos obligatorios",
+                "Los siguientes campos son obligatorios:\n\n• " + "\n• ".join(campos_vacios)
+            )
+            return
+
+        # ── Recogida de datos ─────────────────────────────────────────────────
+        nif              = self.input_dni_paciente.text().strip().upper()
+        nombre           = self.input_nombre_paciente.text().strip()
+        ap1              = self.input_ap1_paciente.text().strip()
+        ap2              = self.input_ap2_paciente.text().strip()
+        email            = self.input_email_paciente.text().strip()
+        telefono         = self.input_telefono_paciente.text().strip()
+        direccion        = self.input_direccion_paciente.text().strip()
+        alergias         = self.input_alergias_paciente.text().strip()
+        fecha_nacimiento = self.input_fnac_paciente.date().toPyDate()
+        genero           = self.input_genero_paciente.currentText()
+
+        # ── Llamada al controlador ────────────────────────────────────────────
         exito, mensaje = self.controlador.registrar_paciente(
             nif, nombre, ap1, ap2, fecha_nacimiento,
             genero, email, direccion, alergias, telefono
@@ -125,46 +148,30 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales)
 
         if exito:
             QMessageBox.information(self, "Éxito", mensaje)
+            self.limpiar_formulario_paciente()
         else:
             QMessageBox.warning(self, "Error", mensaje)
 
+    def limpiar_formulario_paciente(self):
+        """Restablece todos los campos del formulario de registro de paciente."""
+        from PyQt5.QtCore import QDate
 
-    # ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-    #                                                                            CAMBIAR CONTRASEÑA
-    # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+        campos_texto = [
+            self.input_dni_paciente,
+            self.input_nombre_paciente,
+            self.input_ap1_paciente,
+            self.input_ap2_paciente,
+            self.input_email_paciente,
+            self.input_telefono_paciente,
+            self.input_direccion_paciente,
+            self.input_alergias_paciente,
+        ]
+        for campo in campos_texto:
+            campo.clear()
+            campo.setStyleSheet("")   # quita el borde rojo si lo hubiera
 
-    def _ir_password(self):
-        self._navegar(PAGE_PASSWORD)
-        self.input_pw_nueva.clear()
-        self.input_pw_confirmar.clear()
-        self.lbl_pw_error_coincidencia.setVisible(False)
-        self.lbl_pw_error_igual.setVisible(False)
-        self.lbl_pw_ok.setVisible(False)
-
-    def _cambiar_password(self):
-        nueva = self.input_pw_nueva.text().strip()
-        confirmar = self.input_pw_confirmar.text().strip()
-
-        # Ocultar todos los mensajes
-        self.lbl_pw_error_coincidencia.setVisible(False)
-        self.lbl_pw_error_igual.setVisible(False)
-        self.lbl_pw_ok.setVisible(False)
-
-        if nueva != confirmar:
-            self.lbl_pw_error_coincidencia.setVisible(True)
-            self.input_pw_nueva.clear()
-            self.input_pw_confirmar.clear()
-            return
-
-
-        self.controlador.cambiar_password(nueva, self.admin)
-        print("Boton de cambar contraseña presionado")
-        self.lbl_pw_ok.setVisible(True)
-        self.input_pw_nueva.clear()
-        self.input_pw_confirmar.clear()
-
-
-
+        self.input_fnac_paciente.setDate(QDate.currentDate())
+        self.input_genero_paciente.setCurrentIndex(0)
 
     # ── Property controlador ──────────────────────────────────────────────────
 

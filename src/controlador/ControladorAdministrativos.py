@@ -5,11 +5,10 @@ import string
 
 
 class ControladorAdministrativos:
-    def __init__(self, vista, modelo, user_vo, controlador_principal=None):
+    def __init__(self, vista, modelo, user_vo):
         self._vista = vista
         self._modelo = modelo
         self.user_vo = user_vo
-        self.controlador_principal = controlador_principal
 
         # Estado interno de selección
         self._pacientes_busqueda = []
@@ -29,12 +28,30 @@ class ControladorAdministrativos:
     def registrar_paciente(self, nif, nombre, apellido1, apellido2,
                            fecha_nacimiento, genero, correo,
                            direccion, alergias, telefono):
-        # Validación: el DNI no puede estar ya registrado
-        if self._modelo.existePaciente(nif):
-            return False, "El paciente ya está registrado."
+        import re
+        from datetime import date
 
+        # ── Validaciones de formato ───────────────────────────────────────────
+        nif_limpio = nif.strip().upper()
+        if not re.fullmatch(r'[0-9]{8}[A-Z]', nif_limpio):
+            return False, "El NIF no tiene un formato válido (8 dígitos + letra, ej: 12345678A)."
+
+        if fecha_nacimiento >= date.today():
+            return False, "La fecha de nacimiento no puede ser hoy ni una fecha futura."
+
+        if not re.fullmatch(r'[^@\s]+@[^@\s]+\.[^@\s]+', correo):
+            return False, "El correo electrónico no tiene un formato válido."
+
+        if not re.fullmatch(r'[0-9\s\+\-]{7,15}', telefono):
+            return False, "El teléfono no tiene un formato válido."
+
+        # ── Validación de duplicado ───────────────────────────────────────────
+        if self._modelo.existePaciente(nif_limpio):
+            return False, "Ya existe un paciente registrado con ese NIF."
+
+        # ── Persistencia ─────────────────────────────────────────────────────
         pacienteVO = PacientesVO(
-            nif=nif, nombre=nombre,
+            nif=nif_limpio, nombre=nombre,
             apellido1=apellido1, apellido2=apellido2,
             fecha_nacimiento=fecha_nacimiento,
             genero=genero, correo=correo,
@@ -42,7 +59,7 @@ class ControladorAdministrativos:
             telefono=telefono
         )
         self._modelo.registrarPaciente(pacienteVO)
-        return True, "Paciente registrado correctamente."
+        return True, f"Paciente {nombre} {apellido1} registrado correctamente."
 
     # ── CU4: Asignar Citas ────────────────────────────────────────────────────
 
@@ -276,6 +293,3 @@ class ControladorAdministrativos:
 
     def limpiar_formulario_credencial(self):
         self._vista.limpiar_formulario_credencial()
-
-    def cambiar_password(self, nueva, admin):
-        self.controlador_principal.cambiar_password(nueva, admin)
