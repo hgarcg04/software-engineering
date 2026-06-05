@@ -2,10 +2,14 @@ from src.vista.LogicaDialogoReceta import DialogoReceta
 from src.vista.LogicaDialogoEpisodio import DialogoEpisodio
 from src.modelo.VO.EpisodiosVO import EpisodioVO
 from src.modelo.VO.TratamientosVO import TratamientoVO
-from src.modelo.dao.PacientesDaoJDBC import PacientesDaoJDBC
-from src.modelo.VO.CitasVO import CitaVO
 
 from datetime import datetime, timedelta
+
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, HRFlowable
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 
 
 class ControladorMedicos:
@@ -161,6 +165,178 @@ class ControladorMedicos:
         if pacientes:
             self.cargar_episodios_paciente(pacientes[0])
 
+    def dar_alta_paciente(self):
+        if not self._paciente_hcd_actual:
+            self._vista.mostrar_notificacion_alta(
+                "Atención", 
+                "No hay ningún paciente seleccionado para dar de alta.", 
+                es_error=True
+            )
+            return
+
+        exito = self._modelo.darAltaMedica(self._paciente_hcd_actual.id_paciente)
+
+        if exito:
+            self._vista.mostrar_notificacion_alta(
+                "Alta Procesada", 
+                f"El paciente {self._paciente_hcd_actual.nombre} ha sido dado de alta en el sistema. Guarda el informe."
+            )
+            self.exportar_informe_alta_pdf(self._paciente_hcd_actual)
+            self._vista.configurar_botones_hospitalizacion(puede_ingresar=True, puede_dar_alta=False)
+            self.cargar_episodios_paciente(self._paciente_hcd_actual)
+        else:
+            self._vista.mostrar_notificacion_alta(
+                "Error de Base de Datos", 
+                "No se pudo registrar el alta en el sistema. Inténtelo de nuevo.", 
+                es_error=True
+            )
+
+    def exportar_informe_alta_pdf(self, pacienteVO):
+        if not pacienteVO:
+            return
+
+        # 1. Le pedimos a la vista que obtenga la ruta (El controlador no ve el QFileDialog)
+        ruta = self._vista.solicitar_ruta_informe_alta(pacienteVO.nif)
+        if not ruta:
+            return  # El médico canceló la selección del archivo
+
+        try:
+            # 2. Configuración y maquetación del PDF (Lógica pura)
+            doc = SimpleDocTemplate(
+                ruta,
+                pagesize=A4,
+                leftMargin=2*cm,
+                rightMargin=2*cm,
+                topMargin=2*cm,
+                bottomMargin=2*cm
+            )
+
+            historia = []
+            styles = getSampleStyleSheet()
+
+            # Estilo personalizado idéntico al de Enfermeros (Verde institucional)
+            estilo_titulo_seccion = ParagraphStyle(
+                'TituloSeccion_Alta',
+                parent=styles['Heading2'],
+                fontSize=12,
+                textColor=colors.HexColor('#0cb868'),
+                spaceBefore=12,
+                spaceAfter=4
+            )
+
+            estilo_cabecera = ParagraphStyle(
+                'Cabecera_Alta',
+                parent=styles['Heading1'],
+                fontSize=22,
+                alignment=1,  # Centrado
+                textColor=colors.HexColor('#2c3e50')
+            )
+            
+            # --- DISEÑO DEL DOCUMENTO ---
+            historia.append(Paragraph("<b>INFORME DE ALTA CLÍNICA</b>", estilo_cabecera))
+            historia.append(Spacer(1, 0.3 * cm))
+            
+            fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
+            historia.append(Paragraph(f"<b>Documento emitido el:</b> {fecha_actual}", styles['Normal']))
+            historia.append(Spacer(1, 0.6 * cm))
+
+            # SECCIÓN 1: DATOS DEL PACIENTE
+            historia.append(Paragraph("<b>DATOS DEL PACIENTE</b>", estilo_titulo_seccion))
+            historia.append(HRFlowable(width="100%", thickness=1.5, color=colors.HexColor('#0cb868')))
+            historia.append(Spacer(1, 0.2 * cm))
+
+            datos_paciente = [
+                [Paragraph("<b>NIF / DNI:</b>", styles['Normal']), Paragraph(str(pacienteVO.nif), styles['Normal']),
+                 Paragraph("<b>Paciente:</b>", styles['Normal']), Paragraph(f"{pacienteVO.nombre} {pacienteVO.apellido1} {pacienteVO.apellido2}", styles['Normal'])],
+                [Paragraph("<b>F. Nacimiento:</b>", styles['Normal']), Paragraph(str(pacienteVO.fecha_nacimiento), styles['Normal']),
+                 Paragraph("<b>Género:</b>", styles['Normal']), Paragraph(str(pacienteVO.genero), styles['Normal'])],
+            ]
+            tabla_pac = Table(datos_paciente, colWidths=[3.5*cm, 5*cm, 3.5*cm, 5*cm])
+            historia.append(tabla_pac)
+            historia.append(Spacer(1, 0.6 * cm))
+
+            # SECCIÓN 2: DETALLES DEL EPISODIO
+            historia.append(Paragraph("<b>DETALLES DEL EPISODIO HOSPITALARIO</b>", estilo_titulo_seccion))
+            historia.append(HRFlowable(width="100%", thickness=1.5, color=colors.HexColor('#0cb868')))
+            historia.append(Spacer(1, 0.2 * cm))
+
+            # Buscamos los episodios reales del paciente en el modelo
+            episodios = self._modelo.obtenerEpisodios(pacienteVO.id_paciente)
+            ep_actual = episodios[0] if episodios else None
+
+            if ep_actual:
+                diagnostico_txt = ep_actual.diagnostico.replace('\n', '<br/>') if ep_actual.diagnostico else "Sin diagnóstico especificado"
+                datos_ingreso = [
+                    [Paragraph("<b>ID Episodio:</b>", styles['Normal']), Paragraph(str(ep_actual.id_episodio), styles['Normal']),
+                     Paragraph("<b>Tipo de Ingreso:</b>", styles['Normal']), Paragraph(str(ep_actual.tipo), styles['Normal'])],
+                    [Paragraph("<b>Fecha de Inicio:</b>", styles['Normal']), Paragraph(str(ep_actual.fecha_hora_inicio), styles['Normal']),
+                     Paragraph("<b>Fecha de Alta:</b>", styles['Normal']), Paragraph(datetime.now().strftime("%Y-%m-%d %H:%M"), styles['Normal'])],
+                    [Paragraph("<b>Médico Responsable:</b>", styles['Normal']), Paragraph(f"Dr./Dra. {self._user_vo.apellidos}", styles['Normal']),
+                     Paragraph("", styles['Normal']), Paragraph("", styles['Normal'])],
+                ]
+                tabla_ing = Table(datos_ingreso, colWidths=[3.5*cm, 5*cm, 3.5*cm, 5*cm])
+                historia.append(tabla_ing)
+                historia.append(Spacer(1, 0.4 * cm))
+                
+                historia.append(Paragraph("<b>DIAGNÓSTICO AL ALTA:</b>", styles['Normal']))
+                historia.append(Spacer(1, 0.1 * cm))
+                historia.append(Paragraph(diagnostico_txt, styles['Normal']))
+            else:
+                historia.append(Paragraph("No se registran detalles del episodio clínico activo.", styles['Normal']))
+            
+            historia.append(Spacer(1, 0.6 * cm))
+
+            # SECCIÓN 3: TRATAMIENTO RECOMENDADO
+            historia.append(Paragraph("<b>PLAN DE MEDICACIÓN RECIENTE</b>", estilo_titulo_seccion))
+            historia.append(HRFlowable(width="100%", thickness=1.5, color=colors.HexColor('#0cb868')))
+            historia.append(Spacer(1, 0.3 * cm))
+
+            tratamientos = self._modelo.obtenerTratamientos_por_episodio(ep_actual.id_episodio) if ep_actual else []
+
+            if tratamientos:
+                tabla_med_data = [[
+                    Paragraph("<b>Medicamento</b>", styles['Normal']),
+                    Paragraph("<b>Dosis</b>", styles['Normal']),
+                    Paragraph("<b>Frecuencia</b>", styles['Normal']),
+                    Paragraph("<b>Vía</b>", styles['Normal']),
+                    Paragraph("<b>Instrucciones Facultativas</b>", styles['Normal'])
+                ]]
+                
+                for t in tratamientos:
+                    tabla_med_data.append([
+                        Paragraph(str(t.get('medicamento', '—')), styles['Normal']),
+                        Paragraph(str(t.get('dosis', '—')), styles['Normal']),
+                        Paragraph(str(t.get('frecuencia', '—')), styles['Normal']),
+                        Paragraph(str(t.get('via', '—')), styles['Normal']),
+                        Paragraph(str(t.get('notas', '—')), styles['Normal'])
+                    ])
+                
+                tabla_med = Table(tabla_med_data, colWidths=[3.5*cm, 2*cm, 3*cm, 2.5*cm, 6*cm])
+                tabla_med.setStyle([
+                    ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#f8f9fa')),
+                    ('GRID', (0,0), (-1,-1), 0.5, colors.lightgrey),
+                    ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                    ('BOTTOMPADDING', (0,0), (-1,-1), 5),
+                    ('TOPPADDING', (0,0), (-1,-1), 5),
+                ])
+                historia.append(tabla_med)
+            else:
+                historia.append(Paragraph("El paciente no cuenta con tratamientos farmacológicos pautados para el hogar.", styles['Normal']))
+
+            doc.build(historia)
+            
+            self._vista.mostrar_notificacion_alta(
+                "Informe Generado", 
+                f"El informe clínico de alta se guardó de manera exitosa en:\n{ruta}"
+            )
+
+        except Exception as e:
+            print("Error generando PDF:", e)
+            self._vista.mostrar_notificacion_alta(
+                "Error Interno", 
+                f"No se pudo estructurar el documento PDF:\n{str(e)}", 
+                es_error=True
+            )
 
     def cambiar_password(self, nueva, medico):
         self.controlador_principal.cambiar_password(nueva, medico)

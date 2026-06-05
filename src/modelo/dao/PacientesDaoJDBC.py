@@ -41,6 +41,8 @@ class PacientesDaoJDBC(Conexion):
         WHERE id_paciente = ?
     """
 
+    SQL_DAR_ALTA = "UPDATE Pacientes SET hospitalizado = 0 WHERE id_paciente = ?"
+
     SQL_COMPROBAR_HOSPITALIZADO = """
         SELECT hospitalizado 
         FROM Pacientes 
@@ -157,6 +159,17 @@ class PacientesDaoJDBC(Conexion):
             print(f"Error al ingresar el paciente: {e}")
         finally:
             cursor.close() # revisar porque esto no lo termino de entender
+
+    def registrar_alta_paciente(self, id_paciente):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_DAR_ALTA, (id_paciente,))
+            self.conexion.commit()
+            return True
+        except Exception as e:
+            self.conexion.rollback()
+            print("Error al dar de alta al paciente en la base de datos:", e)
+            return False
     
     def existe_paciente(self, nif):
         cursor = self.getCursor()

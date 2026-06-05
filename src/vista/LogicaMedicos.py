@@ -65,6 +65,7 @@ class VentanaMedico(QMainWindow, Form):
         self.tabla_busqueda_hcd.itemSelectionChanged.connect(self._on_paciente_hcd_seleccionado)
         self.tabla_episodios_hcd.itemSelectionChanged.connect(self._on_episodio_seleccionado)
         self.btn_cerrar_detalle.clicked.connect(self._cerrar_detalle_hcd)
+        self.btn_dar_alta_hcd.clicked.connect(self._on_dar_alta_clicked)
 
         # Logout
         self.btn_logout.clicked.connect(self._logout)
@@ -100,6 +101,32 @@ class VentanaMedico(QMainWindow, Form):
     def configurar_botones_hospitalizacion(self, puede_ingresar, puede_dar_alta):
         self.btn_ingresar_planta_hcd.setEnabled(puede_ingresar)
         self.btn_dar_alta_hcd.setEnabled(puede_dar_alta)
+
+    def solicitar_ruta_informe_alta(self, nif_paciente):
+        """
+        MÉTODO DE VISTA (MVC Puro): Abre el explorador de archivos para elegir la ruta.
+        No genera el PDF ni sabe de bases de datos, solo captura y devuelve el string de la ruta.
+        """
+        from PyQt5.QtWidgets import QFileDialog
+        
+        ruta, _ = QFileDialog.getSaveFileName(
+            self,
+            "Guardar Informe de Alta Clínica",
+            f"Informe_Alta_{nif_paciente}.pdf",
+            "PDF Files (*.pdf)"
+        )
+        return ruta
+
+    def mostrar_notificacion_alta(self, titulo, mensaje, es_error=False):
+        """
+        MÉTODO DE VISTA (MVC Puro): Muestra cuadros de diálogo de información o error.
+        """
+        from PyQt5.QtWidgets import QMessageBox
+        
+        if es_error:
+            QMessageBox.critical(self, titulo, mensaje)
+        else:
+            QMessageBox.information(self, titulo, mensaje)
 
     def establecer_rango_fechas_interfaz(self, fecha_desde_str, fecha_hasta_str):
         q_desde = QDate.fromString(fecha_desde_str, "yyyy-MM-dd")
@@ -258,6 +285,10 @@ class VentanaMedico(QMainWindow, Form):
     def _buscar_paciente_hcd(self, texto):
         if self._controlador:
             self._controlador.buscar_paciente_hcd(texto)
+
+    def _on_dar_alta_clicked(self):
+        if self._controlador:
+            self._controlador.dar_alta_paciente()
 
     def cargar_resultados_busqueda_hcd(self, lista_pacientes):
         self._pacientes_busqueda = lista_pacientes

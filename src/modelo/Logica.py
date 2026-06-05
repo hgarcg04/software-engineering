@@ -60,6 +60,10 @@ class Logica():
     def pacienteEstaIngresado(self, id_paciente):
         dao = PacientesDaoJDBC()
         return dao.comprobar_ingreso_activo(id_paciente)
+    
+    def darAltaMedica(self, id_paciente):
+        dao = PacientesDaoJDBC()
+        return dao.registrar_alta_paciente(id_paciente)
 
     def ingresarPaciente(self, id_paciente, id_medico):
         dao = PacientesDaoJDBC()
