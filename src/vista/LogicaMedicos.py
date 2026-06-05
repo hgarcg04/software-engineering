@@ -97,8 +97,11 @@ class VentanaMedico(QMainWindow, Form):
     def _actualizar_fecha_hora(self):
         self.lbl_datetime.setText(QDateTime.currentDateTime().toString("dd/MM/yyyy  HH:mm"))
 
+    def configurar_botones_hospitalizacion(self, puede_ingresar, puede_dar_alta):
+        self.btn_ingresar_planta_hcd.setEnabled(puede_ingresar)
+        self.btn_dar_alta_hcd.setEnabled(puede_dar_alta)
+
     def establecer_rango_fechas_interfaz(self, fecha_desde_str, fecha_hasta_str):
-        # Convertimos los strings que vienen del controlador a objetos QDate
         q_desde = QDate.fromString(fecha_desde_str, "yyyy-MM-dd")
         q_hasta = QDate.fromString(fecha_hasta_str, "yyyy-MM-dd")
         
@@ -306,6 +309,8 @@ class VentanaMedico(QMainWindow, Form):
     def _cerrar_detalle_hcd(self):
         self.txt_detalle_episodio.clear()
         self.tabla_tratamientos_hcd.setRowCount(0)
+        self.btn_ingresar_planta_hcd.setEnabled(False)
+        self.btn_dar_alta_hcd.setEnabled(False)
 
     # ── Logout ───────────────────────────────────────────────────
 

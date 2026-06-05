@@ -41,6 +41,12 @@ class PacientesDaoJDBC(Conexion):
         WHERE id_paciente = ?
     """
 
+    SQL_COMPROBAR_HOSPITALIZADO = """
+        SELECT hospitalizado 
+        FROM Pacientes 
+        WHERE id_paciente = ?
+    """
+
     SQL_REGISTRAR_PACIENTE = """
             INSERT INTO Pacientes (nif, nombre, apellido1, apellido2,
             fecha_nacimiento, genero, fecha_registro, correo, direccion, alergias, telefono)
@@ -156,6 +162,18 @@ class PacientesDaoJDBC(Conexion):
         cursor = self.getCursor()
         cursor.execute(self.SQL_BUSCAR_NIF, (nif,))
         return cursor.fetchone() is not None
+    
+    def comprobar_ingreso_activo(self, id_paciente):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_COMPROBAR_HOSPITALIZADO, (id_paciente,))
+            row = cursor.fetchone()
+            if row:
+                return bool(row[0])
+            return False
+        except Exception as e:
+            print("Error al comprobar estado de hospitalización:", e)
+            return False
     
     def registrar_paciente(self, pacienteVO):
         cursor = self.getCursor()

@@ -136,6 +136,13 @@ class ControladorMedicos:
         self._episodios_actuales = episodios if episodios else []
         self._vista.cargar_episodios_hcd(pacienteVO.nombre_completo, self._episodios_actuales)
 
+        esta_ingresado = self._modelo.pacienteEstaIngresado(pacienteVO.id_paciente)
+        
+        if esta_ingresado:
+            self._vista.configurar_botones_hospitalizacion(puede_ingresar=False, puede_dar_alta=True)
+        else:
+            self._vista.configurar_botones_hospitalizacion(puede_ingresar=True, puede_dar_alta=False)
+
     def cargar_detalle_episodio(self, fila):
         if fila >= len(self._episodios_actuales):
             return
