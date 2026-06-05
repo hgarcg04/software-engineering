@@ -2,6 +2,7 @@ from src.vista.LogicaDialogoReceta import DialogoReceta
 from src.vista.LogicaDialogoEpisodio import DialogoEpisodio
 from src.modelo.VO.EpisodiosVO import EpisodioVO
 from src.modelo.VO.TratamientosVO import TratamientoVO
+from src.modelo.LogicaNeumonia import LogicaNeumonia
 
 from datetime import datetime, timedelta
 
@@ -18,6 +19,7 @@ class ControladorMedicos:
         self._modelo = modelo
         self._user_vo = user_vo
         self.controlador_principal = controlador_principal
+        self._modelo_ia = LogicaNeumonia()
 
         self._episodios_actuales = []
         self._paciente_hcd_actual = None
@@ -344,5 +346,11 @@ class ControladorMedicos:
                 es_error=True
             )
 
-    def cambiar_password(self, nueva, medico):
-        self.controlador_principal.cambiar_password(nueva, medico)
+    #################### MODELO ######################
+    def clasificar_imagen(self, ruta):
+        try:
+            resultados = self._modelo_ia.clasificar(ruta)
+            mejor = max(resultados, key=lambda x: x['score'])
+            self._vista.mostrar_resultado_rx(mejor['label'], round(mejor['score'] * 100, 2))
+        except Exception as e:
+            self._vista.mostrar_resultado_rx("Error", str(e))

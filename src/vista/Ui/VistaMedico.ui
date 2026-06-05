@@ -145,6 +145,13 @@
            <property name="class" stdset="0"><string>navBtn</string></property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="btn_nav_neumonia">
+           <property name="text"><string>  Diagnóstico IA</string></property>
+           <property name="checkable"><bool>true</bool></property>
+           <property name="class" stdset="0"><string>navBtn</string></property>
+          </widget>
+         </item>
          <item><spacer><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property></spacer></item>
         </layout>
        </widget>
@@ -472,6 +479,93 @@
             </widget>
            </widget>
           </item>
+         </layout>
+        </widget>
+
+
+        <widget class="QWidget" name="page_neumonia">
+         <layout class="QVBoxLayout" name="neumoniaLayout">
+          <property name="leftMargin"><number>30</number></property>
+          <property name="topMargin"><number>30</number></property>
+          <property name="rightMargin"><number>30</number></property>
+          <property name="bottomMargin"><number>30</number></property>
+          <item>
+           <widget class="QLabel" name="lbl_neumonia_titulo">
+            <property name="text"><string>Diagnóstico IA — Neumonía</string></property>
+            <property name="styleSheet"><string>font-family: 'Segoe UI Black'; font-size: 22px; color: #2d3436;</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lbl_neumonia_sub">
+            <property name="text"><string>Sube una radiografía de tórax para analizarla con inteligencia artificial.</string></property>
+            <property name="styleSheet"><string>font-family: 'Segoe UI'; font-size: 13px; color: #636e72;</string></property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout">
+            <item>
+             <layout class="QVBoxLayout">
+              <item>
+               <widget class="QLabel" name="lbl_imagen_rx">
+                <property name="text"><string>No hay imagen seleccionada</string></property>
+                <property name="alignment"><set>Qt::AlignCenter</set></property>
+                <property name="minimumSize"><size><width>620</width><height>520</height></size></property>
+                <property name="styleSheet"><string>background-color: #ffffff; border-radius: 12px; border: 1px solid #dde3ea; color: #b2bec3; font-family: 'Segoe UI'; font-size: 13px;</string></property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout">
+                <item>
+                 <widget class="QPushButton" name="btn_seleccionar_rx">
+                  <property name="text"><string>Seleccionar imagen</string></property>
+                  <property name="styleSheet"><string>QPushButton { background-color: #6a9edb; color: white; border-radius: 8px; padding: 8px 18px; font-family: 'Segoe UI Semibold'; font-size: 13px; border: none; } QPushButton:hover { background-color: #4a7ec0; }</string></property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btn_analizar_rx">
+                  <property name="text"><string>Analizar</string></property>
+                  <property name="enabled"><bool>false</bool></property>
+                  <property name="styleSheet"><string>QPushButton { background-color: #00b894; color: white; border-radius: 8px; padding: 8px 18px; font-family: 'Segoe UI Semibold'; font-size: 13px; border: none; } QPushButton:hover { background-color: #00a381; } QPushButton:disabled { background-color: #b2d8d0; }</string></property>
+                 </widget>
+                </item>
+                <item><spacer><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property></spacer></item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QFrame" name="frame_resultado_rx">
+              <property name="visible"><bool>false</bool></property>
+              <property name="styleSheet"><string>QFrame { background-color: #ffffff; border-radius: 12px; border: 1px solid #dde3ea; }</string></property>
+              <property name="minimumSize"><size><width>380</width><height>520</height></size></property>
+              <layout class="QVBoxLayout">
+               <property name="leftMargin"><number>30</number></property>
+               <property name="topMargin"><number>30</number></property>
+               <property name="rightMargin"><number>30</number></property>
+               <property name="bottomMargin"><number>30</number></property>
+               <item>
+                <widget class="QLabel" name="lbl_resultado_rx">
+                 <property name="text"><string></string></property>
+                 <property name="alignment"><set>Qt::AlignCenter</set></property>
+                 <property name="wordWrap"><bool>true</bool></property>
+                 <property name="styleSheet"><string>font-family: 'Segoe UI Black'; font-size: 28px;</string></property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="lbl_confianza_rx">
+                 <property name="text"><string></string></property>
+                 <property name="alignment"><set>Qt::AlignCenter</set></property>
+                 <property name="styleSheet"><string>font-family: 'Segoe UI'; font-size: 16px; color: #636e72;</string></property>
+                </widget>
+               </item>
+               <item><spacer><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>0</width><height>40</height></size></property></spacer></item>
+              </layout>
+             </widget>
+            </item>
+            <item><spacer><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property></spacer></item>
+           </layout>
+          </item>
+          <item><spacer><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property></spacer></item>
          </layout>
         </widget>
 

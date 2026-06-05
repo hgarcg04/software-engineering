@@ -71,6 +71,13 @@ class VentanaMedico(QMainWindow, Form):
         # Logout
         self.btn_logout.clicked.connect(self._logout)
 
+        # Clasificación
+        self._btn_group.addButton(self.btn_nav_neumonia)
+        self.btn_nav_neumonia.clicked.connect(self._ir_neumonia)
+        self.btn_seleccionar_rx.clicked.connect(self._seleccionar_imagen_rx)
+        self.btn_analizar_rx.clicked.connect(self._analizar_rx)
+        self._ruta_imagen_rx = None
+
     # ── Navegación ──────────────────────────────────────────────
 
     def _ir_inicio(self):
@@ -388,3 +395,41 @@ class VentanaMedico(QMainWindow, Form):
     @controlador.setter
     def controlador(self, ref):
         self._controlador = ref
+
+    ######################################### MODELO ######################################################
+    def _ir_neumonia(self):
+        self.stackedPanel.setCurrentIndex(5)
+        self.btn_nav_neumonia.setChecked(True)
+
+    def _seleccionar_imagen_rx(self):
+        from PyQt5.QtWidgets import QFileDialog
+        from PyQt5.QtGui import QPixmap
+        from PyQt5.QtCore import Qt
+        ruta, _ = QFileDialog.getOpenFileName(
+            self, "Seleccionar radiografía", "",
+            "Imágenes (*.png *.jpg *.jpeg)"
+        )
+        if ruta:
+            self._ruta_imagen_rx = ruta
+            pixmap = QPixmap(ruta).scaled(620, 520, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.lbl_imagen_rx.setPixmap(pixmap)
+            self.btn_analizar_rx.setEnabled(True)
+            self.frame_resultado_rx.setVisible(False)
+
+    def _analizar_rx(self):
+        if self._ruta_imagen_rx and self._controlador:
+            self.btn_analizar_rx.setEnabled(False)
+            self.btn_analizar_rx.setText("Analizando...")
+            self._controlador.clasificar_imagen(self._ruta_imagen_rx)
+            self.btn_analizar_rx.setEnabled(True)
+            self.btn_analizar_rx.setText("Analizar")
+
+    def mostrar_resultado_rx(self, label, confianza):
+        self.frame_resultado_rx.setVisible(True)
+        if "PNEUMONIA" in label.upper():
+            self.lbl_resultado_rx.setText("⚠ NEUMONÍA\nDETECTADA")
+            self.lbl_resultado_rx.setStyleSheet("font-family: 'Segoe UI Black'; font-size: 20px; color: #e17055;")
+        else:
+            self.lbl_resultado_rx.setText("✔ NORMAL")
+            self.lbl_resultado_rx.setStyleSheet("font-family: 'Segoe UI Black'; font-size: 20px; color: #00b894;")
+        self.lbl_confianza_rx.setText(f"Confianza: {confianza}%")

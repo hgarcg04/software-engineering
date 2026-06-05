@@ -136,3 +136,10 @@
 [2026-06-05 21:26:21] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-06-05 21:26:23] LOGOUT | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-06-05 21:54:54] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-06-05 22:15:48] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-05 22:17:40] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-05 22:26:00] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-05 22:28:24] LOGOUT | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-05 22:28:33] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-05 22:28:39] LOGOUT | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-05 22:28:40] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
