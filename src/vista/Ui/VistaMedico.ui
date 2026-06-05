@@ -51,6 +51,32 @@
     QLineEdit:focus, QComboBox:focus, QDateEdit:focus { border: 1px solid #00b894; }
     #search_bar { border: 1px solid #dde3ea; border-radius: 8px; padding: 8px 12px; background-color: #ffffff; font-size: 13px; color: #2d3436; }
     #search_bar:focus { border: 1px solid #00b894; }
+    
+    /* ESTILOS BOTÓN DE ALTA */
+    #btn_dar_alta_hcd {
+        background-color: #e17055;
+        color: white;
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-family: 'Segoe UI Semibold';
+        font-size: 13px;
+        border: none;
+    }
+    #btn_dar_alta_hcd:hover { background-color: #c0392b; }
+    #btn_dar_alta_hcd:disabled { background-color: #bdc3c7; color: #7f8c8d; }
+
+    /* ESTILOS BOTÓN DE INGRESO (CON COLORES DIFERENCIADOS POR ESTADO) */
+    #btn_ingresar_planta_hcd {
+        background-color: #0984e3; /* Azul llamativo e informativo cuando está activo */
+        color: white;
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-family: 'Segoe UI Semibold';
+        font-size: 13px;
+        border: none;
+    }
+    #btn_ingresar_planta_hcd:hover { background-color: #00a8ff; }
+    #btn_ingresar_planta_hcd:disabled { background-color: #bdc3c7; color: #7f8c8d; }
    </string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -61,7 +87,6 @@
     <property name="rightMargin"><number>0</number></property>
     <property name="bottomMargin"><number>0</number></property>
 
-    <!-- TOP BAR -->
     <item>
      <widget class="QFrame" name="topBar">
       <layout class="QHBoxLayout" name="topBarLayout">
@@ -78,12 +103,10 @@
      </widget>
     </item>
 
-    <!-- BODY -->
     <item>
      <layout class="QHBoxLayout" name="bodyLayout">
       <property name="spacing"><number>0</number></property>
 
-      <!-- SIDEBAR -->
       <item>
        <widget class="QFrame" name="sideBar">
         <layout class="QVBoxLayout" name="sideLayout">
@@ -127,12 +150,10 @@
        </widget>
       </item>
 
-      <!-- STACKED PANEL -->
       <item>
        <widget class="QStackedWidget" name="stackedPanel">
         <property name="currentIndex"><number>0</number></property>
 
-        <!-- PAGE 0: INICIO -->
         <widget class="QWidget" name="page_inicio">
          <layout class="QVBoxLayout" name="inicioLayout">
           <property name="leftMargin"><number>30</number></property>
@@ -164,7 +185,6 @@
          </layout>
         </widget>
 
-        <!-- PAGE 1: MI AGENDA COMPLETA -->
         <widget class="QWidget" name="page_agenda">
          <layout class="QVBoxLayout" name="agendaLayout">
           <property name="leftMargin"><number>30</number></property>
@@ -174,7 +194,7 @@
           <item><widget class="QLabel" name="lbl_section_title"><property name="text"><string>Mi agenda</string></property></widget></item>
           <item><widget class="QLabel" name="lbl_section_sub"><property name="text"><string>Consulta tus citas en cualquier rango de fechas</string></property></widget></item>
           <item>
-           <layout class="QHBoxLayout">xº
+           <layout class="QHBoxLayout">
             <item><widget class="QLabel"><property name="text"><string>Desde:</string></property></widget></item>
             <item><widget class="QDateEdit" name="date_desde"><property name="calendarPopup"><bool>true</bool></property><property name="displayFormat"><string>dd/MM/yyyy</string></property></widget></item>
             <item><widget class="QLabel"><property name="text"><string>Hasta:</string></property></widget></item>
@@ -197,7 +217,6 @@
          </layout>
         </widget>
 
-        <!-- PAGE 2: HCD -->
         <widget class="QWidget" name="page_hcd">
          <layout class="QHBoxLayout" name="hcdOuterLayout">
           <property name="spacing"><number>16</number></property>
@@ -263,18 +282,46 @@
              <property name="bottomMargin"><number>20</number></property>
              <item>
               <layout class="QHBoxLayout">
-               <item><widget class="QLabel" name="lbl_detalle_titulo"><property name="text"><string>Detalle del episodio</string></property></widget></item>
+               <property name="spacing"><number>10</number></property>
+               <item><widget class="QLabel" name="lbl_detalle_titulo"><property name="text"><string>Detaille del episodio</string></property></widget></item>
                <item><spacer><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property></spacer></item>
                <item><widget class="QPushButton" name="btn_cerrar_detalle"><property name="text"><string>✕ Cerrar</string></property></widget></item>
               </layout>
              </item>
              <item><widget class="QLabel" name="lbl_detalle_sub"><property name="text"><string>Selecciona un episodio de la tabla</string></property></widget></item>
+             
+             <item>
+              <widget class="QLabel" name="lbl_estado_hcd">
+               <property name="text"><string></string></property>
+              </widget>
+             </item>
+             
              <item>
               <widget class="QTextEdit" name="txt_detalle_episodio">
                <property name="readOnly"><bool>true</bool></property>
                <property name="placeholderText"><string>El contenido del episodio aparecerá aquí...</string></property>
               </widget>
              </item>
+             
+             <item>
+              <layout class="QHBoxLayout" name="layout_acciones_hospitalarias">
+               <property name="spacing"><number>10</number></property>
+               <item>
+                <widget class="QPushButton" name="btn_ingresar_planta_hcd">
+                 <property name="enabled"><bool>false</bool></property>
+                 <property name="text"><string>Ingresar en Planta</string></property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_dar_alta_hcd">
+                 <property name="enabled"><bool>false</bool></property>
+                 <property name="text"><string>Dar Alta Médica</string></property>
+                </widget>
+               </item>
+               <item><spacer><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property></spacer></item>
+              </layout>
+             </item>
+             
              <item><widget class="QLabel" name="lbl_detalle_titulo"><property name="text"><string>Tratamientos del episodio</string></property></widget></item>
              <item>
               <widget class="QTableWidget" name="tabla_tratamientos_hcd">
@@ -294,7 +341,6 @@
          </layout>
         </widget>
 
-        <!-- PAGE 3: CONSULTA -->
         <widget class="QWidget" name="page_consulta">
          <layout class="QVBoxLayout" name="consultaLayout">
           <property name="leftMargin"><number>30</number></property>
@@ -355,45 +401,44 @@
          </layout>
         </widget>
 
-        <!-- PAGE 4: INGRESOS -->
         <widget class="QWidget" name="page_ingresos">
-        <layout class="QVBoxLayout" name="ingresosLayout">
-        <property name="leftMargin"><number>30</number></property>
-        <property name="topMargin"><number>30</number></property>
-        <property name="rightMargin"><number>30</number></property>
-        <property name="bottomMargin"><number>30</number></property>
-        
-        <item><widget class="QLabel" name="lbl_ingresos_title"><property name="text"><string>Gestión de Planta e Ingresos</string></property></widget></item>
-        <item><widget class="QLabel" name="lbl_ingresos_sub"><property name="text"><string>Control de pacientes actualmente ingresados e historial reciente de altas</string></property></widget></item>
-        
-        <vspace size="10"/>
+         <layout class="QVBoxLayout" name="ingresosLayout">
+          <property name="leftMargin"><number>30</number></property>
+          <property name="topMargin"><number>30</number></property>
+          <property name="rightMargin"><number>30</number></property>
+          <property name="bottomMargin"><number>30</number></property>
+          
+          <item><widget class="QLabel" name="lbl_ingresos_title"><property name="text"><string>Gestión de Planta e Ingresos</string></property></widget></item>
+          <item><widget class="QLabel" name="lbl_ingresos_sub"><property name="text"><string>Control de pacientes actualmente ingresados e historial reciente de altas</string></property></widget></item>
+          
+          <item><spacer name="verticalSpacer_1"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeType"><enum>QSizePolicy::Fixed</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>10</height></size></property></spacer></item>
 
-        <item>
-        <layout class="QHBoxLayout" name="buscadorGlobalLayout">
+          <item>
+           <layout class="QHBoxLayout" name="buscadorGlobalLayout">
             <item>
-            <widget class="QLineEdit" name="txt_buscar_general">
-            <property name="placeholderText"><string>Buscar paciente por nombre, apellidos o DNI (en ingresados o altas)...</string></property>
-            </widget>
+             <widget class="QLineEdit" name="txt_buscar_general">
+              <property name="placeholderText"><string>Buscar paciente por nombre, apellidos o DNI (en ingresados o altas)...</string></property>
+             </widget>
             </item>
             <item>
-            <widget class="QPushButton" name="btn_buscar_general">
-            <property name="text"><string>Buscar</string></property>
-            </widget>
+             <widget class="QPushButton" name="btn_buscar_general">
+              <property name="text"><string>Buscar</string></property>
+             </widget>
             </item>
-        </layout>
-        </item>
-        
-        <vspace size="15"/>
+           </layout>
+          </item>
+          
+          <item><spacer name="verticalSpacer_2"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeType"><enum>QSizePolicy::Fixed</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>15</height></size></property></spacer></item>
 
-        <item>
-        <widget class="QTabWidget" name="tabWidget_ingresos">
+          <item>
+           <widget class="QTabWidget" name="tabWidget_ingresos">
             <property name="currentIndex"><number>0</number></property>
             
             <widget class="QWidget" name="tab_actuales">
-            <attribute name="title"><string>Actualmente Ingresados</string></attribute>
-            <layout class="QVBoxLayout" name="tabActualesLayout">
-            <item>
-            <widget class="QTableWidget" name="tabla_ingresos">
+             <attribute name="title"><string>Actualmente Ingresados</string></attribute>
+             <layout class="QVBoxLayout" name="tabActualesLayout">
+              <item>
+               <widget class="QTableWidget" name="tabla_ingresos">
                 <property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property>
                 <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
                 <property name="columnCount"><number>4</number></property>
@@ -402,16 +447,16 @@
                 <column><property name="text"><string>Habitación / Cama</string></property></column>
                 <column><property name="text"><string>Paciente</string></property></column>
                 <column><property name="text"><string>Fecha Ingreso</string></property></column>
-            </widget>
-            </item>
-            </layout>
+               </widget>
+              </item>
+             </layout>
             </widget>
 
             <widget class="QWidget" name="tab_altas_recientes">
-            <attribute name="title"><string>Altas Recientes (Última semana)</string></attribute>
-            <layout class="QVBoxLayout" name="tabAltasLayout">
-            <item>
-            <widget class="QTableWidget" name="tabla_altas_recientes">
+             <attribute name="title"><string>Altas Recientes (Última semana)</string></attribute>
+             <layout class="QVBoxLayout" name="tabAltasLayout">
+              <item>
+               <widget class="QTableWidget" name="tabla_altas_recientes">
                 <property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property>
                 <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
                 <property name="columnCount"><number>5</number></property>
@@ -421,15 +466,13 @@
                 <column><property name="text"><string>Fecha Ingreso</string></property></column>
                 <column><property name="text"><string>Fecha Alta</string></property></column>
                 <column><property name="text"><string>Motivo de Alta</string></property></column>
+               </widget>
+              </item>
+             </layout>
             </widget>
-            </item>
-            </layout>
-            </widget>
-
-        </widget>
-        </item>
-        
-        </layout>
+           </widget>
+          </item>
+         </layout>
         </widget>
 
        </widget>

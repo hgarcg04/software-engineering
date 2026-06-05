@@ -57,6 +57,10 @@ class Logica():
         dao = EpisodiosDaoJDBC()
         dao.guardar_episodio(episodioVO)
 
+    def pacienteEstaIngresado(self, id_paciente):
+        dao = PacientesDaoJDBC()
+        return dao.comprobar_ingreso_activo(id_paciente)
+
     def ingresarPaciente(self, id_paciente, id_medico):
         dao = PacientesDaoJDBC()
         dao.ingresar_paciente(id_paciente, id_medico)
