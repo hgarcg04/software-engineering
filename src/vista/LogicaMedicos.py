@@ -294,6 +294,8 @@ class VentanaMedico(QMainWindow, Form):
         if respuesta == QMessageBox.Ok:
             if self._controlador:
                 self._controlador.ingresar_paciente(paciente.id_paciente)
+        
+        self.configurar_botones_hospitalizacion(puede_ingresar=False, puede_dar_alta=True)
 
     def _on_dar_alta_clicked(self):
         if not self._controlador:

@@ -27,6 +27,8 @@
     #btn_login { background-color: #6a9edb; color: white; border-radius: 22px; padding: 12px; font-family: 'Segoe UI Semibold'; font-size: 16px; }
     #btn_login:hover { background-color: #5a8dc7; }
     #lbl_forgot, #lbl_signup { color: #00b894; font-size: 13px; font-weight: bold; }
+    #btn_change_pass { background-color: transparent; color: #00b894; border: none; font-family: 'Segoe UI'; font-size: 13px; }
+    #btn_change_pass:hover { color: #00a381; text-decoration: underline; }
    </string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -85,99 +87,272 @@
        <item>
         <widget class="QFrame" name="rightPanel">
          <layout class="QVBoxLayout" name="verticalLayout_3">
-          <property name="spacing"><number>20</number></property>
-          <property name="leftMargin"><number>80</number></property>
-          <property name="topMargin"><number>80</number></property>
-          <property name="rightMargin"><number>80</number></property>
-          <property name="bottomMargin"><number>80</number></property>
-          <item alignment="Qt::AlignHCenter">
-           <widget class="QLabel" name="lbl_logo_text">
-            <property name="text"><string/></property>
-            <property name="pixmap">
-             <pixmap resource="../imagenes/recursos.qrc">:/img/Logo_aplicacion.jpg</pixmap>
-            </property>
+          <property name="spacing"><number>0</number></property>
+          <property name="leftMargin"><number>0</number></property>
+          <property name="topMargin"><number>0</number></property>
+          <property name="rightMargin"><number>0</number></property>
+          <property name="bottomMargin"><number>0</number></property>
+          <item>
+           <widget class="QStackedWidget" name="stackedWidget">
+            <property name="currentIndex"><number>0</number></property>
+
+            <!-- PÁGINA 0: LOGIN -->
+            <widget class="QWidget" name="page_login">
+             <layout class="QVBoxLayout" name="layout_login">
+              <property name="spacing"><number>20</number></property>
+              <property name="leftMargin"><number>80</number></property>
+              <property name="topMargin"><number>80</number></property>
+              <property name="rightMargin"><number>80</number></property>
+              <property name="bottomMargin"><number>80</number></property>
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QLabel" name="lbl_logo_text">
+                <property name="text"><string/></property>
+                <property name="pixmap">
+                 <pixmap resource="../imagenes/recursos.qrc">:/img/Logo_aplicacion.jpg</pixmap>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="s1">
+                <property name="orientation"><enum>Qt::Vertical</enum></property>
+                <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+               </spacer>
+              </item>
+              <item>
+               <layout class="QHBoxLayout">
+                <item>
+                 <spacer>
+                  <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                  <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="edit_user">
+                  <property name="maximumWidth"><number>450</number></property>
+                  <property name="echoMode"><enum>QLineEdit::Normal</enum></property>
+                  <property name="placeholderText"><string>Nombre de usuario</string></property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer>
+                  <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                  <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout">
+                <item>
+                 <spacer>
+                  <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                  <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="edit_pass">
+                  <property name="maximumWidth"><number>450</number></property>
+                  <property name="echoMode"><enum>QLineEdit::Password</enum></property>
+                  <property name="placeholderText"><string>Contraseña</string></property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer>
+                  <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                  <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout">
+                <item>
+                 <spacer>
+                  <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                  <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btn_login">
+                  <property name="maximumWidth"><number>450</number></property>
+                  <property name="cursor"><cursorShape>ArrowCursor</cursorShape></property>
+                  <property name="text"><string>Iniciar Sesión</string></property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer>
+                  <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                  <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout">
+                <item>
+                 <spacer>
+                  <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                  <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btn_change_pass">
+                  <property name="maximumWidth"><number>450</number></property>
+                  <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+                  <property name="text"><string>Cambiar Contraseña</string></property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer>
+                  <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                  <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer name="s2">
+                <property name="orientation"><enum>Qt::Vertical</enum></property>
+                <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+
+            <!-- PÁGINA 1: CAMBIAR CONTRASEÑA -->
+            <widget class="QWidget" name="page_password">
+             <layout class="QVBoxLayout" name="layout_password">
+              <property name="spacing"><number>20</number></property>
+              <property name="leftMargin"><number>80</number></property>
+              <property name="topMargin"><number>80</number></property>
+              <property name="rightMargin"><number>80</number></property>
+              <property name="bottomMargin"><number>80</number></property>
+              <item>
+               <widget class="QLabel" name="lbl_pw_titulo">
+                <property name="text"><string>Cambiar contraseña</string></property>
+                <property name="styleSheet">
+                 <string>font-family: 'Segoe UI Black'; font-size: 22px; color: #2d3436;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_pw_sub">
+                <property name="text"><string>Introduce y confirma tu nueva contraseña.</string></property>
+                <property name="styleSheet">
+                 <string>font-family: 'Segoe UI'; font-size: 13px; color: #636e72;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_pw_actual">
+                <property name="text"><string>Contraseña actual</string></property>
+                <property name="styleSheet">
+                 <string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="input_pw_actual">
+                <property name="maximumWidth"><number>400</number></property>
+                <property name="echoMode"><enum>QLineEdit::Password</enum></property>
+                <property name="placeholderText"><string>Contraseña actual</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_pw_error_actual">
+                <property name="text"><string>⚠ Contraseña actual incorrecta.</string></property>
+                <property name="visible"><bool>false</bool></property>
+                <property name="styleSheet">
+                 <string>color: #e17055; font-family: 'Segoe UI'; font-size: 12px;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_pw_nueva">
+                <property name="text"><string>Nueva contraseña</string></property>
+                <property name="styleSheet">
+                 <string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="input_pw_nueva">
+                <property name="maximumWidth"><number>400</number></property>
+                <property name="echoMode"><enum>QLineEdit::Password</enum></property>
+                <property name="placeholderText"><string>Nueva contraseña</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_pw_confirmar">
+                <property name="text"><string>Confirmar contraseña</string></property>
+                <property name="styleSheet">
+                 <string>font-family: 'Segoe UI Semibold'; font-size: 13px; color: #2d3436;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="input_pw_confirmar">
+                <property name="maximumWidth"><number>400</number></property>
+                <property name="echoMode"><enum>QLineEdit::Password</enum></property>
+                <property name="placeholderText"><string>Repite la contraseña</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_pw_error_coincidencia">
+                <property name="text"><string>⚠ Las contraseñas no coinciden.</string></property>
+                <property name="visible"><bool>false</bool></property>
+                <property name="styleSheet">
+                 <string>color: #e17055; font-family: 'Segoe UI'; font-size: 12px;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_pw_error_igual">
+                <property name="text"><string>⚠ La nueva contraseña es igual a la actual.</string></property>
+                <property name="visible"><bool>false</bool></property>
+                <property name="styleSheet">
+                 <string>color: #e17055; font-family: 'Segoe UI'; font-size: 12px;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_pw_ok">
+                <property name="text"><string>✔ Contraseña actualizada correctamente.</string></property>
+                <property name="visible"><bool>false</bool></property>
+                <property name="styleSheet">
+                 <string>color: #00b894; font-family: 'Segoe UI Semibold'; font-size: 12px;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btn_pw_confirmar">
+                <property name="text"><string>Confirmar cambio</string></property>
+                <property name="maximumWidth"><number>200</number></property>
+                <property name="styleSheet">
+                 <string>QPushButton { background-color: #00b894; color: white; border-radius: 8px; padding: 8px 18px; font-family: 'Segoe UI Semibold'; font-size: 13px; border: none; } QPushButton:hover { background-color: #00a381; }</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btn_pw_volver">
+                <property name="text"><string>← Volver al inicio de sesión</string></property>
+                <property name="maximumWidth"><number>250</number></property>
+                <property name="styleSheet">
+                 <string>QPushButton { background-color: transparent; color: #636e72; border: none; font-family: 'Segoe UI'; font-size: 13px; } QPushButton:hover { color: #2d3436; }</string>
+                </property>
+                <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+               </widget>
+              </item>
+              <item>
+               <spacer>
+                <property name="orientation"><enum>Qt::Vertical</enum></property>
+                <property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+
            </widget>
-          </item>
-          <item>
-           <spacer name="s1">
-            <property name="orientation"><enum>Qt::Vertical</enum></property>
-            <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
-           </spacer>
-          </item>
-          <item>
-           <layout class="QHBoxLayout">
-            <item>
-             <spacer>
-              <property name="orientation"><enum>Qt::Horizontal</enum></property>
-              <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="edit_user">
-              <property name="maximumWidth"><number>450</number></property>
-              <property name="echoMode"><enum>QLineEdit::Normal</enum></property>
-              <property name="placeholderText"><string>Nombre de usuario</string></property>
-             </widget>
-            </item>
-            <item>
-             <spacer>
-              <property name="orientation"><enum>Qt::Horizontal</enum></property>
-              <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout">
-            <item>
-             <spacer>
-              <property name="orientation"><enum>Qt::Horizontal</enum></property>
-              <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="edit_pass">
-              <property name="maximumWidth"><number>450</number></property>
-              <property name="echoMode"><enum>QLineEdit::Password</enum></property>
-              <property name="placeholderText"><string>Contraseña</string></property>
-             </widget>
-            </item>
-            <item>
-             <spacer>
-              <property name="orientation"><enum>Qt::Horizontal</enum></property>
-              <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout">
-            <item>
-             <spacer>
-              <property name="orientation"><enum>Qt::Horizontal</enum></property>
-              <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btn_login">
-              <property name="maximumWidth"><number>450</number></property>
-              <property name="cursor"><cursorShape>ArrowCursor</cursorShape></property>
-              <property name="text"><string>Iniciar Sesión</string></property>
-             </widget>
-            </item>
-            <item>
-             <spacer>
-              <property name="orientation"><enum>Qt::Horizontal</enum></property>
-              <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer name="s2">
-            <property name="orientation"><enum>Qt::Vertical</enum></property>
-            <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
-           </spacer>
           </item>
          </layout>
         </widget>

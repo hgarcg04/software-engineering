@@ -22,11 +22,13 @@ class ControladorPrincipal:
         self._vista.showMaximized()
         self._vista.show()
     
+    def verificar_credenciales(self, usuario, password):
+        loginVO = LoginVO(usuario, password)
+        return self._modelo.comprobarLogin(loginVO)  # devuelve userVO o None
     
     
     def comprobarLogin(self, texto_nombre, texto_password):
         loginVO = LoginVO(texto_nombre, texto_password)
-
         self.usuario_actualVO =  self._modelo.comprobarLogin(loginVO) # Objeto UserVO
 
 
@@ -101,5 +103,4 @@ class ControladorPrincipal:
         self._vista.show()
 
     def cambiar_password(self, nueva, userVO):
-        print(f"hola desde el controlador, voy a cambiar la contraseña a {nueva}")
         self._modelo.cambiarPassword(nueva, userVO)

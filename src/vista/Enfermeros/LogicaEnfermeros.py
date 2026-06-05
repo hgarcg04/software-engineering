@@ -678,7 +678,7 @@ class VentanaEnfermeros(QMainWindow, Form):
                 item.setData(Qt.UserRole, ep)  
                 self.tabla_episodios.setItem(fila, col, item)
 
-    # ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------------------------------------------------------
     #                                                                            CAMBIAR CONTRASEÑA
     # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -707,7 +707,7 @@ class VentanaEnfermeros(QMainWindow, Form):
 
 
         self.controlador.cambiar_password(nueva, self._enfermero)
-        print("Boton de cambar contraseña presionado")
+        print("Boton de cambiar contraseña presionado")
         self.lbl_pw_ok.setVisible(True)
         self.input_pw_nueva.clear()
         self.input_pw_confirmar.clear()
