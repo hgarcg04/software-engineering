@@ -65,9 +65,9 @@ class Logica():
         dao = PacientesDaoJDBC()
         return dao.registrar_alta_paciente(id_paciente)
 
-    def ingresarPaciente(self, id_paciente, id_medico):
+    def ingresarPaciente(self, id_paciente):
         dao = PacientesDaoJDBC()
-        dao.ingresar_paciente(id_paciente, id_medico)
+        dao.ingresar_paciente(id_paciente)
 
     def guardarTratamiento(self, tratamientoVO):
         dao = TratamientosDaoJDBC()

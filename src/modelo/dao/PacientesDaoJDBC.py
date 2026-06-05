@@ -147,7 +147,7 @@ class PacientesDaoJDBC(Conexion):
             print("Error buscando paciente por id:", e)
             return []
 
-    def ingresar_paciente(self, id_paciente, id_medico):
+    def ingresar_paciente(self, id_paciente):
         cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_INGRESAR_PACIENTE, (id_paciente,))

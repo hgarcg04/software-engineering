@@ -55,7 +55,7 @@ class VentanaMedico(QMainWindow, Form):
         self.btn_volver_consulta.clicked.connect(self._ir_inicio)
         self.btn_abrir_receta.clicked.connect(self._abrir_dialogo_receta)
         self.btn_guardar_consulta.clicked.connect(self._guardar_consulta)
-        self.btn_ingresar_paciente.clicked.connect(self._ingresar_paciente)
+        self.btn_ingresar_paciente.clicked.connect(self._ingresar_paciente_cita)
 
         # Agenda completa
         self.btn_buscar_agenda.clicked.connect(self._buscar_agenda)
@@ -66,6 +66,7 @@ class VentanaMedico(QMainWindow, Form):
         self.tabla_episodios_hcd.itemSelectionChanged.connect(self._on_episodio_seleccionado)
         self.btn_cerrar_detalle.clicked.connect(self._cerrar_detalle_hcd)
         self.btn_dar_alta_hcd.clicked.connect(self._on_dar_alta_clicked)
+        self.btn_ingresar_planta_hcd.clicked.connect(self._ingresar_paciente_hcd)
 
         # Logout
         self.btn_logout.clicked.connect(self._logout)
@@ -103,10 +104,6 @@ class VentanaMedico(QMainWindow, Form):
         self.btn_dar_alta_hcd.setEnabled(puede_dar_alta)
 
     def solicitar_ruta_informe_alta(self, nif_paciente):
-        """
-        MÉTODO DE VISTA (MVC Puro): Abre el explorador de archivos para elegir la ruta.
-        No genera el PDF ni sabe de bases de datos, solo captura y devuelve el string de la ruta.
-        """
         from PyQt5.QtWidgets import QFileDialog
         
         ruta, _ = QFileDialog.getSaveFileName(
@@ -244,7 +241,8 @@ class VentanaMedico(QMainWindow, Form):
                 cita=self._cita_activa
             )
         self._ir_inicio()
-    def _ingresar_paciente(self):
+
+    def _ingresar_paciente_cita(self):
 
         if self._cita_activa.hospitalizado:
             QMessageBox.warning(self, "Operación inválida", f"El paciente {self._cita_activa.paciente_nombre} ya está hospitalizado.")
@@ -256,9 +254,8 @@ class VentanaMedico(QMainWindow, Form):
                 QMessageBox.Ok | QMessageBox.Cancel )
 
             if respuesta == QMessageBox.Ok:
-                #pasamos la lista al controlador
                 if self._controlador:
-                    self._controlador.ingresar_paciente(self._cita_activa)
+                    self._controlador.ingresar_paciente(self._cita_activa.id_paciente)
 
 
     # ── Agenda completa ──────────────────────────────────────────
@@ -285,6 +282,18 @@ class VentanaMedico(QMainWindow, Form):
     def _buscar_paciente_hcd(self, texto):
         if self._controlador:
             self._controlador.buscar_paciente_hcd(texto)
+
+    def _ingresar_paciente_hcd(self):
+        fila = self.tabla_busqueda_hcd.currentRow()
+        paciente = self._pacientes_busqueda[fila]
+        respuesta = QMessageBox.question(
+                self, "Confirmar ingresos",
+                f"Se van a ingresar al siguiente paciente {paciente.nombre}\n\n¿Deseas continuar?",
+                QMessageBox.Ok | QMessageBox.Cancel )
+
+        if respuesta == QMessageBox.Ok:
+            if self._controlador:
+                self._controlador.ingresar_paciente(paciente.id_paciente)
 
     def _on_dar_alta_clicked(self):
         if not self._controlador:

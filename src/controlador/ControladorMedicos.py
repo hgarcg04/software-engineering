@@ -88,8 +88,8 @@ class ControladorMedicos:
 
         self._episodio_consulta_actual = None  # resetear tras guardar
 
-    def ingresar_paciente(self, cita_vo):
-        self._modelo.ingresarPaciente(cita_vo.id_paciente, self._user_vo.id_empleado)
+    def ingresar_paciente(self, id_paciente):
+        self._modelo.ingresarPaciente(id_paciente)
 
     # ── Receta ───────────────────────────────────────────────────
 
