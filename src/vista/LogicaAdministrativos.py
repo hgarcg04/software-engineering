@@ -8,6 +8,7 @@ from PyQt5 import uic
 
 from src.vista.LogicaCitas import LogicaCitas
 from src.vista.LogicaCredenciales import LogicaCredenciales
+from src.vista.LogicaMedicamentos import LogicaMedicamentos
 
 ui_path = os.path.join(os.path.dirname(__file__), "Ui/VistaAdministrativo.ui")
 
@@ -22,7 +23,7 @@ PAGE_BACKUP       = 6
 Form, Window = uic.loadUiType(ui_path)
 
 
-class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales):
+class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales, LogicaMedicamentos):
     signal_logout = pyqtSignal()
 
     def __init__(self):
@@ -57,6 +58,9 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales)
         # CU5: Generar Credenciales (mixin LogicaCredenciales)
         self._init_credenciales()
 
+        # CU7: Pedir Medicamentos (mixin LogicaMedicamentos)
+        self._init_medicamentos()
+
     def cerrar_sesion(self):
         print("Cerrando sesión...")
         self.signal_logout.emit()
@@ -84,6 +88,9 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales)
 
         if indice == PAGE_AGENDA and self._controlador:
             self._controlador.cargar_todos_medicos()
+
+        if indice == PAGE_MEDICAMENTOS and self._controlador:
+            self._controlador.cargar_catalogo()
 
     # ── Inicio: nombre de usuario y reloj ─────────────────────────────────────
 

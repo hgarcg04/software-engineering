@@ -2,7 +2,7 @@ from src.modelo.VO.PacientesVO import PacientesVO
 from datetime import date
 import secrets
 import string
-
+import re
 
 class ControladorAdministrativos:
     def __init__(self, vista, modelo, user_vo):
@@ -16,6 +16,7 @@ class ControladorAdministrativos:
         self._paciente_cita = None
         self._medicos_busqueda = []
         self._medico_agenda_id = None
+        self._pedido_en_curso = {}  # {id_medicamento: (nombre, cantidad, unidad)}
 
         # Cargar nombre y hora en la cabecera de la ventana
         self._vista.cargar_datos_iniciales(user_vo)
@@ -28,8 +29,6 @@ class ControladorAdministrativos:
     def registrar_paciente(self, nif, nombre, apellido1, apellido2,
                            fecha_nacimiento, genero, correo,
                            direccion, alergias, telefono):
-        import re
-        from datetime import date
 
         # ── Validaciones de formato ───────────────────────────────────────────
         nif_limpio = nif.strip().upper()
@@ -293,3 +292,56 @@ class ControladorAdministrativos:
 
     def limpiar_formulario_credencial(self):
         self._vista.limpiar_formulario_credencial()
+    # ── CU7: Pedir Medicamentos ───────────────────────────────────────────────
+
+    def cargar_catalogo(self):
+        """
+        Obtiene el listado completo de medicamentos del modelo y lo envía a la vista.
+        Se llama desde _navegar() al entrar en PAGE_MEDICAMENTOS.
+        """
+        medicamentos = self._modelo.obtenerMedicamentos()
+        self._vista.cargar_catalogo_medicamentos(medicamentos)
+
+    def confirmar_pedido(self, pedido):
+        """
+        Recibe el diccionario {id_medicamento: (nombre, cantidad, unidad)} desde la vista,
+        valida que haya al menos una línea con cantidad > 0, actualiza el stock de cada
+        medicamento y notifica a la vista si todo fue bien.
+
+        Parámetros
+        ----------
+        pedido : dict
+            {id_medicamento (int): (nombre (str), cantidad (int), unidad (str))}
+        """
+        # Precondición: al menos una línea
+        if not pedido:
+            self._vista.mostrar_error("Pedido vacío",
+                                      "Añade al menos un medicamento antes de confirmar.")
+            return
+
+        # Validar que todas las cantidades sean positivas
+        for id_med, (nombre, cantidad, _) in pedido.items():
+            if cantidad <= 0:
+                self._vista.mostrar_error(
+                    "Cantidad inválida",
+                    f"La cantidad de «{nombre}» debe ser mayor que cero."
+                )
+                return
+
+        # Persistencia: actualizar stock de cada línea (reabastecimiento → suma)
+        for id_med, (_, cantidad, _) in pedido.items():
+            self._modelo.actualizarStock(id_med, cantidad)
+
+        # Actualizar alertas: si tras el pedido el stock ya supera el mínimo, desactivar alerta
+        medicamentos_actualizados = self._modelo.obtenerMedicamentos()
+        for med in medicamentos_actualizados:
+            if med.alerta_stock and med.stock > med.stock_minimo:
+                from src.modelo.dao.MedicamentosDaoJDBC import MedicamentosDaoJDBC
+                dao = MedicamentosDaoJDBC()
+                dao.set_alerta_stock(med.id_medicamento, 0)
+
+        # Notificar éxito a la vista
+        self._vista.confirmar_pedido_exitoso()
+
+        # Recargar el catálogo con los stocks actualizados
+        self.cargar_catalogo()
