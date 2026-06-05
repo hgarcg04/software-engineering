@@ -57,7 +57,28 @@ class PacientesDaoJDBC(Conexion):
         """
     
     SQL_BUSCAR_NIF = "SELECT nif FROM Pacientes WHERE nif = ?"
-    
+
+    SQL_INGRESOS_ACTUALES = """
+        SELECT i.id_ingreso, i.num_habitacion,
+            p.nombre + ' ' + p.apellido1 + ' ' + ISNULL(p.apellido2, '') AS nombre_completo,
+            i.fecha_inicio
+        FROM Ingresos i
+        JOIN Episodios e ON i.id_episodio = e.id_episodio
+        JOIN Pacientes p ON e.id_paciente = p.id_paciente
+        WHERE i.fecha_fin IS NULL
+        ORDER BY i.fecha_inicio DESC
+    """
+
+    SQL_ALTAS_RECIENTES = """
+        SELECT i.id_ingreso,
+            p.nombre + ' ' + p.apellido1 + ' ' + ISNULL(p.apellido2, '') AS nombre_completo,
+            i.fecha_inicio, i.fecha_fin, i.Observaciones
+        FROM Ingresos i
+        JOIN Episodios e ON i.id_episodio = e.id_episodio
+        JOIN Pacientes p ON e.id_paciente = p.id_paciente
+        WHERE i.fecha_fin >= DATEADD(day, -7, GETDATE())
+        ORDER BY i.fecha_fin DESC
+    """
 
     def devuelve_pacientes_ingresados(self, UserVO):
         cursor = self.getCursor()
@@ -206,3 +227,21 @@ class PacientesDaoJDBC(Conexion):
             
         except Exception as e:
             print("Error al registrar paciente: ", e)
+
+    def obtener_ingresos_actuales(self):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_INGRESOS_ACTUALES)
+            return cursor.fetchall()
+        except Exception as e:
+            print("Error obteniendo ingresos actuales:", e)
+            return []
+
+    def obtener_altas_recientes(self):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_ALTAS_RECIENTES)
+            return cursor.fetchall()
+        except Exception as e:
+            print("Error obteniendo altas recientes:", e)
+            return []
