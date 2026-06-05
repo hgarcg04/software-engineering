@@ -132,7 +132,7 @@ class DialogCalendario(QDialog):
         footer.addWidget(self._btn_ok)
         root.addLayout(footer)
 
-    # ── Carga y pintado del grid ──────────────────────────────────────────────
+    #Carga y pintado del grid
 
     def _cargar_semana(self):
         viernes = self._lunes + timedelta(days=4)

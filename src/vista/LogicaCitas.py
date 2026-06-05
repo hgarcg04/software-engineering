@@ -21,7 +21,7 @@ class LogicaCitas:
         # Fecha de cita por defecto: hoy
         self.input_fecha_cita.setDate(QDate.currentDate())
 
-        # ── CU4 ──────────────────────────────────────────────────────────────
+        #Asignar Citas
         # Filtrado en tiempo real al escribir en el buscador
         self.search_bar.textChanged.connect(self._on_texto_busqueda_cambiado)
         self.tabla_pacientes_cita.itemSelectionChanged.connect(self._on_paciente_seleccionado)
@@ -35,7 +35,7 @@ class LogicaCitas:
         self.btn_asignar_cita.clicked.connect(self._on_asignar_cita)
         self.btn_limpiar_cita.clicked.connect(self._on_limpiar_cita)
 
-        # ── CU9 ──────────────────────────────────────────────────────────────
+        #Bloquear Agenda
         manana = QDate.currentDate().addDays(1)
         self.input_fecha_inicio_bloqueo.setDate(manana)
         self.input_fecha_fin_bloqueo.setDate(manana)
@@ -45,9 +45,8 @@ class LogicaCitas:
         self.btn_deseleccionar_medico.clicked.connect(self._on_deseleccionar_medico)
         self.btn_bloquear_agenda.clicked.connect(self._on_bloquear_agenda)
 
-    # ═════════════════════════════════════════════════════════════════════════
-    # CU4: Asignar Citas — callbacks
-    # ═════════════════════════════════════════════════════════════════════════
+
+    #Asignar Citas
 
     def _on_texto_busqueda_cambiado(self, texto):
         """Delega el filtrado al controlador cada vez que cambia el texto."""
@@ -89,7 +88,7 @@ class LogicaCitas:
         if self._controlador:
             self._controlador.asignar_cita(id_medico, fecha, hora)
 
-    # ── Métodos llamados por el controlador ───────────────────────────────────
+    #Métodos llamados por el controlador
 
     def abrir_calendario_dialogo(self, id_medico, nombre_medico, modelo):
         """
@@ -204,9 +203,7 @@ class LogicaCitas:
         """Llamado por el controlador para ir a la pestaña de registro de paciente."""
         self._navegar(PAGE_PACIENTES)
 
-    # ═════════════════════════════════════════════════════════════════════════
-    # CU9: Bloquear Agenda — callbacks
-    # ═════════════════════════════════════════════════════════════════════════
+    #Bloquear Agenda
 
     def _on_texto_medico_cambiado(self, texto):
         """Filtra la tabla de médicos en tiempo real mientras el usuario escribe."""
@@ -235,7 +232,7 @@ class LogicaCitas:
         if self._controlador:
             self._controlador.bloquear_agenda(fecha_inicio, fecha_fin, motivo, observaciones)
 
-    # ── Métodos llamados por el controlador ───────────────────────────────────
+    #Métodos llamados por el controlador
 
     def cargar_resultados_busqueda_medico(self, lista_medicos):
         """

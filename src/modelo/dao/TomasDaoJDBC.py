@@ -82,7 +82,7 @@ class TomasDaoJDBC(Conexion):
             row = cursor.fetchone() # Usamos fetchone porque solo esperamos un resultado
             
             if row:
-                return TomaVO(gid_toma=row[0], fecha=row[1], hora=row[2], id_enfermero=row[3], id_ingreso=row[4],
+                return TomaVO(id_toma=row[0], fecha=row[1], hora=row[2], id_enfermero=row[3], id_ingreso=row[4],
                               observaciones=row[5], id_tratamiento=row[6])
         except Exception as e:
             print("Error al obtener la última toma: ", e)

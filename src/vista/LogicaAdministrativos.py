@@ -7,6 +7,7 @@ from PyQt5.QtCore import pyqtSignal, QTimer, QDateTime
 from PyQt5 import uic
 
 from src.vista.LogicaCitas import LogicaCitas
+from src.vista.LogicaCredenciales import LogicaCredenciales
 
 ui_path = os.path.join(os.path.dirname(__file__), "Ui/VistaAdministrativo.ui")
 
@@ -21,7 +22,7 @@ PAGE_BACKUP       = 6
 Form, Window = uic.loadUiType(ui_path)
 
 
-class VentanaAdministrativos(QMainWindow, Form, LogicaCitas):
+class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales):
     signal_logout = pyqtSignal()
 
     def __init__(self):
@@ -40,8 +41,9 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas):
 
         self.btn_logout.clicked.connect(self.cerrar_sesion)
 
-        # Guardar paciente registrado
+        # Guardar / limpiar formulario de registro de paciente
         self.btn_guardar_paciente.clicked.connect(self.registrar_paciente)
+        self.btn_limpiar_formulario.clicked.connect(self.limpiar_formulario_paciente)
 
         # Reloj en tiempo real
         self.timer = QTimer(self)
@@ -51,6 +53,9 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas):
 
         # Inicializar conexiones de Citas y Bloquear Agenda (mixin LogicaCitas)
         self._init_citas()
+
+        # CU5: Generar Credenciales (mixin LogicaCredenciales)
+        self._init_credenciales()
 
     def cerrar_sesion(self):
         print("Cerrando sesión...")
@@ -92,18 +97,50 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas):
 
     # ── Registrar Paciente ────────────────────────────────────────────────────
 
-    def registrar_paciente(self):
-        nif             = self.input_dni_paciente.text()
-        nombre          = self.input_nombre_paciente.text()
-        ap1             = self.input_ap1_paciente.text()
-        ap2             = self.input_ap2_paciente.text()
-        email           = self.input_email_paciente.text()
-        telefono        = self.input_telefono_paciente.text()
-        direccion       = self.input_direccion_paciente.text()
-        alergias        = self.input_alergias_paciente.text()
-        fecha_nacimiento = self.input_fnac_paciente.date().toPyDate()
-        genero          = self.input_genero_paciente.currentText()
+    # Todos los campos de texto del formulario son obligatorios
+    _CAMPOS_OBLIGATORIOS_PACIENTE = [
+        ("input_dni_paciente",       "NIF / DNI"),
+        ("input_nombre_paciente",    "Nombre"),
+        ("input_ap1_paciente",       "Primer apellido"),
+        ("input_ap2_paciente",       "Segundo apellido"),
+        ("input_email_paciente",     "Correo electrónico"),
+        ("input_telefono_paciente",  "Teléfono"),
+        ("input_direccion_paciente", "Dirección"),
+        ("input_alergias_paciente",  "Alergias (escribe 'Ninguna' si no tiene)"),
+    ]
 
+    def registrar_paciente(self):
+        # ── Validación de campos obligatorios ────────────────────────────────
+        campos_vacios = []
+        for attr, etiqueta in self._CAMPOS_OBLIGATORIOS_PACIENTE:
+            widget = getattr(self, attr)
+            if not widget.text().strip():
+                campos_vacios.append(etiqueta)
+                widget.setStyleSheet("border: 1px solid #e74c3c;")
+            else:
+                widget.setStyleSheet("")
+
+        if campos_vacios:
+            QMessageBox.warning(
+                self,
+                "Campos obligatorios",
+                "Los siguientes campos son obligatorios:\n\n• " + "\n• ".join(campos_vacios)
+            )
+            return
+
+        # ── Recogida de datos ─────────────────────────────────────────────────
+        nif              = self.input_dni_paciente.text().strip().upper()
+        nombre           = self.input_nombre_paciente.text().strip()
+        ap1              = self.input_ap1_paciente.text().strip()
+        ap2              = self.input_ap2_paciente.text().strip()
+        email            = self.input_email_paciente.text().strip()
+        telefono         = self.input_telefono_paciente.text().strip()
+        direccion        = self.input_direccion_paciente.text().strip()
+        alergias         = self.input_alergias_paciente.text().strip()
+        fecha_nacimiento = self.input_fnac_paciente.date().toPyDate()
+        genero           = self.input_genero_paciente.currentText()
+
+        # ── Llamada al controlador ────────────────────────────────────────────
         exito, mensaje = self.controlador.registrar_paciente(
             nif, nombre, ap1, ap2, fecha_nacimiento,
             genero, email, direccion, alergias, telefono
@@ -111,8 +148,30 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas):
 
         if exito:
             QMessageBox.information(self, "Éxito", mensaje)
+            self.limpiar_formulario_paciente()
         else:
             QMessageBox.warning(self, "Error", mensaje)
+
+    def limpiar_formulario_paciente(self):
+        """Restablece todos los campos del formulario de registro de paciente."""
+        from PyQt5.QtCore import QDate
+
+        campos_texto = [
+            self.input_dni_paciente,
+            self.input_nombre_paciente,
+            self.input_ap1_paciente,
+            self.input_ap2_paciente,
+            self.input_email_paciente,
+            self.input_telefono_paciente,
+            self.input_direccion_paciente,
+            self.input_alergias_paciente,
+        ]
+        for campo in campos_texto:
+            campo.clear()
+            campo.setStyleSheet("")   # quita el borde rojo si lo hubiera
+
+        self.input_fnac_paciente.setDate(QDate.currentDate())
+        self.input_genero_paciente.setCurrentIndex(0)
 
     # ── Property controlador ──────────────────────────────────────────────────
 

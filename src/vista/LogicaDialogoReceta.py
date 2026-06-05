@@ -15,6 +15,7 @@ class DialogoReceta(QDialog, Form):
         self.controlador = None
         self.lbl_pac_nombre.setText('— Sin paciente —')
         self._medicamentos = []
+        self._medicamento_seleccionado = None
 
         self.tabla_medicamentos.cellClicked.connect(self._on_medicamento_seleccionado)
         self.search_bar.textChanged.connect(self._filtrar_medicamentos)

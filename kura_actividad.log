@@ -38,6 +38,7 @@
 [2026-05-29 19:20:35] LOGOUT | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-05-29 19:20:38] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
 [2026-05-29 19:23:15] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+<<<<<<< HEAD
 [2026-05-29 19:34:28] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-05-29 19:57:38] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-05-31 08:58:18] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
@@ -49,3 +50,64 @@
 [2026-06-05 16:27:29] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-06-05 16:34:51] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-06-05 16:38:00] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+=======
+[2026-05-29 19:39:53] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 19:44:45] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-29 19:49:30] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-29 19:50:17] LOGOUT | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-29 19:50:19] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 20:08:58] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 20:30:03] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 20:34:47] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-29 20:37:14] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-30 08:19:28] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-30 08:21:55] LOGOUT | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-30 08:21:56] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-05-30 08:44:38] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+<<<<<<< HEAD
+[2026-05-30 09:10:18] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-30 09:10:31] LOGOUT | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-30 09:10:33] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-30 09:10:56] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-30 16:44:43] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-30 16:48:22] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-30 16:50:34] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-30 16:51:29] LOGOUT | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-30 16:51:47] LOGIN  | id=13 | usuario=Paula Verde Blanco | rol=medico
+[2026-05-30 16:51:55] LOGOUT | id=13 | usuario=Paula Verde Blanco | rol=medico
+=======
+[2026-05-30 10:10:30] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-30 10:20:34] LOGOUT | id=6 | usuario=María Pérez Díaz | rol=enfermero
+>>>>>>> cf771ee5c779db38dee1ca60df06219bb465038e
+[2026-05-30 23:51:57] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-30 23:56:56] LOGOUT | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-30 23:56:58] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 00:24:05] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 00:27:13] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 00:39:40] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 00:41:13] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 00:41:32] LOGOUT | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 00:41:34] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 00:52:44] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-31 00:59:25] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-31 01:01:29] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-31 01:04:57] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-31 01:19:51] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-31 01:20:30] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-31 01:21:37] LOGOUT | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-05-31 01:31:57] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 01:33:25] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 01:35:37] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 01:36:11] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 01:37:40] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 01:49:42] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 01:51:43] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 01:53:11] LOGOUT | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-05-31 01:53:16] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-01 00:09:05] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-06-01 00:10:15] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-06-01 00:11:56] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-01 00:12:04] LOGOUT | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-01 00:12:07] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-06-01 00:12:57] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+>>>>>>> 14a76f34833355568c71db5be9929bcb42239783
