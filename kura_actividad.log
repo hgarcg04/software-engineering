@@ -143,3 +143,4 @@
 [2026-06-05 22:28:33] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
 [2026-06-05 22:28:39] LOGOUT | id=6 | usuario=María Pérez Díaz | rol=enfermero
 [2026-06-05 22:28:40] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-05 22:42:42] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
