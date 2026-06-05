@@ -25,6 +25,23 @@ class LogicaMedicamentos:
         # Vaciar todo el pedido
         self.btn_borrar_todo.clicked.connect(self._vaciar_pedido)
 
+        # Estilo coherente con los botones secundarios grises del resto de pestañas
+        # (btn_limpiar_formulario, btn_cancelar, btn_limpiar_cita, etc.)
+        _estilo_gris = (
+            "QPushButton {"
+            "    background-color: #dfe6e9;"
+            "    color: #2d3436;"
+            "    border: none;"
+            "    border-radius: 8px;"
+            "    padding: 8px 18px;"
+            "    font-family: 'Segoe UI Semibold';"
+            "    font-size: 13px;"
+            "}"
+            "QPushButton:hover { background-color: #b2bec3; }"
+        )
+        self.btn_borrar_seleccionado.setStyleSheet(_estilo_gris)
+        self.btn_borrar_todo.setStyleSheet(_estilo_gris)
+
         # Confirmar pedido
         self.btn_confirmar_pedido.clicked.connect(self._confirmar_pedido)
 
@@ -178,7 +195,7 @@ class LogicaMedicamentos:
         """Llamado por el controlador cuando el pedido se ha guardado correctamente."""
         QMessageBox.information(
             self, "Pedido confirmado",
-            "El pedido se ha registrado correctamente con estado «Pendiente»."
+            "El pedido se ha registrado correctamente."
         )
         self._pedido.clear()
         self._refrescar_tabla_pedido()
