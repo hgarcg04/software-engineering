@@ -287,8 +287,23 @@ class VentanaMedico(QMainWindow, Form):
             self._controlador.buscar_paciente_hcd(texto)
 
     def _on_dar_alta_clicked(self):
-        if self._controlador:
-            self._controlador.dar_alta_paciente()
+        if not self._controlador:
+            return
+            
+        from PyQt5.QtWidgets import QInputDialog, QLineEdit
+        diagnostico_alta, ok = QInputDialog.getMultiLineText(
+            self, 
+            "Formulario de Alta Clínica", 
+            "Escriba el diagnóstico de alta, tratamiento recomendado y observaciones finales:"
+        )
+        if ok and diagnostico_alta.strip():
+            self._controlador.dar_alta_paciente(diagnostico_alta.strip())
+        elif ok:
+            self.mostrar_notificacion_alta(
+                "Campo Obligatorio", 
+                "Debe introducir un diagnóstico o resumen clínico para poder tramitar el alta.", 
+                es_error=True
+            )
 
     def cargar_resultados_busqueda_hcd(self, lista_pacientes):
         self._pacientes_busqueda = lista_pacientes

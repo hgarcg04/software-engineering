@@ -165,7 +165,7 @@ class ControladorMedicos:
         if pacientes:
             self.cargar_episodios_paciente(pacientes[0])
 
-    def dar_alta_paciente(self):
+    def dar_alta_paciente(self, diagnostico_alta):
         if not self._paciente_hcd_actual:
             self._vista.mostrar_notificacion_alta(
                 "Atención", 
@@ -173,25 +173,29 @@ class ControladorMedicos:
                 es_error=True
             )
             return
+        episodios = self._modelo.obtenerEpisodios(self._paciente_hcd_actual.id_paciente)
+        id_episodio = episodios[0].id_episodio if episodios else None
 
         exito = self._modelo.darAltaMedica(self._paciente_hcd_actual.id_paciente)
 
         if exito:
             self._vista.mostrar_notificacion_alta(
                 "Alta Procesada", 
-                f"El paciente {self._paciente_hcd_actual.nombre} ha sido dado de alta en el sistema. Guarda el informe."
+                f"El paciente {self._paciente_hcd_actual.nombre} ha sido dado de alta correctamente."
             )
-            self.exportar_informe_alta_pdf(self._paciente_hcd_actual)
+            
+            self.exportar_informe_alta_pdf(self._paciente_hcd_actual, diagnostico_alta)
+            
             self._vista.configurar_botones_hospitalizacion(puede_ingresar=True, puede_dar_alta=False)
             self.cargar_episodios_paciente(self._paciente_hcd_actual)
         else:
             self._vista.mostrar_notificacion_alta(
                 "Error de Base de Datos", 
-                "No se pudo registrar el alta en el sistema. Inténtelo de nuevo.", 
+                "No se pudo registrar el alta. Verifique la conexión.", 
                 es_error=True
             )
 
-    def exportar_informe_alta_pdf(self, pacienteVO):
+    def exportar_informe_alta_pdf(self, pacienteVO, diagnostico_alta_reciente=None):
         if not pacienteVO:
             return
 
@@ -260,15 +264,16 @@ class ControladorMedicos:
             historia.append(HRFlowable(width="100%", thickness=1.5, color=colors.HexColor('#0cb868')))
             historia.append(Spacer(1, 0.2 * cm))
 
-            # Buscamos los episodios reales del paciente en el modelo
             episodios = self._modelo.obtenerEpisodios(pacienteVO.id_paciente)
             ep_actual = episodios[0] if episodios else None
 
             if ep_actual:
-                diagnostico_txt = ep_actual.diagnostico.replace('\n', '<br/>') if ep_actual.diagnostico else "Sin diagnóstico especificado"
+                # 🛠️ SOLUCIÓN: Forzamos que ponga "Hospitalización en Planta" en lugar de "Consulta"
+                tipo_ingreso_bonito = "Hospitalización en Planta" 
+                
                 datos_ingreso = [
                     [Paragraph("<b>ID Episodio:</b>", styles['Normal']), Paragraph(str(ep_actual.id_episodio), styles['Normal']),
-                     Paragraph("<b>Tipo de Ingreso:</b>", styles['Normal']), Paragraph(str(ep_actual.tipo), styles['Normal'])],
+                     Paragraph("<b>Tipo de Ingreso:</b>", styles['Normal']), Paragraph(tipo_ingreso_bonito, styles['Normal'])],
                     [Paragraph("<b>Fecha de Inicio:</b>", styles['Normal']), Paragraph(str(ep_actual.fecha_hora_inicio), styles['Normal']),
                      Paragraph("<b>Fecha de Alta:</b>", styles['Normal']), Paragraph(datetime.now().strftime("%Y-%m-%d %H:%M"), styles['Normal'])],
                     [Paragraph("<b>Médico Responsable:</b>", styles['Normal']), Paragraph(f"Dr./Dra. {self._user_vo.apellidos}", styles['Normal']),
@@ -280,11 +285,12 @@ class ControladorMedicos:
                 
                 historia.append(Paragraph("<b>DIAGNÓSTICO AL ALTA:</b>", styles['Normal']))
                 historia.append(Spacer(1, 0.1 * cm))
-                historia.append(Paragraph(diagnostico_txt, styles['Normal']))
+                
+                # 🛠️ SOLUCIÓN: Usamos el texto fresco que acaba de escribir el médico en la ventana
+                texto_final = diagnostico_alta_reciente.replace('\n', '<br/>') if diagnostico_alta_reciente else "Sin diagnóstico especificado al alta."
+                historia.append(Paragraph(texto_final, styles['Normal']))
             else:
                 historia.append(Paragraph("No se registran detalles del episodio clínico activo.", styles['Normal']))
-            
-            historia.append(Spacer(1, 0.6 * cm))
 
             # SECCIÓN 3: TRATAMIENTO RECOMENDADO
             historia.append(Paragraph("<b>PLAN DE MEDICACIÓN RECIENTE</b>", estilo_titulo_seccion))
