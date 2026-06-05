@@ -3,7 +3,7 @@
 
 from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
 from PyQt5.QtCore import QDate
-from src.vista.LogicaDialogoCalendario import DialogCalendario
+from src.vista.Administrativos.LogicaDialogoCalendario import DialogCalendario
 
 PAGE_PACIENTES = 1
 

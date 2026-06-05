@@ -6,11 +6,11 @@ from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from PyQt5.QtCore import pyqtSignal, QTimer, QDateTime
 from PyQt5 import uic
 
-from src.vista.LogicaCitas import LogicaCitas
-from src.vista.LogicaCredenciales import LogicaCredenciales
-from src.vista.LogicaMedicamentos import LogicaMedicamentos
+from src.vista.Administrativos.LogicaCitas import LogicaCitas
+from src.vista.Administrativos.LogicaCredenciales import LogicaCredenciales
+from src.vista.Administrativos.LogicaMedicamentos import LogicaMedicamentos
 
-ui_path = os.path.join(os.path.dirname(__file__), "Ui/VistaAdministrativo.ui")
+ui_path = os.path.join(os.path.dirname(__file__), "..", "Ui", "VistaAdministrativo.ui")
 
 PAGE_INICIO       = 0
 PAGE_PACIENTES    = 1
