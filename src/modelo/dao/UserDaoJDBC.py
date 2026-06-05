@@ -5,7 +5,7 @@ from src.modelo.VO.UsuariosVO import UserVO
 
 
 class UserDaoJDBC(Conexion):
-    SQL_CHECK_LOGIN = "SELECT id_empleado, dni, nombre, apellidos, nombre_usuario, email, password_, rol FROM Personal WHERE nombre_usuario = ? AND password_ = ?"
+    SQL_CHECK_LOGIN = "SELECT id_empleado, dni, nombre, apellidos, nombre_usuario, email, password_, rol, estado FROM Personal WHERE nombre_usuario = ? AND password_ = ?"
 
     SQL_UPDATE_PASSWORD = "UPDATE Personal SET password_ = ? WHERE id_empleado = ?"
 
@@ -20,9 +20,9 @@ class UserDaoJDBC(Conexion):
             if row is None:
                 return None
             else:
-                (id_empleado, dni, nombre, apellidos, nombre_usuario, email, password_, rol) = row
+                (id_empleado, dni, nombre, apellidos, nombre_usuario, email, password_, rol, estado) = row
 
-                return UserVO(id_empleado, dni, nombre, apellidos, email, rol)
+                return UserVO(id_empleado, dni, nombre, apellidos, email, rol, estado)
             
 
         except Exception as e:
@@ -86,3 +86,10 @@ class UserDaoJDBC(Conexion):
             print("Contraseña actualizada correctamente.")
         except Exception as e:
             print("Error al cambiar password:", e)
+
+    def activar_usuario(self, userVO):
+        cursor = self.getCursor()
+        try:
+            cursor.execute("UPDATE personal SET estado = 1 WHERE id_empleado = ?", (userVO.id_empleado,)) 
+        except Exception as e:
+            print("Error al activar al usuario: ", e)

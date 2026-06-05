@@ -42,6 +42,11 @@ class ControladorPrincipal:
 
             self._vista.limpiar_campos()
             self._vista.show()
+            return
+
+        if self.usuario_actualVO.estado == 0:  # primer login
+            self._vista.abrir_cambio_contrasena()
+            return
 
         
         elif self.usuario_actualVO.rol == 'enfermero':
@@ -104,3 +109,4 @@ class ControladorPrincipal:
 
     def cambiar_password(self, nueva, userVO):
         self._modelo.cambiarPassword(nueva, userVO)
+        self._modelo.activarUsuario(userVO)

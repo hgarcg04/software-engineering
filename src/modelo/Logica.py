@@ -167,6 +167,11 @@ class Logica():
         dao = UserDaoJDBC()
         return dao.generar_credenciales(dni, nombre, apellidos, nombre_usuario,
                                         password_generada, email, rol, especialidad)
+    
     def cambiarPassword(self, nueva, userVO):
         dao = UserDaoJDBC()
         dao.cambiar_password(nueva, userVO)
+
+    def activarUsuario(self, userVO):
+        dao = UserDaoJDBC()
+        dao.activar_usuario(userVO)
