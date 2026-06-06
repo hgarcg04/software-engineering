@@ -10,14 +10,10 @@ from PyQt5.QtGui import QColor
 
 
 from PyQt5.QtWidgets import QFileDialog
-from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, HRFlowable
-from reportlab.lib import colors
-from reportlab.lib.units import cm
 
 
 from src.vista.LogicaDialogoConstantes import DialogoHistorico
-
+from src.vista.Enfermeros.GeneradorInformePDF import GeneradorInformePDF
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 ui_path = os.path.join(os.path.dirname(__file__), "../Ui/VistaEnfermero.ui")
@@ -27,9 +23,10 @@ ui_path = os.path.join(os.path.dirname(__file__), "../Ui/VistaEnfermero.ui")
 PAGE_INICIO     = 0
 PAGE_CONSTANTES = 1
 PAGE_MEDICACION = 2
-PAGE_EPISODIOS  = 3
-PAGE_DETALLES   = 4
+PAGE_DETALLES   = 3
+PAGE_HCD        = 4
 PAGE_PASSWORD   = 5
+
 
 
 Form, Window = uic.loadUiType(ui_path)
@@ -68,12 +65,13 @@ class VentanaEnfermeros(QMainWindow, Form):
         self.btn_nav_medicacion.clicked.connect(lambda: self._navegar(PAGE_MEDICACION))
         self.btn_suministrar.clicked.connect(lambda: self._navegar(PAGE_MEDICACION))
 
-        self.btn_nav_episodios.clicked.connect(lambda: self._navegar(PAGE_EPISODIOS))
         self.btn_ver_registros.clicked.connect(self._abrir_detalles_ingreso)
         self.btn_cerrar_detalles_ingreso.clicked.connect(lambda: self._navegar(PAGE_DETALLES))
         self.btn_nuevo_registro.clicked.connect(lambda: self.edit_valor_constante.setFocus())
 
-        self.btn_nav_episodios.clicked.connect(self.obtener_episodios)
+        self.btn_nav_hcd.clicked.connect(lambda: self._navegar(PAGE_HCD))
+        self.btn_nav_hcd.clicked.connect(lambda: self.search_bar_hcd.clear())
+
 
         self.btn_logout.clicked.connect(self.cerrar_sesion)
 
@@ -104,7 +102,12 @@ class VentanaEnfermeros(QMainWindow, Form):
         # --- Cambio contraseña -----
         self.btn_pw_confirmar.clicked.connect(self._cambiar_password)
 
+        # --- Consultar HCD ------
 
+        self.search_bar_hcd.textChanged.connect(self._buscar_paciente_hcd)
+        self.tabla_busqueda_hcd.itemSelectionChanged.connect(self._on_paciente_hcd_seleccionado)
+        self.tabla_episodios_hcd.itemSelectionChanged.connect(self._on_episodio_hcd_seleccionado)
+        self.btn_cerrar_detalle_hcd.clicked.connect(self._cerrar_detalle_hcd)
         
 
         # -----------------------------------------------------------------------------
@@ -118,7 +121,9 @@ class VentanaEnfermeros(QMainWindow, Form):
         self._tratamiento_activo = None
         self._ultima_toma = None
         self._tomas_sesion_actual = []
-        self._episodios = []
+
+        self._pacientes_hcd_busqueda = []
+        self._episodios_hcd_actuales = []
 
         self.btn_nuevo_registro.setEnabled(False)
         self.btn_suministrar.setEnabled(False)
@@ -190,8 +195,8 @@ class VentanaEnfermeros(QMainWindow, Form):
             self.btn_nav_inicio,
             self.btn_nav_constantes,
             self.btn_nav_medicacion,
-            self.btn_nav_episodios,
             None,  # PAGE_DETALLES no tiene botón de nav
+            self.btn_nav_hcd,
             self.btn_nav_password,
         ]
         for i, btn in enumerate(nav_btns):
@@ -342,84 +347,8 @@ class VentanaEnfermeros(QMainWindow, Form):
         if not ruta:
             return
 
-        self._crear_pdf_informe(ruta, pac)
-    
-    def _crear_pdf_informe(self, ruta, pac):
-        
-        doc = SimpleDocTemplate(
-            ruta,
-            pagesize=A4,
-            leftMargin=2*cm,
-            rightMargin=2*cm,
-            topMargin=2*cm,
-            bottomMargin=2*cm
-        )
-    
-
-        historia = []
-    
-        # --- CABECERA ---
-        cabecera_data = [[
-            Paragraph("Informe de Hospitalización"),
-        ]]
-        tabla_cabecera = Table(cabecera_data, colWidths=[17*cm])
-
-        
-        historia.append(tabla_cabecera)
-        historia.append(Spacer(1, 0.3*cm))
-    
-        ahora = QDateTime.currentDateTime().toString("dd/MM/yyyy HH:mm")
-        historia.append(Paragraph(f"Documento generado el {ahora}"))
-        historia.append(Spacer(1, 0.5*cm))
-    
-        # --- SECCIÓN: DATOS DEL PACIENTE ---
-        historia.append(Paragraph("DATOS DEL PACIENTE"))
-        historia.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#0cb868')))
-        historia.append(Spacer(1, 0.2*cm))
-    
-        datos_paciente = [
-            [Paragraph("NIF / DNI:"),       Paragraph(str(pac.nif)),
-            Paragraph("Nombre completo:"),  Paragraph(f"{pac.nombre} {pac.apellido1} {pac.apellido2}")],
-            [Paragraph("Fecha de nacimiento:"), Paragraph(str(pac.fecha_nacimiento)),
-            Paragraph("Género:"),           Paragraph(str(pac.genero))],
-        ]
-        tabla_pac = Table(datos_paciente, colWidths=[4*cm, 4.5*cm, 4*cm, 4.5*cm])
-        historia.append(tabla_pac)
-        historia.append(Spacer(1, 0.5*cm))
-    
-        # --- SECCIÓN: DATOS DEL INGRESO ---
-        historia.append(Paragraph("DATOS DEL INGRESO"))
-        historia.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#0cb868')))
-        historia.append(Spacer(1, 0.2*cm))
-    
-        fecha_ingreso = str(pac.fecha_inicio_ingreso)[:16] if pac.fecha_inicio_ingreso else "—"
-        dieta = str(pac.dieta) if pac.dieta else "—"
-    
-        datos_ingreso = [
-            [Paragraph("Habitación:"),      Paragraph(str(pac.num_habitacion)),
-            Paragraph("Fecha de ingreso:"), Paragraph(fecha_ingreso)],
-            [Paragraph("Médico asignado:"), Paragraph(str(pac.medico_asignado)),
-            Paragraph("Dieta:"),            Paragraph(dieta)],
-        ]
-        tabla_ing = Table(datos_ingreso, colWidths=[4*cm, 4.5*cm, 4*cm, 4.5*cm])
-        historia.append(tabla_ing)
-        historia.append(Spacer(1, 1*cm))
-
-        # --- OBSERVACIONES ---
-
-        historia.append(Paragraph("ANOTACIONES AL INGRESAR"))
-        historia.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0cb868")))
-        historia.append(Spacer(1, 0.2*cm))
-        
-        historia.append(Paragraph(str(pac.observaciones)))
-    
-    
-        doc.build(historia)
-    
-        QMessageBox.information(self, "PDF exportado", f"Informe guardado correctamente en:\n{ruta}")
-
-
-
+        generadorpdf = GeneradorInformePDF()
+        generadorpdf.crear_pdf_informe(self, ruta, pac)
     
     # ----------------------------------------------------------------------------------------------------------------------------------------------------------
     #                                                      PÁGINA DE REGISTRO DE CONSTANTES VITALES
@@ -651,32 +580,6 @@ class VentanaEnfermeros(QMainWindow, Form):
                 item2 = QTableWidgetItem(t.observaciones)
                 self.tabla_tomas_sesion.setItem(fila, 2, item2) 
 
-            
-    # ----------------------------------------------------------------------------------------------------------------------------------------------------------
-    #                                                      PÁGINA DE CONSULTADA DE EPISODIOS
-    # ----------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-    def obtener_episodios(self):
-        if self.controlador:
-            if self._paciente_activo:
-                print(f"Se llama al controlador para ver episodios del paciente con id: {self._paciente_activo.id_paciente}")
-                self.controlador.obtener_episodios(self._paciente_activo.id_paciente)
-        
-    def mostrar_episodios(self, lista):
-        self.tabla_episodios.setRowCount(len(lista))
-        
-        for fila, ep in enumerate(lista):
-
-            datos = [
-                ep.fecha_hora_inicio, ep.tipo, " - ", ep.med_apellidos
-            ]
-            
-            for col, valor in enumerate(datos):
-                item = QTableWidgetItem(str(valor))
-                item.setTextAlignment(Qt.AlignCenter)
-                item.setData(Qt.UserRole, ep)  
-                self.tabla_episodios.setItem(fila, col, item)
 
     # --------------------------------------------------------------------------------------------------------------------------------------------------------------
     #                                                                            CAMBIAR CONTRASEÑA
@@ -712,8 +615,68 @@ class VentanaEnfermeros(QMainWindow, Form):
         self.input_pw_nueva.clear()
         self.input_pw_confirmar.clear()
 
+    # ---------------------------------------------------------
+    #   PÁGINA DE CONSULTAR HCD
+    # ---------------------------------------------------------
 
+    def _buscar_paciente_hcd(self, texto):
+        if not texto or len(texto) < 2:
+            self.tabla_busqueda_hcd.setRowCount(0)
+            return
+        if self._controlador:
+            self._controlador.buscar_paciente_hcd(texto)
 
+    def cargar_resultados_busqueda_hcd(self, lista_pacientes):
+        self._pacientes_hcd_busqueda = lista_pacientes
+        self.tabla_busqueda_hcd.setRowCount(0)
+        for paciente in lista_pacientes:
+            row = self.tabla_busqueda_hcd.rowCount()
+            self.tabla_busqueda_hcd.insertRow(row)
+            self.tabla_busqueda_hcd.setItem(row, 0, QTableWidgetItem(str(paciente.nif)))
+            self.tabla_busqueda_hcd.setItem(row, 1, QTableWidgetItem(str(paciente.nombre_completo)))
+            self.tabla_busqueda_hcd.setItem(row, 2, QTableWidgetItem(str(paciente.fecha_nacimiento)))
+        self.tabla_busqueda_hcd.resizeColumnsToContents()
+
+    def _on_paciente_hcd_seleccionado(self):
+        fila = self.tabla_busqueda_hcd.currentRow()
+        if fila < 0 or not self._controlador:
+            return
+        paciente = self._pacientes_hcd_busqueda[fila]
+        self._controlador.cargar_episodios_hcd(paciente)
+
+    def cargar_episodios_hcd(self, paciente_nombre, lista_episodios):
+        self._episodios_hcd_actuales = lista_episodios
+        self.lbl_paciente_sel_nombre_hcd.setText(paciente_nombre)
+        self.tabla_episodios_hcd.setRowCount(0)
+        for ep in lista_episodios:
+            row = self.tabla_episodios_hcd.rowCount()
+            self.tabla_episodios_hcd.insertRow(row)
+            self.tabla_episodios_hcd.setItem(row, 0, QTableWidgetItem(str(ep.fecha_hora_inicio)))
+            self.tabla_episodios_hcd.setItem(row, 1, QTableWidgetItem(str(ep.tipo)))
+            self.tabla_episodios_hcd.setItem(row, 2, QTableWidgetItem(str(ep.diagnostico)))
+        self.tabla_episodios_hcd.resizeColumnsToContents()
+
+    def _on_episodio_hcd_seleccionado(self):
+        fila = self.tabla_episodios_hcd.currentRow()
+        if fila < 0 or not self._controlador:
+            return
+        self._controlador.cargar_detalle_episodio_hcd(fila)
+
+    def mostrar_detalle_episodio_hcd(self, texto, lista_tratamientos):
+        self.txt_detalle_episodio_hcd.setPlainText(texto)
+        self.tabla_tratamientos_hcd.setRowCount(0)
+        for t in lista_tratamientos:
+            row = self.tabla_tratamientos_hcd.rowCount()
+            self.tabla_tratamientos_hcd.insertRow(row)
+            self.tabla_tratamientos_hcd.setItem(row, 0, QTableWidgetItem(str(t.get('medicamento', ''))))
+            self.tabla_tratamientos_hcd.setItem(row, 1, QTableWidgetItem(str(t.get('dosis', ''))))
+            self.tabla_tratamientos_hcd.setItem(row, 2, QTableWidgetItem(str(t.get('frecuencia', ''))))
+            self.tabla_tratamientos_hcd.setItem(row, 3, QTableWidgetItem(str(t.get('via', ''))))
+        self.tabla_tratamientos_hcd.resizeColumnsToContents()
+
+    def _cerrar_detalle_hcd(self):
+        self.txt_detalle_episodio_hcd.clear()
+        self.tabla_tratamientos_hcd.setRowCount(0)
 
     # ---------------------------------------------------------------------------------------------------------------------------------------------------------------
     #                                                                            CONTROLADOR 

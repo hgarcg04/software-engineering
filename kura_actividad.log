@@ -229,3 +229,9 @@
 [2026-06-06 19:42:47] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-06-06 19:47:08] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-06-06 19:50:54] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-06 22:27:00] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-06 22:29:21] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-06 22:30:43] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-06 22:34:39] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-06 22:38:26] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-06 22:39:05] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero

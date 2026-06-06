@@ -44,6 +44,7 @@ class TomasDaoJDBC(Conexion):
                             inner join Ingresos as I on T.id_ingreso = I.id_ingreso
                             inner join Medicamentos as M on T.id_medicamento = M.id_medicamento
                             where I.id_episodio = ?
+                            AND CAST(tomas.fecha AS DATETIME) + CAST(tomas.hora AS DATETIME) BETWEEN ? AND ?
                             order by tomas.fecha desc, tomas.hora desc
                     
                                 """
@@ -89,10 +90,27 @@ class TomasDaoJDBC(Conexion):
         
         return None
 
-    def obtener_tomas_epidio(self, PacienteVO):
+    def obtener_tomas_epidio(self, id_episodio, desde, hasta):
         cursor = self.getCursor()
+        tomas = []
         try:
-            cursor.execute(self.SQL_SELECT_TOMAS_EPISODIO, (PacienteVO.id_epidio),)
+            cursor.execute(self.SQL_SELECT_TOMAS_EPISODIO, (id_episodio, desde, hasta))
+            rows = cursor.fetchall()
+            for row in rows:
+                toma = TomaVO(
+                    id_toma=row[0],
+                    fecha=row[1],
+                    hora=row[2],
+                    id_enfermero=row[3],
+                    id_ingreso=row[4],
+                    observaciones=row[5],
+                    id_tratamiento=row[6],
+                    nombre = row[7]
+                )
+                tomas.append(toma)
+            return tomas
+
         except Exception as e:
             print("Error al obtener las tomas de episodio: ", e)
+            return []
         

@@ -1,8 +1,8 @@
-from src.vista.Enfermeros import LogicaGenerarGrafica
+
 from src.modelo.VO.ConstantesVO import ConstantesVO
 from src.modelo.VO.TomaVO import TomaVO
 from src.modelo.LogicaGraficas import LogicaGraficas
-from src.vista.Enfermeros.LogicaGenerarGrafica import LogicaGenerarGrafica
+from src.vista.Enfermeros.GeneradorGraficas import LogicaGenerarGrafica
 
 class ControladorEnfermeros:
     def __init__(self, vista, modelo, user_vo, controlador_principal=None):
@@ -10,6 +10,9 @@ class ControladorEnfermeros:
         self._modelo = modelo
         self.user_vo = user_vo
         self.controlador_principal = controlador_principal
+
+        self._paciente_hcd_actual = None
+        self._episodios_hcd_actuales = []
 
         self._cargar_pacientes()
 
@@ -71,7 +74,12 @@ class ControladorEnfermeros:
         modelo = LogicaGraficas()
         vista = LogicaGenerarGrafica()
 
-        df_constantes, tomas_prueba, rangos = modelo.devolver_datos_grafico(id_episodio, tipo, desde, hasta)
+        datos = modelo.devolver_datos_grafico(id_episodio, tipo, desde, hasta)
+        if datos[0] is None:
+            print("Datos no encontrado")
+            return
+
+        df_constantes, tomas_prueba, rangos = datos
         vista.generar_grafico(df_constantes, tomas_prueba, rangos, id_episodio, tipo)
 
     def guardar_nueva_toma(self, id_empleado, id_tratamiento, observaciones):
@@ -89,10 +97,39 @@ class ControladorEnfermeros:
     def actualizar_stock(self, id_tratamiento, cantidad):
         self._modelo.actualizarStock(id_tratamiento, cantidad)
     
-    def obtener_episodios(self, id_paciente):
-        lista_episodios = self._modelo.obtenerEpisodios(id_paciente)
-        print(lista_episodios)
-        self._vista.mostrar_episodios(lista_episodios)
 
     def cambiar_password(self, nueva, enfermero):
         self.controlador_principal.cambiar_password(nueva, enfermero)
+
+    # ── HCD ──────────────────────────────────────────────────────
+
+    def buscar_paciente_hcd(self, texto):
+        texto_lower = texto.strip().lower()
+        filtrados = [
+            p for p in self._modelo.obtenerPacientes(self.user_vo) or []
+            if texto_lower in p.nif.lower()
+                       or texto_lower in p.nombre.lower()
+                       or texto_lower in p.apellido1.lower()
+                       or texto_lower in p.apellido2.lower()
+                       or texto_lower in f"{p.nombre} {p.apellido1} {p.apellido2}".lower()
+        ]
+        self._vista.cargar_resultados_busqueda_hcd(filtrados)
+
+    def cargar_episodios_hcd(self, pacienteVO):
+        self._paciente_hcd_actual = pacienteVO
+        episodios = self._modelo.obtenerEpisodios(pacienteVO.id_paciente)
+        self._episodios_hcd_actuales = episodios if episodios else []
+        self._vista.cargar_episodios_hcd(pacienteVO.nombre_completo, self._episodios_hcd_actuales)
+
+    def cargar_detalle_episodio_hcd(self, fila):
+        if fila >= len(self._episodios_hcd_actuales):
+            return
+        ep = self._episodios_hcd_actuales[fila]
+        texto = (
+            f"Tipo: {ep.tipo}\n"
+            f"Fecha inicio: {ep.fecha_hora_inicio}\n"
+            f"Fecha fin: {ep.fecha_hora_fin}\n\n"
+            f"Diagnóstico:\n{ep.diagnostico}"
+        )
+        tratamientos = self._modelo.obtenerTratamientos_por_episodio(ep.id_episodio)
+        self._vista.mostrar_detalle_episodio_hcd(texto, tratamientos if tratamientos else [])
