@@ -1,4 +1,5 @@
 from src.modelo.VO.PacientesVO import PacientesVO
+from src.modelo.LogicaEmail import EmailService
 from datetime import date
 import secrets
 import string
@@ -160,6 +161,28 @@ class ControladorAdministrativos:
             return
 
         self._modelo.asignarCita(self._paciente_cita.id_paciente, id_medico, fecha, hora)
+
+        # ── Notificación por email (CU4) ──────────────────────────────────────
+        # Los datos del paciente y del médico ya están en memoria; no hace falta
+        # ninguna consulta adicional ni lógica nueva en Logica.
+        try:
+            nombre_medico = ""
+            for m in self._medicos_busqueda_cache:
+                if m[0] == id_medico:
+                    nombre_medico = f"{m[1]} {m[2]}"
+                    break
+            EmailService().enviar_confirmacion_cita(
+                correo_paciente = self._paciente_cita.correo,
+                nombre_paciente = self._paciente_cita.nombre_completo,
+                nombre_medico   = nombre_medico,
+                fecha           = str(fecha),
+                hora            = str(hora),
+            )
+        except Exception as e:
+            # El fallo de email NO revierte la cita ya persistida en BD
+            print(f"ControladorAdministrativos: no se pudo enviar la confirmación: {e}")
+        # ─────────────────────────────────────────────────────────────────────
+
         self._paciente_cita = None
         self._vista.confirmar_cita_asignada()
         self.cargar_todos_pacientes()
