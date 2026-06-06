@@ -3,6 +3,7 @@ from src.modelo.VO.ConstantesVO import ConstantesVO
 from src.modelo.VO.TomaVO import TomaVO
 from src.modelo.LogicaGraficas import LogicaGraficas
 from src.vista.Enfermeros.GeneradorGraficas import LogicaGenerarGrafica
+from src.modelo.GeneradorInformePDF import GeneradorInformePDF
 
 class ControladorEnfermeros:
     def __init__(self, vista, modelo, user_vo, controlador_principal=None):
@@ -100,6 +101,11 @@ class ControladorEnfermeros:
 
     def cambiar_password(self, nueva, enfermero):
         self.controlador_principal.cambiar_password(nueva, enfermero)
+
+    def crear_pdf_informe(self, parent, ruta, pacVO):
+        generador = GeneradorInformePDF()
+        generador.crear_pdf_informe(parent, ruta, pacVO)
+
 
     # ── HCD ──────────────────────────────────────────────────────
 

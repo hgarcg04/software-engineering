@@ -3,7 +3,7 @@ import os
 
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QMainWindow, QButtonGroup, QMessageBox, QTableWidgetItem
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QTableWidgetItem
 from PyQt5.QtCore import QTimer, QDateTime, Qt, pyqtSignal
 from PyQt5.QtWidgets import QHeaderView
 from PyQt5.QtGui import QColor
@@ -13,7 +13,6 @@ from PyQt5.QtWidgets import QFileDialog
 
 
 from src.vista.LogicaDialogoConstantes import DialogoHistorico
-from src.vista.Enfermeros.GeneradorInformePDF import GeneradorInformePDF
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 ui_path = os.path.join(os.path.dirname(__file__), "../Ui/VistaEnfermero.ui")
@@ -347,8 +346,7 @@ class VentanaEnfermeros(QMainWindow, Form):
         if not ruta:
             return
 
-        generadorpdf = GeneradorInformePDF()
-        generadorpdf.crear_pdf_informe(self, ruta, pac)
+        self.controlador.crear_pdf_informe(self, ruta, pac)
     
     # ----------------------------------------------------------------------------------------------------------------------------------------------------------
     #                                                      PÁGINA DE REGISTRO DE CONSTANTES VITALES
