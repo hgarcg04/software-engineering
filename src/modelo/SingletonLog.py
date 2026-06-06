@@ -43,3 +43,21 @@ class SingletonLog:
                 print(linea)
         except Exception as e:
             print(f"[Logger] Error escribiendo log: {e}")
+    
+    def registrar_backup(self, user_vo, tipo, tamanio_kb):
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        tipo_legible = "Completa" if tipo == 'completa' else "Solo BD"
+        linea = (
+            f"[{timestamp}] BACKUP | "
+            f"id={user_vo.id_empleado} | "
+            f"usuario={user_vo.nombre} {user_vo.apellidos} | "
+            f"rol={user_vo.rol} | "
+            f"tipo={tipo_legible} | "
+            f"tamanio={tamanio_kb:,} KB\n"
+        )
+        try:
+            with open(self._ruta, 'a', encoding='utf-8') as f:
+                f.write(linea)
+                print(linea)
+        except Exception as e:
+            print(f"[Logger] Error escribiendo log de backup: {e}")

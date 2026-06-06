@@ -6,6 +6,7 @@ from src.modelo.dao.CitasDaoJDBC import CitasDaoJDBC
 from src.modelo.dao.PacientesDaoJDBC import PacientesDaoJDBC
 from src.modelo.dao.MedicamentosDaoJDBC import MedicamentosDaoJDBC
 from src.modelo.dao.EpisodiosDaoJDBC import EpisodiosDaoJDBC
+from src.modelo.dao.BackupDaoJDBC import BackupDaoJDBC
 
 
 
@@ -183,3 +184,17 @@ class Logica():
     def activarUsuario(self, userVO):
         dao = UserDaoJDBC()
         dao.activar_usuario(userVO)
+
+    # --- CU6: Copia de Seguridad ---
+
+    def realizarBackup(self, ruta_destino, tipo, user_vo):
+        dao = BackupDaoJDBC()
+        return dao.realizar_backup(ruta_destino, tipo, user_vo)
+
+    def obtenerHistorialBackup(self):
+        dao = BackupDaoJDBC()
+        return dao.obtener_historial()
+
+    def comprobarEspacioBackup(self, ruta_destino):
+        dao = BackupDaoJDBC()
+        return dao.comprobar_espacio(ruta_destino)

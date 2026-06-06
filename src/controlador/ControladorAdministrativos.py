@@ -1,5 +1,6 @@
 from src.modelo.VO.PacientesVO import PacientesVO
 from src.modelo.LogicaEmail import EmailService
+from src.modelo.SingletonLog import SingletonLog
 from datetime import date
 import secrets
 import string
@@ -368,3 +369,60 @@ class ControladorAdministrativos:
 
         # Recargar el catálogo con los stocks actualizados
         self.cargar_catalogo()
+        
+    # ── CU6: Copia de Seguridad ───────────────────────────────────────────────
+
+    def inicializar_backup(self):
+        """Carga el historial al entrar en la pestaña de backup."""
+        historial = self._modelo.obtenerHistorialBackup()
+        self._vista.cargar_historial_backup(historial)
+        if historial:
+            f = historial[0]
+            self._vista.actualizar_ultima_copia(f[0], f[1], f[4], f[3])
+
+    def crear_backup(self, ruta_destino, tipo):
+        # Flujo alternativo 2a: comprobar espacio antes de empezar
+        hay_espacio, libre_kb, necesario_kb = self._modelo.comprobarEspacioBackup(ruta_destino)
+        if not hay_espacio:
+            self._vista.mostrar_error(
+                "Espacio insuficiente",
+                f"Espacio libre: {libre_kb:,} KB — Espacio estimado necesario: {necesario_kb:,} KB.\n"
+                "Libera espacio o selecciona otra unidad."
+            )
+            return
+
+        # Mostrar progreso e iniciar la copia
+        self._vista.mostrar_progreso_backup(True)
+        self._vista.btn_crear_backup.setEnabled(False)
+
+        try:
+            exito, mensaje, tamanio_kb = self._modelo.realizarBackup(
+                ruta_destino, tipo, self.user_vo
+            )
+        except Exception as e:
+            self._vista.finalizar_progreso_backup()
+            self._vista.btn_crear_backup.setEnabled(True)
+            self._vista.mostrar_error("Error inesperado", str(e))
+            return
+
+        self._vista.finalizar_progreso_backup()
+        self._vista.btn_crear_backup.setEnabled(True)
+
+        if exito:
+            # Registrar en log de actividad
+            SingletonLog().registrar_backup(self.user_vo, tipo, tamanio_kb)
+
+            # Actualizar vista
+            from datetime import datetime
+            ahora = datetime.now()
+            self._vista.actualizar_ultima_copia(
+                ahora.strftime('%Y-%m-%d'),
+                ahora.strftime('%H:%M:%S'),
+                f"{self.user_vo.nombre} {self.user_vo.apellidos}",
+                tamanio_kb
+            )
+            historial = self._modelo.obtenerHistorialBackup()
+            self._vista.cargar_historial_backup(historial)
+            self._vista.mostrar_info("Copia completada", mensaje)
+        else:
+            self._vista.mostrar_error("Error en la copia", mensaje)
