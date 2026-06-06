@@ -126,14 +126,14 @@ class ControladorAdministrativos:
         """Redirige a la pestaña de registro cuando el paciente no existe."""
         self._vista.navegar_a_registro()
 
-    def abrir_calendario(self, id_medico):
+    def abrir_calendario(self, id_medico, fecha=None):
         """Busca el nombre del médico seleccionado y abre el calendario semanal."""
         nombre_medico = ""
         for m in self._medicos_busqueda_cache:
             if m[0] == id_medico:
                 nombre_medico = f"{m[2]}, {m[1]}"
                 break
-        self._vista.abrir_calendario_dialogo(id_medico, nombre_medico, self._modelo)
+        self._vista.abrir_calendario_dialogo(id_medico, nombre_medico, self._modelo, fecha_inicial=fecha)
 
     def asignar_cita(self, id_medico, fecha, hora):
         if not self._paciente_cita:

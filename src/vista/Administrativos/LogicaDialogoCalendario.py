@@ -26,14 +26,14 @@ class DialogCalendario(QDialog):
     # Emite (fecha:date, hora:str) cuando el usuario elige una celda libre
     hora_seleccionada = pyqtSignal(object, str)
 
-    def __init__(self, id_medico, nombre_medico, modelo, parent=None):
+    def __init__(self, id_medico, nombre_medico, modelo, fecha_inicial=None, parent=None):
         super().__init__(parent)
         self._id_medico = id_medico
         self._nombre_medico = nombre_medico
         self._modelo = modelo
-        # Semana actual: empieza en el lunes de hoy
-        hoy = date.today()
-        self._lunes = hoy - timedelta(days=hoy.weekday())
+        # Si se proporciona fecha_inicial, abrir en su semana; si no, usar hoy
+        referencia = fecha_inicial if isinstance(fecha_inicial, date) else date.today()
+        self._lunes = referencia - timedelta(days=referencia.weekday())
         self._hora_pendiente = None   # (fecha, hora) elegida pero aún sin confirmar
         self._btn_pendiente = None    # botón actualmente marcado como seleccionado
 

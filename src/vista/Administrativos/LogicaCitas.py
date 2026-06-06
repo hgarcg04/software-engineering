@@ -79,7 +79,8 @@ class LogicaCitas:
             QMessageBox.warning(self, "Sin médico", "Selecciona un médico primero.")
             return
         if self._controlador:
-            self._controlador.abrir_calendario(id_medico)
+            fecha = self.input_fecha_cita.date().toPyDate()
+            self._controlador.abrir_calendario(id_medico, fecha)
 
     def _on_asignar_cita(self):
         id_medico = self.combo_medico_cita.currentData()
@@ -90,12 +91,12 @@ class LogicaCitas:
 
     #Métodos llamados por el controlador
 
-    def abrir_calendario_dialogo(self, id_medico, nombre_medico, modelo):
+    def abrir_calendario_dialogo(self, id_medico, nombre_medico, modelo, fecha_inicial=None):
         """
         Instancia y abre el DialogCalendario modal.
         Cuando el usuario elige una celda libre, rellena fecha y hora en el formulario.
         """
-        dialogo = DialogCalendario(id_medico, nombre_medico, modelo, parent=self)
+        dialogo = DialogCalendario(id_medico, nombre_medico, modelo, fecha_inicial=fecha_inicial, parent=self)
         dialogo.hora_seleccionada.connect(self._on_hora_desde_calendario)
         dialogo.exec_()
 
