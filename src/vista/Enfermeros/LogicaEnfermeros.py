@@ -29,6 +29,8 @@ PAGE_CONSTANTES = 1
 PAGE_MEDICACION = 2
 PAGE_EPISODIOS  = 3
 PAGE_DETALLES   = 4
+PAGE_PASSWORD   = 5
+
 
 Form, Window = uic.loadUiType(ui_path)
 
@@ -58,6 +60,8 @@ class VentanaEnfermeros(QMainWindow, Form):
         self.btn_nuevo_registro.clicked.connect(lambda: self._navegar(PAGE_CONSTANTES))
         self.btn_nav_medicacion.clicked.connect(self.actualizar_tomas_sesion_actual)
         self.btn_suministrar.clicked.connect(self.actualizar_tomas_sesion_actual)
+
+        self.btn_nav_password.clicked.connect(self._ir_password)
 
         self.btn_nav_constantes.clicked.connect(lambda: self.edit_valor_constante.setFocus())
      
@@ -96,6 +100,10 @@ class VentanaEnfermeros(QMainWindow, Form):
 
         # --- PDF ----
         self.btn_exportar_pdf.clicked.connect(self.exportar_informe_pdf)
+
+        # --- Cambio contraseña -----
+        self.btn_pw_confirmar.clicked.connect(self._cambiar_password)
+
 
         
 
@@ -183,10 +191,13 @@ class VentanaEnfermeros(QMainWindow, Form):
             self.btn_nav_constantes,
             self.btn_nav_medicacion,
             self.btn_nav_episodios,
+            None,  # PAGE_DETALLES no tiene botón de nav
+            self.btn_nav_password,
         ]
         for i, btn in enumerate(nav_btns):
-            btn.setChecked(i == indice)
-    
+            if btn is not None:
+                btn.setChecked(i == indice)
+
 
 
 
@@ -665,7 +676,41 @@ class VentanaEnfermeros(QMainWindow, Form):
                 item = QTableWidgetItem(str(valor))
                 item.setTextAlignment(Qt.AlignCenter)
                 item.setData(Qt.UserRole, ep)  
-                self.tabla_episodios.setItem(fila, col, item)          
+                self.tabla_episodios.setItem(fila, col, item)
+
+    # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+    #                                                                            CAMBIAR CONTRASEÑA
+    # --------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    def _ir_password(self):
+        self._navegar(PAGE_PASSWORD)
+        self.input_pw_nueva.clear()
+        self.input_pw_confirmar.clear()
+        self.lbl_pw_error_coincidencia.setVisible(False)
+        self.lbl_pw_error_igual.setVisible(False)
+        self.lbl_pw_ok.setVisible(False)
+
+    def _cambiar_password(self):
+        nueva = self.input_pw_nueva.text().strip()
+        confirmar = self.input_pw_confirmar.text().strip()
+
+        # Ocultar todos los mensajes
+        self.lbl_pw_error_coincidencia.setVisible(False)
+        self.lbl_pw_error_igual.setVisible(False)
+        self.lbl_pw_ok.setVisible(False)
+
+        if nueva != confirmar:
+            self.lbl_pw_error_coincidencia.setVisible(True)
+            self.input_pw_nueva.clear()
+            self.input_pw_confirmar.clear()
+            return
+
+
+        self.controlador.cambiar_password(nueva, self._enfermero)
+        print("Boton de cambiar contraseña presionado")
+        self.lbl_pw_ok.setVisible(True)
+        self.input_pw_nueva.clear()
+        self.input_pw_confirmar.clear()
 
 
 

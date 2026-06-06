@@ -8,17 +8,14 @@ ui_path = os.path.join(os.path.dirname(__file__), "Ui/DialogoReceta.ui")
 Form, _ = uic.loadUiType(ui_path)
 
 class DialogoReceta(QDialog, Form):
-    def __init__(self, parent=None, paciente_vo=None):
+    def __init__(self, parent, cita_vo):
         super().__init__(parent)
         self.setupUi(self)
-        self._paciente = paciente_vo
+        self._paciente = cita_vo
         self.controlador = None
-        self._id_medicamento_seleccionado = None
-        self._id_paciente = None
         self.lbl_pac_nombre.setText('— Sin paciente —')
-        self._medicamento_seleccionado = None
-        self._id_paciente = None
         self._medicamentos = []
+        self._medicamento_seleccionado = None
 
         self.tabla_medicamentos.cellClicked.connect(self._on_medicamento_seleccionado)
         self.search_bar.textChanged.connect(self._filtrar_medicamentos)
@@ -68,18 +65,23 @@ class DialogoReceta(QDialog, Form):
             QMessageBox.warning(self, "Campos vacíos", "Rellena el campo de frecuencia.")
             return
         
+        if self._medicamento_seleccionado is None:
+            QMessageBox.warning(self, "Medicamento no seleccionado", "Por favor, selecciona un medicamento de la lista.")
+            return
+        
         try:
             dosis = int(self.edit_dosis.text())
             if self.controlador:
                 self.controlador.guardar_receta(
-                    id_medicamento=self._id_medicamento_seleccionado,
+                    id_medicamento=self._medicamento_seleccionado.id_medicamento,
                     dosis=dosis,
                     frecuencia=self.edit_frecuencia.text(),
                     via=self.combo_via.currentText(),
                     fecha_inicio=self.date_inicio.date().toString('yyyy-MM-dd'),
                     fecha_fin=self.date_fin.date().toString('yyyy-MM-dd'),
                     notas=self.edit_notas.toPlainText(),
-                    id_paciente=self._id_paciente
+                    id_paciente=self._paciente.id_paciente,
+                    id_ingreso=self._paciente.id_ingreso
                 )
             self.accept()
 

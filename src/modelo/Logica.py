@@ -6,8 +6,7 @@ from src.modelo.dao.CitasDaoJDBC import CitasDaoJDBC
 from src.modelo.dao.PacientesDaoJDBC import PacientesDaoJDBC
 from src.modelo.dao.MedicamentosDaoJDBC import MedicamentosDaoJDBC
 from src.modelo.dao.EpisodiosDaoJDBC import EpisodiosDaoJDBC
-
-
+from src.modelo.dao.BackupDaoJDBC import BackupDaoJDBC
 
 
 
@@ -59,9 +58,25 @@ class Logica():
         dao = EpisodiosDaoJDBC()
         dao.guardar_episodio(episodioVO)
 
-    def ingresarPaciente(self, id_paciente, id_medico):
+    def pacienteEstaIngresado(self, id_paciente):
         dao = PacientesDaoJDBC()
-        dao.ingresar_paciente(id_paciente, id_medico)
+        return dao.comprobar_ingreso_activo(id_paciente)
+    
+    def darAltaMedica(self, id_paciente):
+        dao = PacientesDaoJDBC()
+        return dao.registrar_alta_paciente(id_paciente)
+
+    def ingresarPaciente(self, id_paciente):
+        dao = PacientesDaoJDBC()
+        dao.ingresar_paciente(id_paciente)
+
+    def obtenerIngresosActuales(self):
+        dao = PacientesDaoJDBC()
+        return dao.obtener_ingresos_actuales()
+
+    def obtenerAltasRecientes(self):
+        dao = PacientesDaoJDBC()
+        return dao.obtener_altas_recientes()
 
     def guardarTratamiento(self, tratamientoVO):
         dao = TratamientosDaoJDBC()
@@ -97,9 +112,89 @@ class Logica():
 
     def registrarPaciente(self, pacienteVO):
         dao = PacientesDaoJDBC()
-        if dao.existe_paciente(pacienteVO.nif):
-            return False, "El paciente ya está registrado"
-        
         dao.registrar_paciente(pacienteVO)
-        return True, "Paciente registrado correctamente"
 
+    def existePaciente(self, nif):
+        dao = PacientesDaoJDBC()
+        return dao.existe_paciente(nif)
+
+    # --- CU4: Asignar Citas ---
+
+    def obtenerEspecialidades(self):
+        # Devuelve las especialidades disponibles para el combo de la vista
+        dao = CitasDaoJDBC()
+        return dao.obtener_especialidades()
+
+    def obtenerMedicosPorEspecialidad(self, especialidad=None):
+        # Devuelve los médicos filtrados por especialidad (None = todos)
+        dao = CitasDaoJDBC()
+        return dao.obtener_medicos_por_especialidad(especialidad)
+
+    def consultarDisponibilidad(self, id_medico, fecha):
+        # Devuelve horas libres del médico en esa fecha, o None si el día está bloqueado
+        dao = CitasDaoJDBC()
+        return dao.consultar_disponibilidad(id_medico, fecha)
+
+    def obtenerCitasSemana(self, id_medico, fecha_inicio, fecha_fin):
+        # Devuelve lista de dicts {fecha, hora, paciente, motivo} para el calendario
+        dao = CitasDaoJDBC()
+        return dao.obtener_citas_semana(id_medico, fecha_inicio, fecha_fin)
+
+    def obtenerDiasBloqueadosSemana(self, id_medico, fecha_inicio, fecha_fin):
+        # Devuelve conjunto de fechas bloqueadas en el rango para el calendario
+        dao = CitasDaoJDBC()
+        return dao.obtener_dias_bloqueados_semana(id_medico, fecha_inicio, fecha_fin)
+
+    def asignarCita(self, id_paciente, id_medico, fecha, hora):
+        dao = CitasDaoJDBC()
+        dao.asignar_cita(id_paciente, id_medico, fecha, hora)
+
+    # --- CU9: Bloquear Agenda ---
+
+    def buscarMedico(self, texto):
+        # Búsqueda de médicos por nombre o apellidos
+        dao = CitasDaoJDBC()
+        return dao.buscar_medico(texto)
+
+    def bloquearAgenda(self, id_medico, fecha_inicio, fecha_fin, motivo, observaciones):
+        dao = CitasDaoJDBC()
+        return dao.bloquear_agenda(id_medico, fecha_inicio, fecha_fin, motivo, observaciones)
+
+    def hayCitasEnRango(self, id_medico, fecha_inicio, fecha_fin):
+        # Expone la consulta al DAO para que el controlador pueda validar
+        dao = CitasDaoJDBC()
+        return dao.hay_citas_en_rango(id_medico, fecha_inicio, fecha_fin)
+
+    # --- CU5: Generar Credenciales ---
+
+    def existeEmpleado(self, dni):
+        dao = UserDaoJDBC()
+        return dao.existe_empleado(dni)
+
+    def generarCredenciales(self, dni, nombre, apellidos, nombre_usuario,
+                             password_generada, email, rol, especialidad=None):
+        dao = UserDaoJDBC()
+        return dao.generar_credenciales(dni, nombre, apellidos, nombre_usuario,
+                                        password_generada, email, rol, especialidad)
+    
+    def cambiarPassword(self, nueva, userVO):
+        dao = UserDaoJDBC()
+        dao.cambiar_password(nueva, userVO)
+
+    def activarUsuario(self, userVO):
+        dao = UserDaoJDBC()
+        dao.activar_usuario(userVO)
+
+    # --- CU6: Copia de Seguridad ---
+
+    def realizarBackup(self, ruta_destino, tipo, user_vo):
+        dao = BackupDaoJDBC()
+        return dao.realizar_backup(ruta_destino, tipo, user_vo)
+
+    def obtenerHistorialBackup(self):
+        dao = BackupDaoJDBC()
+        return dao.obtener_historial()
+
+    def comprobarEspacioBackup(self, ruta_destino):
+        dao = BackupDaoJDBC()
+        return dao.comprobar_espacio(ruta_destino)

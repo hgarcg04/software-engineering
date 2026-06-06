@@ -38,11 +38,13 @@ class VentanaMedico(QMainWindow, Form):
         self._btn_group.addButton(self.btn_nav_inicio)
         self._btn_group.addButton(self.btn_nav_agenda)
         self._btn_group.addButton(self.btn_nav_hcd)
+        self._btn_group.addButton(self.btn_ingr)
 
         # Navegación sidebar
         self.btn_nav_inicio.clicked.connect(self._ir_inicio)
         self.btn_nav_agenda.clicked.connect(self._ir_agenda)
         self.btn_nav_hcd.clicked.connect(self._ir_hcd)
+        self.btn_ingr.clicked.connect(self._ir_ingresos)
 
         # Inicio
         self.tabla_agenda_hoy.itemSelectionChanged.connect(self._on_cita_seleccionada)
@@ -53,7 +55,7 @@ class VentanaMedico(QMainWindow, Form):
         self.btn_volver_consulta.clicked.connect(self._ir_inicio)
         self.btn_abrir_receta.clicked.connect(self._abrir_dialogo_receta)
         self.btn_guardar_consulta.clicked.connect(self._guardar_consulta)
-        self.btn_ingresar_paciente.clicked.connect(self._ingresar_paciente)
+        self.btn_ingresar_paciente.clicked.connect(self._ingresar_paciente_cita)
 
         # Agenda completa
         self.btn_buscar_agenda.clicked.connect(self._buscar_agenda)
@@ -63,9 +65,22 @@ class VentanaMedico(QMainWindow, Form):
         self.tabla_busqueda_hcd.itemSelectionChanged.connect(self._on_paciente_hcd_seleccionado)
         self.tabla_episodios_hcd.itemSelectionChanged.connect(self._on_episodio_seleccionado)
         self.btn_cerrar_detalle.clicked.connect(self._cerrar_detalle_hcd)
+        self.btn_dar_alta_hcd.clicked.connect(self._on_dar_alta_clicked)
+        self.btn_ingresar_planta_hcd.clicked.connect(self._ingresar_paciente_hcd)
+
+        # Ingresos
+        self.btn_buscar_general.clicked.connect(self._buscar_en_ingresos)
+        self.txt_buscar_general.returnPressed.connect(self._buscar_en_ingresos)
 
         # Logout
         self.btn_logout.clicked.connect(self._logout)
+
+        # Clasificación
+        self._btn_group.addButton(self.btn_nav_neumonia)
+        self.btn_nav_neumonia.clicked.connect(self._ir_neumonia)
+        self.btn_seleccionar_rx.clicked.connect(self._seleccionar_imagen_rx)
+        self.btn_analizar_rx.clicked.connect(self._analizar_rx)
+        self._ruta_imagen_rx = None
 
     # ── Navegación ──────────────────────────────────────────────
 
@@ -83,6 +98,12 @@ class VentanaMedico(QMainWindow, Form):
         self.stackedPanel.setCurrentIndex(2)
         self.btn_nav_hcd.setChecked(True)
 
+    def _ir_ingresos(self):
+        self.stackedPanel.setCurrentIndex(4)
+        self.btn_ingr.setChecked(True)
+        if self._controlador:
+            self._controlador.cargar_ingresos()
+
     # ── Inicio ───────────────────────────────────────────────────
 
     def cargar_datos_iniciales(self, userVO):
@@ -91,8 +112,33 @@ class VentanaMedico(QMainWindow, Form):
     def _actualizar_fecha_hora(self):
         self.lbl_datetime.setText(QDateTime.currentDateTime().toString("dd/MM/yyyy  HH:mm"))
 
+    def configurar_botones_hospitalizacion(self, puede_ingresar, puede_dar_alta):
+        self.btn_ingresar_planta_hcd.setEnabled(puede_ingresar)
+        self.btn_dar_alta_hcd.setEnabled(puede_dar_alta)
+
+    def solicitar_ruta_informe_alta(self, nif_paciente):
+        from PyQt5.QtWidgets import QFileDialog
+        
+        ruta, _ = QFileDialog.getSaveFileName(
+            self,
+            "Guardar Informe de Alta Clínica",
+            f"Informe_Alta_{nif_paciente}.pdf",
+            "PDF Files (*.pdf)"
+        )
+        return ruta
+
+    def mostrar_notificacion_alta(self, titulo, mensaje, es_error=False):
+        """
+        MÉTODO DE VISTA (MVC Puro): Muestra cuadros de diálogo de información o error.
+        """
+        from PyQt5.QtWidgets import QMessageBox
+        
+        if es_error:
+            QMessageBox.critical(self, titulo, mensaje)
+        else:
+            QMessageBox.information(self, titulo, mensaje)
+
     def establecer_rango_fechas_interfaz(self, fecha_desde_str, fecha_hasta_str):
-        # Convertimos los strings que vienen del controlador a objetos QDate
         q_desde = QDate.fromString(fecha_desde_str, "yyyy-MM-dd")
         q_hasta = QDate.fromString(fecha_hasta_str, "yyyy-MM-dd")
         
@@ -107,7 +153,7 @@ class VentanaMedico(QMainWindow, Form):
         self.tabla_agenda_hoy.verticalHeader().setVisible(False) # Para que no se vea el índice de la fila que no queda bien
 
         inicio = datetime.strptime("08:00", "%H:%M")
-        fin = datetime.strptime("20:00", "%H:%M")
+        fin = datetime.strptime("22:00", "%H:%M")
         hora_actual = datetime.now().strftime("%H:%M")
         slots = []
         actual = inicio
@@ -209,7 +255,7 @@ class VentanaMedico(QMainWindow, Form):
             )
         self._ir_inicio()
 
-    def _ingresar_paciente(self):
+    def _ingresar_paciente_cita(self):
 
         if self._cita_activa.hospitalizado:
             QMessageBox.warning(self, "Operación inválida", f"El paciente {self._cita_activa.paciente_nombre} ya está hospitalizado.")
@@ -221,9 +267,8 @@ class VentanaMedico(QMainWindow, Form):
                 QMessageBox.Ok | QMessageBox.Cancel )
 
             if respuesta == QMessageBox.Ok:
-                #pasamos la lista al controlador
                 if self._controlador:
-                    self._controlador.ingresar_paciente(self._cita_activa)
+                    self._controlador.ingresar_paciente(self._cita_activa.id_paciente)
 
 
     # ── Agenda completa ──────────────────────────────────────────
@@ -250,6 +295,39 @@ class VentanaMedico(QMainWindow, Form):
     def _buscar_paciente_hcd(self, texto):
         if self._controlador:
             self._controlador.buscar_paciente_hcd(texto)
+
+    def _ingresar_paciente_hcd(self):
+        fila = self.tabla_busqueda_hcd.currentRow()
+        paciente = self._pacientes_busqueda[fila]
+        respuesta = QMessageBox.question(
+                self, "Confirmar ingresos",
+                f"Se van a ingresar al siguiente paciente {paciente.nombre}\n\n¿Deseas continuar?",
+                QMessageBox.Ok | QMessageBox.Cancel )
+
+        if respuesta == QMessageBox.Ok:
+            if self._controlador:
+                self._controlador.ingresar_paciente(paciente.id_paciente)
+        
+        self.configurar_botones_hospitalizacion(puede_ingresar=False, puede_dar_alta=True)
+
+    def _on_dar_alta_clicked(self):
+        if not self._controlador:
+            return
+            
+        from PyQt5.QtWidgets import QInputDialog, QLineEdit
+        diagnostico_alta, ok = QInputDialog.getMultiLineText(
+            self, 
+            "Formulario de Alta Clínica", 
+            "Escriba el diagnóstico de alta, tratamiento recomendado y observaciones finales:"
+        )
+        if ok and diagnostico_alta.strip():
+            self._controlador.dar_alta_paciente(diagnostico_alta.strip())
+        elif ok:
+            self.mostrar_notificacion_alta(
+                "Campo Obligatorio", 
+                "Debe introducir un diagnóstico o resumen clínico para poder tramitar el alta.", 
+                es_error=True
+            )
 
     def cargar_resultados_busqueda_hcd(self, lista_pacientes):
         self._pacientes_busqueda = lista_pacientes
@@ -301,7 +379,46 @@ class VentanaMedico(QMainWindow, Form):
     def _cerrar_detalle_hcd(self):
         self.txt_detalle_episodio.clear()
         self.tabla_tratamientos_hcd.setRowCount(0)
+        self.btn_ingresar_planta_hcd.setEnabled(False)
+        self.btn_dar_alta_hcd.setEnabled(False)
 
+    # -- Ingreso ------------------------
+
+    def cargar_ingresos(self, lista_ingresos, lista_altas):
+        # Tabla ingresos actuales
+        self.tabla_ingresos.setRowCount(0)
+        self.tabla_ingresos.verticalHeader().setVisible(False)
+        for row_data in lista_ingresos:
+            row = self.tabla_ingresos.rowCount()
+            self.tabla_ingresos.insertRow(row)
+            self.tabla_ingresos.setItem(row, 0, self._item(row_data[0]))  # id_ingreso
+            self.tabla_ingresos.setItem(row, 1, self._item(row_data[1] or ""))  # habitacion/cama
+            self.tabla_ingresos.setItem(row, 2, self._item(row_data[2]))  # nombre
+            self.tabla_ingresos.setItem(row, 3, self._item(str(row_data[3])[:10]))  # fecha
+        self.tabla_ingresos.resizeColumnsToContents()
+
+        # Tabla altas recientes
+        self.tabla_altas_recientes.setRowCount(0)
+        self.tabla_altas_recientes.verticalHeader().setVisible(False)
+        for row_data in lista_altas:
+            row = self.tabla_altas_recientes.rowCount()
+            self.tabla_altas_recientes.insertRow(row)
+            self.tabla_altas_recientes.setItem(row, 0, self._item(row_data[0]))  # id_ingreso
+            self.tabla_altas_recientes.setItem(row, 1, self._item(row_data[1]))  # nombre
+            self.tabla_altas_recientes.setItem(row, 2, self._item(str(row_data[2])[:10]))  # fecha ingreso
+            self.tabla_altas_recientes.setItem(row, 3, self._item(str(row_data[3])[:10]))  # fecha alta
+            self.tabla_altas_recientes.setItem(row, 4, self._item(row_data[4] or ""))  # motivo
+        self.tabla_altas_recientes.resizeColumnsToContents()
+
+    def _buscar_en_ingresos(self):
+        texto = self.txt_buscar_general.text().strip().lower()
+        for row in range(self.tabla_ingresos.rowCount()):
+            nombre = self.tabla_ingresos.item(row, 2).text().lower()
+            self.tabla_ingresos.setRowHidden(row, texto not in nombre)
+        for row in range(self.tabla_altas_recientes.rowCount()):
+            nombre = self.tabla_altas_recientes.item(row, 1).text().lower()
+            self.tabla_altas_recientes.setRowHidden(row, texto not in nombre)
+            
     # ── Logout ───────────────────────────────────────────────────
 
     def _logout(self):
@@ -321,3 +438,41 @@ class VentanaMedico(QMainWindow, Form):
     @controlador.setter
     def controlador(self, ref):
         self._controlador = ref
+
+    ######################################### MODELO ######################################################
+    def _ir_neumonia(self):
+        self.stackedPanel.setCurrentIndex(5)
+        self.btn_nav_neumonia.setChecked(True)
+
+    def _seleccionar_imagen_rx(self):
+        from PyQt5.QtWidgets import QFileDialog
+        from PyQt5.QtGui import QPixmap
+        from PyQt5.QtCore import Qt
+        ruta, _ = QFileDialog.getOpenFileName(
+            self, "Seleccionar radiografía", "",
+            "Imágenes (*.png *.jpg *.jpeg)"
+        )
+        if ruta:
+            self._ruta_imagen_rx = ruta
+            pixmap = QPixmap(ruta).scaled(620, 520, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.lbl_imagen_rx.setPixmap(pixmap)
+            self.btn_analizar_rx.setEnabled(True)
+            self.frame_resultado_rx.setVisible(False)
+
+    def _analizar_rx(self):
+        if self._ruta_imagen_rx and self._controlador:
+            self.btn_analizar_rx.setEnabled(False)
+            self.btn_analizar_rx.setText("Analizando...")
+            self._controlador.clasificar_imagen(self._ruta_imagen_rx)
+            self.btn_analizar_rx.setEnabled(True)
+            self.btn_analizar_rx.setText("Analizar")
+
+    def mostrar_resultado_rx(self, label, confianza):
+        self.frame_resultado_rx.setVisible(True)
+        if "PNEUMONIA" in label.upper():
+            self.lbl_resultado_rx.setText("⚠ NEUMONÍA\nDETECTADA")
+            self.lbl_resultado_rx.setStyleSheet("font-family: 'Segoe UI Black'; font-size: 20px; color: #e17055;")
+        else:
+            self.lbl_resultado_rx.setText("✔ NORMAL")
+            self.lbl_resultado_rx.setStyleSheet("font-family: 'Segoe UI Black'; font-size: 20px; color: #00b894;")
+        self.lbl_confianza_rx.setText(f"Confianza: {confianza}%")

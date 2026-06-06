@@ -21,7 +21,7 @@ class PacientesDaoJDBC(Conexion):
     
     SQL_BUSCAR_PACIENTE = """
         SELECT px.id_paciente, px.nif, px.nombre, px.apellido1, px.apellido2,
-            px.fecha_nacimiento, px.genero, px.fecha_registro, per.apellidos
+            px.fecha_nacimiento, px.genero, px.fecha_registro, per.apellidos, px.correo
         FROM Pacientes as px
         LEFT JOIN Personal as per ON px.medico_asignado = per.id_empleado
         WHERE px.nif LIKE ? OR px.nombre LIKE ? OR px.apellido1 LIKE ? OR px.apellido2 LIKE ?
@@ -29,7 +29,7 @@ class PacientesDaoJDBC(Conexion):
 
     SQL_BUSCAR_POR_ID = """
         SELECT px.id_paciente, px.nif, px.nombre, px.apellido1, px.apellido2,
-            px.fecha_nacimiento, px.genero, px.fecha_registro, per.apellidos
+            px.fecha_nacimiento, px.genero, px.fecha_registro, per.apellidos, px.hospitalizado
         FROM Pacientes as px
         LEFT JOIN Personal as per ON px.medico_asignado = per.id_empleado
         WHERE px.id_paciente = ?
@@ -41,6 +41,14 @@ class PacientesDaoJDBC(Conexion):
         WHERE id_paciente = ?
     """
 
+    SQL_DAR_ALTA = "UPDATE Pacientes SET hospitalizado = 0 WHERE id_paciente = ?"
+
+    SQL_COMPROBAR_HOSPITALIZADO = """
+        SELECT hospitalizado 
+        FROM Pacientes 
+        WHERE id_paciente = ?
+    """
+
     SQL_REGISTRAR_PACIENTE = """
             INSERT INTO Pacientes (nif, nombre, apellido1, apellido2,
             fecha_nacimiento, genero, fecha_registro, correo, direccion, alergias, telefono)
@@ -49,7 +57,28 @@ class PacientesDaoJDBC(Conexion):
         """
     
     SQL_BUSCAR_NIF = "SELECT nif FROM Pacientes WHERE nif = ?"
-    
+
+    SQL_INGRESOS_ACTUALES = """
+        SELECT i.id_ingreso, i.num_habitacion,
+            p.nombre + ' ' + p.apellido1 + ' ' + ISNULL(p.apellido2, '') AS nombre_completo,
+            i.fecha_inicio
+        FROM Ingresos i
+        JOIN Episodios e ON i.id_episodio = e.id_episodio
+        JOIN Pacientes p ON e.id_paciente = p.id_paciente
+        WHERE i.fecha_fin IS NULL
+        ORDER BY i.fecha_inicio DESC
+    """
+
+    SQL_ALTAS_RECIENTES = """
+        SELECT i.id_ingreso,
+            p.nombre + ' ' + p.apellido1 + ' ' + ISNULL(p.apellido2, '') AS nombre_completo,
+            i.fecha_inicio, i.fecha_fin, i.Observaciones
+        FROM Ingresos i
+        JOIN Episodios e ON i.id_episodio = e.id_episodio
+        JOIN Pacientes p ON e.id_paciente = p.id_paciente
+        WHERE i.fecha_fin >= DATEADD(day, -7, GETDATE())
+        ORDER BY i.fecha_fin DESC
+    """
 
     def devuelve_pacientes_ingresados(self, UserVO):
         cursor = self.getCursor()
@@ -107,7 +136,8 @@ class PacientesDaoJDBC(Conexion):
                     genero=row[6],
                     fecha_registro=row[7],
                     medico_asignado=row[8],
-                    id_paciente=row[0]
+                    id_paciente=row[0],
+                    correo=row[9]
                 )
                 pacientes.append(paciente)
             return pacientes
@@ -131,14 +161,15 @@ class PacientesDaoJDBC(Conexion):
                     genero=row[6],
                     fecha_registro=row[7],
                     medico_asignado=row[8],
-                    id_paciente=row[0]
+                    id_paciente=row[0],
+                    hospitalizado=row[9]
                 )]
             return []
         except Exception as e:
             print("Error buscando paciente por id:", e)
             return []
 
-    def ingresar_paciente(self, id_paciente, id_medico):
+    def ingresar_paciente(self, id_paciente):
         cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_INGRESAR_PACIENTE, (id_paciente,))
@@ -150,11 +181,34 @@ class PacientesDaoJDBC(Conexion):
             print(f"Error al ingresar el paciente: {e}")
         finally:
             cursor.close() # revisar porque esto no lo termino de entender
+
+    def registrar_alta_paciente(self, id_paciente):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_DAR_ALTA, (id_paciente,))
+            self.conexion.commit()
+            return True
+        except Exception as e:
+            self.conexion.rollback()
+            print("Error al dar de alta al paciente en la base de datos:", e)
+            return False
     
     def existe_paciente(self, nif):
         cursor = self.getCursor()
         cursor.execute(self.SQL_BUSCAR_NIF, (nif,))
         return cursor.fetchone() is not None
+    
+    def comprobar_ingreso_activo(self, id_paciente):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_COMPROBAR_HOSPITALIZADO, (id_paciente,))
+            row = cursor.fetchone()
+            if row:
+                return bool(row[0])
+            return False
+        except Exception as e:
+            print("Error al comprobar estado de hospitalización:", e)
+            return False
     
     def registrar_paciente(self, pacienteVO):
         cursor = self.getCursor()
@@ -174,4 +228,21 @@ class PacientesDaoJDBC(Conexion):
             
         except Exception as e:
             print("Error al registrar paciente: ", e)
-       
+
+    def obtener_ingresos_actuales(self):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_INGRESOS_ACTUALES)
+            return cursor.fetchall()
+        except Exception as e:
+            print("Error obteniendo ingresos actuales:", e)
+            return []
+
+    def obtener_altas_recientes(self):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_ALTAS_RECIENTES)
+            return cursor.fetchall()
+        except Exception as e:
+            print("Error obteniendo altas recientes:", e)
+            return []

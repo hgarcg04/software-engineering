@@ -146,7 +146,7 @@
         font-size: 14px;
         color: #00a381;
     }
-    #btn_deseleccionar {
+    #btn_deseleccionar, #btn_deseleccionar_medico {
         background-color: transparent;
         color: #e17055;
         border: 1px solid #e17055;
@@ -154,7 +154,7 @@
         padding: 3px 10px;
         font-size: 12px;
     }
-    #btn_deseleccionar:hover { background-color: #ffecea; }
+    #btn_deseleccionar:hover, #btn_deseleccionar_medico:hover { background-color: #ffecea; }
 
     /* === Botones primarios verdes === */
     #btn_registrar_paciente, #btn_asignar_cita, #btn_generar_credenciales,
@@ -194,7 +194,19 @@
     }
 
     /* === Botones de acción neutral === */
-    #btn_limpiar_formulario, #btn_cancelar, #btn_nuevo_paciente {
+    #btn_paciente_no_encontrado {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffc107;
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-family: 'Segoe UI Semibold';
+        font-size: 13px;
+        text-align: left;
+    }
+    #btn_paciente_no_encontrado:hover { background-color: #ffe69c; }
+
+    #btn_limpiar_formulario, #btn_cancelar, #btn_nuevo_paciente, #btn_limpiar_cita, #btn_limpiar_credencial {
         background-color: #dfe6e9;
         color: #2d3436;
         border: none;
@@ -204,7 +216,47 @@
         font-size: 13px;
     }
     #btn_limpiar_formulario:hover, #btn_cancelar:hover,
-    #btn_nuevo_paciente:hover { background-color: #b2bec3; }
+    #btn_nuevo_paciente:hover, #btn_limpiar_cita:hover,
+    #btn_limpiar_credencial:hover { background-color: #b2bec3; }
+
+    /* === Tablón de comunicación === */
+    #groupBox_tablon {
+        background-color: #ffffff;
+        border: 1px solid #dde3ea;
+        border-radius: 10px;
+        padding-top: 8px;
+    }
+    #groupBox_tablon::title {
+        font-family: 'Segoe UI Black';
+        font-size: 22px;
+        font-weight: bold;
+        color: #2d3436;
+        subcontrol-origin: margin;
+        subcontrol-position: top left;
+        padding: 0 8px;
+    }
+    #list_tablon {
+        background-color: #f8fafc;
+        border: 1px solid #dde3ea;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #2d3436;
+        min-height: 300px;
+    }
+    #list_tablon::item {
+        padding: 10px 12px;
+        border-bottom: 1px solid #f0f4f8;
+    }
+    #list_tablon::item:alternate { background-color: #ffffff; }
+    #btn_enviar_tablon {
+        background-color: #00b894;
+        color: white;
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-family: 'Segoe UI Semibold';
+        font-size: 13px;
+    }
+    #btn_enviar_tablon:hover { background-color: #00a381; }
 
     /* === Frame de disponibilidad / resultado === */
     #frame_disponibilidad {
@@ -564,31 +616,61 @@
           <property name="topMargin"><number>30</number></property>
           <property name="rightMargin"><number>30</number></property>
           <property name="bottomMargin"><number>30</number></property>
+          <property name="spacing"><number>12</number></property>
           <item>
-           <widget class="QLabel" name="lbl_section_title">
-               <property name="class" stdset="0"><string>sectionTitle</string></property>
-            <property name="text">
-             <string>Bienvenido/a al Panel Administrativo</string>
-            </property>
+           <widget class="QLabel" name="lbl_bienvenida_titulo">
+            <property name="text"><string>Bienvenido/a al Panel Administrativo</string></property>
+            <property name="styleSheet"><string>font-family: 'Segoe UI Black'; font-size: 22px; font-weight: bold; color: #2d3436;</string></property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="lbl_section_sub">
-               <property name="class" stdset="0"><string>sectionSub</string></property>
-            <property name="text">
-             <string>Selecciona una opción del menú para comenzar.</string>
-            </property>
+           <widget class="QLabel" name="lbl_bienvenida_sub">
+            <property name="class" stdset="0"><string>sectionSub</string></property>
+            <property name="text"><string>Selecciona una opción del menú para comenzar.</string></property>
            </widget>
           </item>
 
+          <!-- ── Tablón de comunicación ── -->
           <item>
-           <spacer>
-            <property name="orientation"><enum>Qt::Vertical</enum></property>
-            <property name="sizeHint" stdset="0">
-             <size><width>0</width><height>0</height></size>
-            </property>
-           </spacer>
+           <widget class="QGroupBox" name="groupBox_tablon">
+            <property name="title"><string>Tablón de comunicación</string></property>
+            <layout class="QVBoxLayout" name="tablonLayout">
+             <property name="leftMargin"><number>12</number></property>
+             <property name="topMargin"><number>12</number></property>
+             <property name="rightMargin"><number>12</number></property>
+             <property name="bottomMargin"><number>12</number></property>
+             <property name="spacing"><number>8</number></property>
+
+             <!-- Lista de mensajes -->
+             <item>
+              <widget class="QListWidget" name="list_tablon">
+               <property name="alternatingRowColors"><bool>true</bool></property>
+               <property name="selectionMode"><enum>QAbstractItemView::NoSelection</enum></property>
+              </widget>
+             </item>
+
+             <!-- Fila inferior: campo de texto + botón enviar -->
+             <item>
+              <layout class="QHBoxLayout" name="tablonInputLayout">
+               <property name="spacing"><number>8</number></property>
+               <item>
+                <widget class="QLineEdit" name="input_tablon">
+                 <property name="placeholderText"><string>Escribe un mensaje para médicos y enfermeros...</string></property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_enviar_tablon">
+                 <property name="text"><string>Publicar</string></property>
+                 <property name="minimumWidth"><number>100</number></property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+
+            </layout>
+           </widget>
           </item>
+
          </layout>
         </widget>
 
@@ -864,6 +946,13 @@
               <column><property name="text"><string>Nº Expediente</string></property></column>
              </widget>
             </item>
+            <!-- Botón que aparece solo cuando la búsqueda no da resultados -->
+            <item>
+             <widget class="QPushButton" name="btn_paciente_no_encontrado">
+              <property name="text"><string>Paciente no encontrado — Registrar nuevo paciente</string></property>
+              <property name="visible"><bool>false</bool></property>
+             </widget>
+            </item>
            </layout>
           </item>
 
@@ -931,17 +1020,7 @@
                  <item><property name="text"><string>-- Consultar disponibilidad primero --</string></property></item>
                 </widget>
                </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="lbl_cf_motivo">
-                 <property name="text"><string>Motivo de la cita</string></property>
-                 <property name="class" stdset="0"><string>formLabel</string></property>
-                </widget>
-               </item>
-               <item row="4" column="1">
-                <widget class="QLineEdit" name="input_motivo_cita">
-                 <property name="placeholderText"><string>Descripción breve del motivo (opcional)</string></property>
-                </widget>
-               </item>
+
               </layout>
              </item>
              <item>
@@ -950,10 +1029,19 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="btn_asignar_cita">
-               <property name="enabled"><bool>false</bool></property>
-               <property name="text"><string>Confirmar cita</string></property>
-              </widget>
+              <layout class="QHBoxLayout">
+               <item>
+                <widget class="QPushButton" name="btn_limpiar_cita">
+                 <property name="text"><string>Limpiar</string></property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_asignar_cita">
+                 <property name="enabled"><bool>false</bool></property>
+                 <property name="text"><string>Confirmar cita</string></property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
               <spacer>
@@ -1019,6 +1107,12 @@
                   <size><width>0</width><height>0</height></size>
                  </property>
                 </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_deseleccionar_medico">
+                 <property name="text"><string>Deseleccionar</string></property>
+                 <property name="visible"><bool>false</bool></property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -1145,7 +1239,6 @@
              </item>
              <item>
               <widget class="QPushButton" name="btn_bloquear_agenda">
-               <property name="enabled"><bool>false</bool></property>
                <property name="text"><string>Bloquear agenda</string></property>
               </widget>
              </item>
@@ -1195,34 +1288,45 @@
              <property name="verticalSpacing"><number>14</number></property>
              <item row="0" column="0">
               <widget class="QLabel" name="lbl_pf_nombre">
-               <property name="text"><string>Nombre completo *</string></property>
+               <property name="text"><string>Nombre *</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
              <item row="0" column="1">
               <widget class="QLineEdit" name="input_nombre_personal">
-               <property name="placeholderText"><string>Nombre y apellidos</string></property>
+               <property name="placeholderText"><string>Nombre</string></property>
               </widget>
              </item>
              <item row="1" column="0">
+              <widget class="QLabel" name="lbl_pf_apellidos">
+               <property name="text"><string>Apellidos *</string></property>
+               <property name="class" stdset="0"><string>formLabel</string></property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="input_apellidos_personal">
+               <property name="placeholderText"><string>Apellidos</string></property>
+              </widget>
+             </item>
+             <item row="2" column="0">
               <widget class="QLabel" name="lbl_pf_dni">
                <property name="text"><string>DNI *</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
-             <item row="1" column="1">
+             <item row="2" column="1">
               <widget class="QLineEdit" name="input_dni_personal">
                <property name="placeholderText"><string>Ej: 12345678A</string></property>
                <property name="maxLength"><number>9</number></property>
               </widget>
              </item>
-             <item row="2" column="0">
+             <item row="3" column="0">
               <widget class="QLabel" name="lbl_pf_rol">
                <property name="text"><string>Rol *</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
-             <item row="2" column="1">
+             <item row="3" column="1">
               <widget class="QComboBox" name="combo_rol_personal">
                <item><property name="text"><string>-- Seleccionar rol --</string></property></item>
                <item><property name="text"><string>Médico</string></property></item>
@@ -1230,13 +1334,13 @@
                <item><property name="text"><string>Administrativo/a</string></property></item>
               </widget>
              </item>
-             <item row="3" column="0">
+             <item row="4" column="0">
               <widget class="QLabel" name="lbl_pf_especialidad">
                <property name="text"><string>Especialidad</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
-             <item row="3" column="1">
+             <item row="4" column="1">
               <widget class="QComboBox" name="combo_especialidad_personal">
                <item><property name="text"><string>-- No aplica --</string></property></item>
                <item><property name="text"><string>Medicina General</string></property></item>
@@ -1247,13 +1351,13 @@
                <item><property name="text"><string>Oncología</string></property></item>
               </widget>
              </item>
-             <item row="4" column="0">
+             <item row="5" column="0">
               <widget class="QLabel" name="lbl_pf_email">
                <property name="text"><string>Correo electrónico *</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
-             <item row="4" column="1">
+             <item row="5" column="1">
               <widget class="QLineEdit" name="input_email_personal">
                <property name="placeholderText"><string>correo@hospital.es</string></property>
               </widget>
