@@ -41,7 +41,18 @@ class PacientesDaoJDBC(Conexion):
         WHERE id_paciente = ?
     """
 
+    SQL_CREAR_INGRESO = """
+        INSERT INTO Ingresos (id_episodio, num_habitacion, fecha_inicio)
+        VALUES (?, ?, GETDATE())
+    """
+
     SQL_DAR_ALTA = "UPDATE Pacientes SET hospitalizado = 0 WHERE id_paciente = ?"
+
+    SQL_DAR_ALTA_INGRESO = """
+        UPDATE Ingresos 
+        SET fecha_alta = CURRENT_TIMESTAMP 
+        WHERE id_paciente = ? AND fecha_alta IS NULL
+    """
 
     SQL_COMPROBAR_HOSPITALIZADO = """
         SELECT hospitalizado 
@@ -169,10 +180,11 @@ class PacientesDaoJDBC(Conexion):
             print("Error buscando paciente por id:", e)
             return []
 
-    def ingresar_paciente(self, id_paciente):
+    def ingresar_paciente(self, id_paciente, id_episodio, habitacion):
         cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_INGRESAR_PACIENTE, (id_paciente,))
+            cursor.execute(self.SQL_CREAR_INGRESO, (id_episodio, habitacion))
             self.conexion.commit()
             print(f"Paciente {id_paciente} ingresado con éxito.")
         
@@ -185,13 +197,20 @@ class PacientesDaoJDBC(Conexion):
     def registrar_alta_paciente(self, id_paciente):
         cursor = self.getCursor()
         try:
+            self.conexion.jconn.setAutoCommit(False)  # Abrir transacción manual
             cursor.execute(self.SQL_DAR_ALTA, (id_paciente,))
-            self.conexion.commit()
+            cursor.execute(self.SQL_DAR_ALTA_INGRESO, (id_paciente,))
+            self.conexion.jconn.commit()
             return True
         except Exception as e:
-            self.conexion.rollback()
+            try:
+                self.conexion.jconn.rollback()
+            except Exception:
+                pass
             print("Error al dar de alta al paciente en la base de datos:", e)
             return False
+        finally:
+            self.conexion.jconn.setAutoCommit(True)  # Restaurar siempre, pase lo que pase
     
     def existe_paciente(self, nif):
         cursor = self.getCursor()

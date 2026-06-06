@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
-from PyQt5.QtWidgets import QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QInputDialog
 from PyQt5.QtCore import pyqtSignal, QTimer, QDateTime, QDate
 from PyQt5.QtWidgets import QButtonGroup, QTableWidgetItem
 from PyQt5 import uic
@@ -265,10 +265,24 @@ class VentanaMedico(QMainWindow, Form):
                 self, "Confirmar ingresos",
                 f"Se van a ingresar al siguiente paciente {self._cita_activa.paciente_nombre}\n\n¿Deseas continuar?",
                 QMessageBox.Ok | QMessageBox.Cancel )
-
+            
+            habitacion, ok = QInputDialog.getMultiLineText(
+                self, 
+                "Ingreso de Paciente", 
+                "Escriba la habitación del ingresado:"
+            )
+            if ok and habitacion.strip():
+                self._controlador.dar_alta_paciente(habitacion.strip())
+            elif ok:
+                self.mostrar_notificacion_alta(
+                    "Campo Obligatorio", 
+                    "Debe introducir una habitación.", 
+                    es_error=True
+                )
+            
             if respuesta == QMessageBox.Ok:
                 if self._controlador:
-                    self._controlador.ingresar_paciente(self._cita_activa.id_paciente)
+                    self._controlador.ingresar_paciente(self._cita_activa.id_paciente, habitacion)
 
 
     # ── Agenda completa ──────────────────────────────────────────
@@ -300,21 +314,22 @@ class VentanaMedico(QMainWindow, Form):
         fila = self.tabla_busqueda_hcd.currentRow()
         paciente = self._pacientes_busqueda[fila]
         respuesta = QMessageBox.question(
-                self, "Confirmar ingresos",
-                f"Se van a ingresar al siguiente paciente {paciente.nombre}\n\n¿Deseas continuar?",
-                QMessageBox.Ok | QMessageBox.Cancel )
+            self, "Confirmar ingreso",
+            f"Se va a ingresar al siguiente paciente: {paciente.nombre}\n\n¿Deseas continuar?",
+            QMessageBox.Ok | QMessageBox.Cancel)
 
         if respuesta == QMessageBox.Ok:
-            if self._controlador:
-                self._controlador.ingresar_paciente(paciente.id_paciente)
-        
-        self.configurar_botones_hospitalizacion(puede_ingresar=False, puede_dar_alta=True)
+            habitacion, ok = QInputDialog.getText(
+                self, "Ingreso de Paciente", "Escriba la habitación del ingresado:")
+            if ok and habitacion.strip():
+                if self._controlador:
+                    self._controlador.ingresar_paciente_desde_hcd(paciente.id_paciente, habitacion.strip())
+            elif ok:
+                self.mostrar_notificacion_alta("Campo Obligatorio", "Debe introducir una habitación.", es_error=True)
 
     def _on_dar_alta_clicked(self):
         if not self._controlador:
             return
-            
-        from PyQt5.QtWidgets import QInputDialog, QLineEdit
         diagnostico_alta, ok = QInputDialog.getMultiLineText(
             self, 
             "Formulario de Alta Clínica", 

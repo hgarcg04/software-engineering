@@ -90,8 +90,38 @@ class ControladorMedicos:
 
         self._episodio_consulta_actual = None  # resetear tras guardar
 
-    def ingresar_paciente(self, id_paciente):
-        self._modelo.ingresarPaciente(id_paciente)
+    def ingresar_paciente(self, id_paciente, habitacion):
+        id_episodio = self._episodio_consulta_actual.id_episodio if self._episodio_consulta_actual else None
+        self._modelo.ingresarPaciente(id_paciente, id_episodio, habitacion)
+
+    def ingresar_paciente_desde_hcd(self, id_paciente, habitacion):
+        dialogo = DialogoEpisodio(
+            parent=self._vista,
+            paciente_nombre=self._paciente_hcd_actual.nombre_completo,
+            episodios=self._episodios_actuales
+        )
+
+        if dialogo.exec_() == DialogoEpisodio.Accepted:
+            if dialogo.resultado == DialogoEpisodio.EPISODIO_EXISTENTE:
+                id_episodio = dialogo.episodio_seleccionado.id_episodio
+            else:
+                # Crear episodio nuevo de tipo hospitalización antes de ingresar
+                episodioVO = EpisodioVO(
+                    id_paciente=id_paciente,
+                    id_medico=self._user_vo.id_empleado,
+                    diagnostico=None,
+                    tipo="Hospitalización",
+                    id_episodio=None,
+                    fecha_hora_inicio=None,
+                    med_apellidos=self._user_vo.apellidos,
+                    sintomas=None
+                )
+                self._modelo.guardarEpisodio(episodioVO)
+                # Recuperar el episodio recién creado para obtener su id
+                episodios = self._modelo.obtenerEpisodios(id_paciente)
+                id_episodio = episodios[0].id_episodio if episodios else None
+
+            self._modelo.ingresarPaciente(id_paciente, id_episodio, habitacion)
 
     # ── Receta ───────────────────────────────────────────────────
 
