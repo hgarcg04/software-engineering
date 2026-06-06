@@ -5,7 +5,7 @@ from src.modelo.VO.UsuariosVO import UserVO
 
 
 class UserDaoJDBC(Conexion):
-    SQL_CHECK_LOGIN = "SELECT id_empleado, dni, nombre, apellidos, nombre_usuario, email, password_, rol, estado FROM Personal WHERE nombre_usuario = ? AND password_ = ?"
+    SQL_CHECK_LOGIN = "SELECT id_empleado, dni, nombre, apellidos, nombre_usuario, email, password_, rol, estado FROM Personal WHERE nombre_usuario = ?"
 
     SQL_UPDATE_PASSWORD = "UPDATE Personal SET password_ = ? WHERE id_empleado = ?"
 
@@ -13,21 +13,21 @@ class UserDaoJDBC(Conexion):
     def consultarLogin(self, loginVO):
         cursor = self.getCursor()
         try:
-            cursor.execute(self.SQL_CHECK_LOGIN, (loginVO.nombre, loginVO.passw))
+            cursor.execute(self.SQL_CHECK_LOGIN, (loginVO.nombre,))
             row = cursor.fetchone()
            
 
             if row is None:
-                return None
+                return None, None
             else:
                 (id_empleado, dni, nombre, apellidos, nombre_usuario, email, password_, rol, estado) = row
 
-                return UserVO(id_empleado, dni, nombre, apellidos, email, rol, estado)
+                return UserVO(id_empleado, dni, nombre, apellidos, email, rol, estado), password_
             
 
         except Exception as e:
             print("Error al consultar login", e)
-            return None
+            return None, None
         
 
     SQL_EXISTE_DNI = "SELECT id_empleado FROM Personal WHERE dni = ?"
@@ -74,6 +74,7 @@ class UserDaoJDBC(Conexion):
 
             self.conexion.commit()
             return True, nombre_usuario, password_generada
+
         except Exception as e:
             self.conexion.rollback()
             print("Error generando credenciales:", e)

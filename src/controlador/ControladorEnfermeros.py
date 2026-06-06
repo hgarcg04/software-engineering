@@ -24,9 +24,8 @@ class ControladorEnfermeros:
             El modelo devuelve una lista de objetos PacientesVO.
             Finalmente, se usa el método de la logicaEnfermeros para cargar los pacientes.
         """
-        lista_pacientes = self._modelo.obtenerPacientes(self.user_vo)
-        if lista_pacientes:
-            self._vista.cargar_datos_iniciales(lista_pacientes, self.user_vo) 
+        lista_pacientes = self._modelo.obtenerPacientes(self.user_vo) or []
+        self._vista.cargar_datos_iniciales(lista_pacientes, self.user_vo)
     
     def cargar_tratamientos(self, pacienteVO):
         """

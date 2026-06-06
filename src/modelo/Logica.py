@@ -8,15 +8,27 @@ from src.modelo.dao.MedicamentosDaoJDBC import MedicamentosDaoJDBC
 from src.modelo.dao.EpisodiosDaoJDBC import EpisodiosDaoJDBC
 from src.modelo.dao.BackupDaoJDBC import BackupDaoJDBC
 
-
+import bcrypt
 
 
 
 class Logica():
-    
+
+    def _encriptar_password(self, password):
+        return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+
     def comprobarLogin(self, loginVO):
         login_dao = UserDaoJDBC()
-        return login_dao.consultarLogin(loginVO)
+        userVO, password_hash = login_dao.consultarLogin(loginVO)
+
+        if userVO is None: # Usuario no encontrado
+            return None
+        if not bcrypt.checkpw(loginVO.passw.encode('utf-8'), password_hash.encode('utf-8')): # contraseña incorrecta
+            return None
+
+        return userVO
+
     
     def obtenerPacientes(self, UserVO):
         paciente_dao = PacientesDaoJDBC()
@@ -174,12 +186,14 @@ class Logica():
     def generarCredenciales(self, dni, nombre, apellidos, nombre_usuario,
                              password_generada, email, rol, especialidad=None):
         dao = UserDaoJDBC()
+        pass_hash = self._encriptar_password(password_generada)
         return dao.generar_credenciales(dni, nombre, apellidos, nombre_usuario,
-                                        password_generada, email, rol, especialidad)
+                                        pass_hash, email, rol, especialidad)
     
     def cambiarPassword(self, nueva, userVO):
         dao = UserDaoJDBC()
-        dao.cambiar_password(nueva, userVO)
+        pass_hash = self._encriptar_password(nueva)
+        dao.cambiar_password(pass_hash, userVO)
 
     def activarUsuario(self, userVO):
         dao = UserDaoJDBC()

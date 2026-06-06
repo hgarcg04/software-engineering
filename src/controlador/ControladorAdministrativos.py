@@ -316,6 +316,7 @@ class ControladorAdministrativos:
 
     def limpiar_formulario_credencial(self):
         self._vista.limpiar_formulario_credencial()
+
     # ── CU7: Pedir Medicamentos ───────────────────────────────────────────────
 
     def cargar_catalogo(self):
