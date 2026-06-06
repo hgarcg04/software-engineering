@@ -11,8 +11,6 @@ ui_path = os.path.join(os.path.dirname(__file__), "Ui/VistaLogin.ui")
 Form, Window = uic.loadUiType(ui_path)
 
 
-
-
 class MiVentana(QMainWindow, Form):
     def __init__(self):
         super().__init__()
@@ -43,10 +41,10 @@ class MiVentana(QMainWindow, Form):
         if not usuario:
             QMessageBox.warning(self, "Campo vacío", "Introduce tu nombre de usuario antes de cambiar la contraseña.")
             return
-        self.input_pw_actual.clear()      # ← añadir este campo
+        self.input_pw_actual.clear()
         self.input_pw_nueva.clear()
         self.input_pw_confirmar.clear()
-        self.lbl_pw_error_actual.setVisible(False)      # ← añadir
+        self.lbl_pw_error_actual.setVisible(False)
         self.lbl_pw_error_coincidencia.setVisible(False)
         self.lbl_pw_error_igual.setVisible(False)
         self.lbl_pw_ok.setVisible(False)
@@ -79,14 +77,17 @@ class MiVentana(QMainWindow, Form):
             return
 
         # 3. Cambiar
-        self._controlador.cambiar_password(nueva, userVO)
-        self.lbl_pw_ok.setVisible(True)
-        self.input_pw_actual.clear()
-        self.input_pw_nueva.clear()
-        self.input_pw_confirmar.clear()
-        QMessageBox.information(self, "Éxito", "Contraseña actualizada correctamente.")
-        self.stackedWidget.setCurrentIndex(0)
-        self.limpiar_campos()
+        if actual and nueva and confirmar:
+            self._controlador.cambiar_password(nueva, userVO)
+            self.lbl_pw_ok.setVisible(True)
+            self.input_pw_actual.clear()
+            self.input_pw_nueva.clear()
+            self.input_pw_confirmar.clear()
+            QMessageBox.information(self, "Éxito", "Contraseña actualizada correctamente.")
+            self.stackedWidget.setCurrentIndex(0)
+            self.limpiar_campos()
+        else:
+            QMessageBox.warning(self, "Campo vacío", "Debes rellenar los 3 campos.")
 
 
     def limpiar_campos(self):
