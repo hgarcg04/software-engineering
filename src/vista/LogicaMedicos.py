@@ -68,6 +68,10 @@ class VentanaMedico(QMainWindow, Form):
         self.btn_dar_alta_hcd.clicked.connect(self._on_dar_alta_clicked)
         self.btn_ingresar_planta_hcd.clicked.connect(self._ingresar_paciente_hcd)
 
+        # Ingresos
+        self.btn_buscar_general.clicked.connect(self._buscar_en_ingresos)
+        self.txt_buscar_general.returnPressed.connect(self._buscar_en_ingresos)
+
         # Logout
         self.btn_logout.clicked.connect(self._logout)
 
@@ -97,6 +101,8 @@ class VentanaMedico(QMainWindow, Form):
     def _ir_ingresos(self):
         self.stackedPanel.setCurrentIndex(4)
         self.btn_ingr.setChecked(True)
+        if self._controlador:
+            self._controlador.cargar_ingresos()
 
     # ── Inicio ───────────────────────────────────────────────────
 
@@ -376,6 +382,43 @@ class VentanaMedico(QMainWindow, Form):
         self.btn_ingresar_planta_hcd.setEnabled(False)
         self.btn_dar_alta_hcd.setEnabled(False)
 
+    # -- Ingreso ------------------------
+
+    def cargar_ingresos(self, lista_ingresos, lista_altas):
+        # Tabla ingresos actuales
+        self.tabla_ingresos.setRowCount(0)
+        self.tabla_ingresos.verticalHeader().setVisible(False)
+        for row_data in lista_ingresos:
+            row = self.tabla_ingresos.rowCount()
+            self.tabla_ingresos.insertRow(row)
+            self.tabla_ingresos.setItem(row, 0, self._item(row_data[0]))  # id_ingreso
+            self.tabla_ingresos.setItem(row, 1, self._item(row_data[1] or ""))  # habitacion/cama
+            self.tabla_ingresos.setItem(row, 2, self._item(row_data[2]))  # nombre
+            self.tabla_ingresos.setItem(row, 3, self._item(str(row_data[3])[:10]))  # fecha
+        self.tabla_ingresos.resizeColumnsToContents()
+
+        # Tabla altas recientes
+        self.tabla_altas_recientes.setRowCount(0)
+        self.tabla_altas_recientes.verticalHeader().setVisible(False)
+        for row_data in lista_altas:
+            row = self.tabla_altas_recientes.rowCount()
+            self.tabla_altas_recientes.insertRow(row)
+            self.tabla_altas_recientes.setItem(row, 0, self._item(row_data[0]))  # id_ingreso
+            self.tabla_altas_recientes.setItem(row, 1, self._item(row_data[1]))  # nombre
+            self.tabla_altas_recientes.setItem(row, 2, self._item(str(row_data[2])[:10]))  # fecha ingreso
+            self.tabla_altas_recientes.setItem(row, 3, self._item(str(row_data[3])[:10]))  # fecha alta
+            self.tabla_altas_recientes.setItem(row, 4, self._item(row_data[4] or ""))  # motivo
+        self.tabla_altas_recientes.resizeColumnsToContents()
+
+    def _buscar_en_ingresos(self):
+        texto = self.txt_buscar_general.text().strip().lower()
+        for row in range(self.tabla_ingresos.rowCount()):
+            nombre = self.tabla_ingresos.item(row, 2).text().lower()
+            self.tabla_ingresos.setRowHidden(row, texto not in nombre)
+        for row in range(self.tabla_altas_recientes.rowCount()):
+            nombre = self.tabla_altas_recientes.item(row, 1).text().lower()
+            self.tabla_altas_recientes.setRowHidden(row, texto not in nombre)
+            
     # ── Logout ───────────────────────────────────────────────────
 
     def _logout(self):

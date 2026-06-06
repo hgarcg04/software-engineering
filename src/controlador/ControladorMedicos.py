@@ -346,6 +346,11 @@ class ControladorMedicos:
                 es_error=True
             )
 
+    def cargar_ingresos(self):
+        ingresos = self._modelo.obtenerIngresosActuales()
+        altas = self._modelo.obtenerAltasRecientes()
+        self._vista.cargar_ingresos(ingresos if ingresos else [], altas if altas else [])
+
     #################### MODELO ######################
     def clasificar_imagen(self, ruta):
         try:
