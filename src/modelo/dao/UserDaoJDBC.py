@@ -1,5 +1,3 @@
-from streamlit import cursor
-
 from src.modelo.Conexion.Conexion import Conexion
 from src.modelo.VO.UsuariosVO import UserVO
 

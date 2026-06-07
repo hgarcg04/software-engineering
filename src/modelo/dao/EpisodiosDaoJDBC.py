@@ -13,23 +13,6 @@ class EpisodiosDaoJDBC(Conexion):
         INSERT INTO Consultas (id_episodio, diagnostico)
         VALUES (?, ?)
     """
-    # Cuando añadamos los sintomas habrá que añadirlo también
-
-    SQL_INSERT_EPISODIO_INGRESO = """
-        INSERT INTO Episodios (id_paciente, fecha_hora_inicio, tipo)
-        OUTPUT INSERTED.id_episodio
-        VALUES (?, GETDATE(), 'Ingreso')
-    """
-
-    SQL_INSERT_INGRESO = """
-        INSERT INTO Ingresos (id_episodio)
-        VALUES (?)
-    """
-
-    SQL_UPDATE_HOSPITALIZADO = """
-        UPDATE Pacientes SET hospitalizado = 1
-        WHERE id_paciente = ?
-    """
 
     SQL_SELECT_EPISODIOS = """
                             SELECT ep.id_paciente, px.medico_asignado, c.diagnostico, ep.tipo, ep.id_episodio, ep.fecha_hora_inicio,
@@ -82,26 +65,6 @@ class EpisodiosDaoJDBC(Conexion):
             print("Error guardando episodio:", e)
             self.conexion.rollback()
             return None
-        
-    def ingresar_paciente(self, id_paciente):
-        cursor = self.getCursor()
-        try:
-            # 1. Crear episodio de tipo Ingreso
-            cursor.execute(self.SQL_INSERT_EPISODIO_INGRESO, (id_paciente,))
-            id_episodio = cursor.fetchone()[0]
-
-            # 2. Crear el ingreso vinculado al episodio
-            cursor.execute(self.SQL_INSERT_INGRESO, (id_episodio,))
-
-            # 3. Marcar al paciente como hospitalizado
-            cursor.execute(self.SQL_UPDATE_HOSPITALIZADO, (id_paciente,))
-
-            self.conexion.commit()
-            print("Paciente ingresado con éxito")
-
-        except Exception as e:
-            print("Error ingresando paciente:", e)
-            self.conexion.rollback()    
 
     def obtener_episodios(self, id_paciente):
         cursor = self.getCursor()

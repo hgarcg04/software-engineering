@@ -194,10 +194,6 @@ class ControladorMedicos:
         tratamientos = self._modelo.obtenerTratamientosPorIngreso(ingresoVO.id_ingreso)
         self._vista.cargar_tratamientos_ingreso(tratamientos if tratamientos else [], ingresoVO.nombre_completo)
 
-    def eliminar_tratamiento(self, id_tratamiento):
-        self._modelo.eliminarTratamiento(id_tratamiento)
-        self.cargar_tratamientos_ingreso(self._paciente_ingreso_actual)
-
     def abrir_receta_desde_ingreso(self):
         if not self._paciente_ingreso_actual:
             return
@@ -238,7 +234,7 @@ class ControladorMedicos:
     def cargar_hcd_desde_agenda(self, id_paciente):
         paciente = self._modelo.buscarPacientePorId(id_paciente)
         if paciente:
-            self.cargar_episodios_paciente(paciente.id_paciente)
+            self.cargar_episodios_paciente(paciente)
 
     def dar_alta_paciente(self, diagnostico_alta):
         if not self._paciente_hcd_actual:
@@ -323,15 +319,13 @@ class ControladorMedicos:
     def clasificar_imagen(self, ruta):
         try:
             if self._logica_neumonia is None:
-                self._logica_neumonia = LogicaNeumonia()  # se carga solo una vez
+                self._logica_neumonia = LogicaNeumonia()  # ← inicializar aquí si no existe
 
             resultados = self._logica_neumonia.clasificar(ruta)
-            print("Resultados completos:", resultados)
             mejor = max(resultados, key=lambda r: r['score'])
-            print("Mejor:", mejor)
             label = mejor['label']
             confianza = round(mejor['score'] * 100, 1)
-            self._vista.mostrar_resultado(label, confianza)
+            self._vista.mostrar_resultado(label, confianza)  # ← self._vista, no self._ventana_neumonia
 
         except Exception as e:
-            self._vista.mostrar_error(str(e)) 
+            self._vista.mostrar_error(str(e))  # ← self._vista, no self._ventana_neumonia
