@@ -412,14 +412,11 @@ class VentanaMedico(QMainWindow, Form):
             self.tabla_altas_recientes.setItem(row, 4, self._item(altaVO.observaciones or ""))  # motivo
         self.tabla_altas_recientes.resizeColumnsToContents()
 
+    # Llamado desde los botones
     def _buscar_en_ingresos(self):
-        texto = self.txt_buscar_general.text().strip().lower()
-        for row in range(self.tabla_ingresos.rowCount()):
-            nombre = self.tabla_ingresos.item(row, 2).text().lower()
-            self.tabla_ingresos.setRowHidden(row, texto not in nombre)
-        for row in range(self.tabla_altas_recientes.rowCount()):
-            nombre = self.tabla_altas_recientes.item(row, 1).text().lower()
-            self.tabla_altas_recientes.setRowHidden(row, texto not in nombre)
+        texto = self.txt_buscar_general.text().strip()
+        if self._controlador:
+            self._controlador.filtrar_ingresos(texto)
 
     def _on_ingreso_seleccionado(self):
         fila = self.tabla_ingresos.currentRow()
