@@ -191,7 +191,7 @@ class ControladorAdministrativos:
     def limpiar_formulario_cita(self):
         """Resetea todos los campos de la pestaña de citas al estado inicial."""
         self._paciente_cita = None
-        self._vista._limpiar_todo_citas()
+        self._vista.limpiar_formulario_cita()
         self.cargar_todos_pacientes()
 
     # ── CU9: Bloquear Agenda ──────────────────────────────────────────────────
@@ -390,7 +390,7 @@ class ControladorAdministrativos:
 
         # Mostrar progreso e iniciar la copia
         self._vista.mostrar_progreso_backup(True)
-        self._vista.btn_crear_backup.setEnabled(False)
+        self._vista.habilitar_btn_backup(False)
 
         try:
             exito, mensaje, tamanio_kb = self._modelo.realizarBackup(
@@ -398,12 +398,12 @@ class ControladorAdministrativos:
             )
         except Exception as e:
             self._vista.finalizar_progreso_backup()
-            self._vista.btn_crear_backup.setEnabled(True)
+            self._vista.habilitar_btn_backup(True)
             self._vista.mostrar_error("Error inesperado", str(e))
             return
 
         self._vista.finalizar_progreso_backup()
-        self._vista.btn_crear_backup.setEnabled(True)
+        self._vista.habilitar_btn_backup(True)
 
         if exito:
             # Registrar en log de actividad

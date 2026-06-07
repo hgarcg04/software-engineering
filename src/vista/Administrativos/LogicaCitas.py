@@ -269,6 +269,9 @@ class LogicaCitas:
         self.input_fecha_inicio_bloqueo.setDate(manana)
         self.input_fecha_fin_bloqueo.setDate(manana)
 
+    def limpiar_formulario_cita(self):
+        self._limpiar_todo_citas()
+
     # ── Utilidades ────────────────────────────────────────────────────────────
 
     def mostrar_error(self, titulo, mensaje):

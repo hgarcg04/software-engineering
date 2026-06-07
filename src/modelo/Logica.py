@@ -159,11 +159,6 @@ class Logica():
         dao = CitasDaoJDBC()
         return dao.obtener_medicos_por_especialidad(especialidad)
 
-    def consultarDisponibilidad(self, id_medico, fecha):
-        # Devuelve horas libres del médico en esa fecha, o None si el día está bloqueado
-        dao = CitasDaoJDBC()
-        return dao.consultar_disponibilidad(id_medico, fecha)
-
     def obtenerCitasSemana(self, id_medico, fecha_inicio, fecha_fin):
         # Devuelve lista de dicts {fecha, hora, paciente, motivo} para el calendario
         dao = CitasDaoJDBC()
@@ -176,7 +171,7 @@ class Logica():
 
     def asignarCita(self, id_paciente, id_medico, fecha, hora):
         dao = CitasDaoJDBC()
-        dao.asignar_cita(id_paciente, id_medico, fecha, hora)
+        return dao.asignar_cita(id_paciente, id_medico, fecha, hora)
 
     # --- CU9: Bloquear Agenda ---
 

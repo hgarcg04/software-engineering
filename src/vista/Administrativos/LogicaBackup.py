@@ -76,3 +76,6 @@ class LogicaBackup:
             self.tabla_historial_backup.setItem(row, 3, QTableWidgetItem(tam))
             self.tabla_historial_backup.setItem(row, 4, QTableWidgetItem(str(f[4])))
         self.tabla_historial_backup.resizeColumnsToContents()
+
+    def habilitar_btn_backup(self, habilitado: bool):
+        self.btn_crear_backup.setEnabled(habilitado)
