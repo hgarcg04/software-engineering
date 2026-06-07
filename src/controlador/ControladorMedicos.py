@@ -3,7 +3,6 @@ from src.vista.Medicos.LogicaDialogoEpisodio import DialogoEpisodio
 from src.modelo.VO.EpisodiosVO import EpisodioVO
 from src.modelo.VO.TratamientosVO import TratamientoVO
 from src.modelo.LogicaNeumonia import LogicaNeumonia
-from src.vista.Medicos.LogicaVistaNeumonia import VentanaNeumonia
 from src.modelo.InformeAltaService import InformeAltaService
 
 from datetime import datetime, timedelta
