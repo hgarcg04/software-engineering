@@ -34,6 +34,7 @@ class LogicaCitas:
         self.btn_consultar_disponibilidad.clicked.connect(self._on_abrir_calendario)
         #print(f"_init_citas llamado")
         self.btn_asignar_cita.clicked.connect(self._on_asignar_cita)
+        self.combo_hora_cita.currentIndexChanged.connect(self._on_hora_seleccionada)
         self.btn_limpiar_cita.clicked.connect(self._on_limpiar_cita)
 
         #Bloquear Agenda
@@ -178,8 +179,6 @@ class LogicaCitas:
         self.combo_hora_cita.clear()
         for h in lista_horas:
             self.combo_hora_cita.addItem(h, h)
-        # Conectar cambio de hora para habilitar el botón de confirmar
-        self.combo_hora_cita.currentIndexChanged.connect(self._on_hora_seleccionada)
         self._on_hora_seleccionada()
 
     def limpiar_horas(self):

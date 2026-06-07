@@ -173,7 +173,7 @@ class ControladorAdministrativos:
         if not paciente:
             self._vista.mostrar_error("Error", "Paciente no encontrado.")
             return
-        if getattr(paciente[0], 'hospitalizado', None) in (1, True):
+        if paciente.hospitalizado == 1:
             self._vista.mostrar_error(
                 "Paciente ingresado",
                 "No se puede asignar una cita a un paciente actualmente ingresado."
