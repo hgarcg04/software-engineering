@@ -30,6 +30,18 @@ class ControladorAdministrativos:
     def registrar_paciente(self, nif, nombre, apellido1, apellido2,
                            fecha_nacimiento, genero, correo,
                            direccion, alergias, telefono):
+        campos = {
+            "NIF / DNI": nif,
+            "Nombre": nombre,
+            "Primer apellido": apellido1,
+            "Correo electrónico": correo,
+            "Teléfono": telefono,
+            "Dirección": direccion,
+            "Alergias": alergias,
+        }
+        vacios = [etiqueta for etiqueta, valor in campos.items() if not valor.strip()]
+        if vacios:
+            return False, "Los siguientes campos son obligatorios:\n\n• " + "\n• ".join(vacios)
 
         # ── Validaciones de formato ───────────────────────────────────────────
         nif_limpio = nif.strip().upper()
