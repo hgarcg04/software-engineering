@@ -2,6 +2,7 @@ from src.vista.Medicos.LogicaDialogoReceta import DialogoReceta
 from src.vista.Medicos.LogicaDialogoEpisodio import DialogoEpisodio
 from src.modelo.VO.EpisodiosVO import EpisodioVO
 from src.modelo.VO.TratamientosVO import TratamientoVO
+from src.controlador.ControladorNeumonia import ControladorNeumonia
 from src.modelo.LogicaNeumonia import LogicaNeumonia
 
 from datetime import datetime, timedelta
@@ -19,7 +20,6 @@ class ControladorMedicos:
         self._modelo = modelo
         self._user_vo = user_vo
         self.controlador_principal = controlador_principal
-        self._modelo_ia = LogicaNeumonia()
 
         self._episodios_actuales = []
         self._paciente_hcd_actual = None
@@ -27,6 +27,8 @@ class ControladorMedicos:
 
         self._vista.cargar_datos_iniciales(self._user_vo)
         self._cargar_agenda_hoy()
+
+        self._controlador_neumonia = ControladorNeumonia(vista, LogicaNeumonia())
 
     # ── Inicio ───────────────────────────────────────────────────
 
@@ -393,11 +395,7 @@ class ControladorMedicos:
         altas = self._modelo.obtenerAltasRecientes()
         self._vista.cargar_ingresos(ingresos if ingresos else [], altas if altas else [])
 
-    #################### MODELO ######################
+    # CLASIFICACIÖN
+
     def clasificar_imagen(self, ruta):
-        try:
-            resultados = self._modelo_ia.clasificar(ruta)
-            mejor = max(resultados, key=lambda x: x['score'])
-            self._vista.mostrar_resultado_rx(mejor['label'], round(mejor['score'] * 100, 2))
-        except Exception as e:
-            self._vista.mostrar_resultado_rx("Error", str(e))
+        self._controlador_neumonia.clasificar_imagen(ruta)  

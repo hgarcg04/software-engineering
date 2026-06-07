@@ -2,12 +2,10 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QInputDialog
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QInputDialog, QButtonGroup
 from PyQt5.QtCore import pyqtSignal, QTimer, QDateTime, QDate
-from PyQt5.QtWidgets import QButtonGroup, QTableWidgetItem
 from PyQt5 import uic
 from datetime import datetime, timedelta
-from PyQt5.QtGui import QColor
 
 
 ui_path = os.path.join(os.path.dirname(__file__), "../Ui/VistaMedico.ui")
@@ -468,14 +466,14 @@ class VentanaMedico(QMainWindow, Form):
             self.frame_resultado_rx.setVisible(False)
 
     def _analizar_rx(self):
-        if self._ruta_imagen_rx and self._controlador:
+        if self._ruta_imagen_rx:
             self.btn_analizar_rx.setEnabled(False)
             self.btn_analizar_rx.setText("Analizando...")
             self._controlador.clasificar_imagen(self._ruta_imagen_rx)
             self.btn_analizar_rx.setEnabled(True)
             self.btn_analizar_rx.setText("Analizar")
 
-    def mostrar_resultado_rx(self, label, confianza):
+    def mostrar_resultado(self, label, confianza):
         self.frame_resultado_rx.setVisible(True)
         if "PNEUMONIA" in label.upper():
             self.lbl_resultado_rx.setText("⚠ NEUMONÍA\nDETECTADA")
@@ -484,3 +482,9 @@ class VentanaMedico(QMainWindow, Form):
             self.lbl_resultado_rx.setText("✔ NORMAL")
             self.lbl_resultado_rx.setStyleSheet("font-family: 'Segoe UI Black'; font-size: 20px; color: #00b894;")
         self.lbl_confianza_rx.setText(f"Confianza: {confianza}%")
+
+    def mostrar_error(self, mensaje):
+        self.frame_resultado_rx.setVisible(True)
+        self.lbl_resultado_rx.setText("Error al analizar la imagen")
+        self.lbl_resultado_rx.setStyleSheet("font-family: 'Segoe UI Black'; font-size: 18px; color: #e17055;")
+        self.lbl_confianza_rx.setText(mensaje)

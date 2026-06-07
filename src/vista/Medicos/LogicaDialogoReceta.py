@@ -1,7 +1,6 @@
 import os
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QMessageBox
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
 
 ui_path = os.path.join(os.path.dirname(__file__), "../Ui/DialogoReceta.ui")
