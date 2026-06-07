@@ -2,6 +2,7 @@ from src.vista.Medicos.LogicaDialogoReceta import DialogoReceta
 from src.vista.Medicos.LogicaDialogoEpisodio import DialogoEpisodio
 from src.modelo.VO.EpisodiosVO import EpisodioVO
 from src.modelo.VO.TratamientosVO import TratamientoVO
+from src.modelo.VO.PacientesVO import PacientesVO
 from src.controlador.ControladorNeumonia import ControladorNeumonia
 from src.modelo.LogicaNeumonia import LogicaNeumonia
 
@@ -24,6 +25,7 @@ class ControladorMedicos:
         self._episodios_actuales = []
         self._paciente_hcd_actual = None
         self._episodio_consulta_actual = None  # EpisodioVO activo en la consulta
+        self._paciente_ingreso_actual = None
 
         self._vista.cargar_datos_iniciales(self._user_vo)
         self._cargar_agenda_hoy()
@@ -191,6 +193,43 @@ class ControladorMedicos:
             self._vista.configurar_botones_hospitalizacion(puede_ingresar=False, puede_dar_alta=True)
         else:
             self._vista.configurar_botones_hospitalizacion(puede_ingresar=True, puede_dar_alta=False)
+
+    def cargar_tratamientos_ingreso(self, ingresoVO):
+        self._paciente_ingreso_actual = ingresoVO
+        tratamientos = self._modelo.obtenerTratamientosPorIngreso(ingresoVO.id_ingreso)
+        self._vista.cargar_tratamientos_ingreso(tratamientos if tratamientos else [], ingresoVO.nombre_completo)
+
+    def eliminar_tratamiento(self, id_tratamiento):
+        self._modelo.eliminarTratamiento(id_tratamiento)
+        self.cargar_tratamientos_ingreso(self._paciente_ingreso_actual)
+
+    def abrir_receta_desde_ingreso(self):
+        if not self._paciente_ingreso_actual:
+            return
+
+        id_ingreso = self._paciente_ingreso_actual.id_ingreso
+        nombre_paciente = self._paciente_ingreso_actual.nombre_completo
+
+        dialogo = DialogoReceta(self._vista, self._paciente_ingreso_actual)
+        dialogo.lbl_pac_nombre.setText(nombre_paciente)
+        dialogo._id_paciente = None
+        dialogo._id_ingreso = id_ingreso
+        dialogo.controlador = self
+        medicamentos = self._modelo.obtenerMedicamentos()
+        dialogo.cargar_medicamentos(medicamentos)
+        dialogo.exec_()
+        
+        # Recargar tratamientos tras cerrar el diálogo
+        self.cargar_tratamientos_ingreso(self._paciente_ingreso_actual)
+
+    def eliminar_tratamiento_ingreso(self, fila):
+        tratamientos = self._modelo.obtenerTratamientosPorIngreso(
+            self._paciente_ingreso_actual[0])
+        if fila >= len(tratamientos):
+            return
+        id_tratamiento = tratamientos[fila].id_tratamiento
+        self._modelo.eliminarTratamiento(id_tratamiento)
+        self.cargar_tratamientos_ingreso(self._paciente_ingreso_actual)
 
     def cargar_detalle_episodio(self, fila):
         if fila >= len(self._episodios_actuales):

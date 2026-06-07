@@ -26,11 +26,26 @@ class TratamientosDaoJDBC(Conexion):
         WHERE I.id_episodio = ?
     """
 
+    SQL_SELECT_POR_INGRESO = """
+        SELECT T.id_tratamiento, T.id_ingreso, T.id_medico, M.id_medicamento, T.dosis, T.frecuencia,
+        T.notas, T.fecha_inicio, T.fecha_fin, T.activo, T.via_administracion, M.nombre, M.categoria,
+        M.descripcion, M.unidad_medida, M.stock, M.stock_minimo, M.alerta_stock
+        FROM Tratamientos as T
+        INNER JOIN Medicamentos as M ON T.id_medicamento = M.id_medicamento
+        WHERE T.id_ingreso = ?
+        AND (T.fecha_fin IS NULL OR T.fecha_fin >= CAST(GETDATE() AS DATE))
+        AND T.activo = 1
+    """
+
     SQL_INSERT_TRATAMIENTO = """
         INSERT INTO Tratamientos 
         (id_ingreso, id_medico, id_medicamento, dosis, frecuencia, notas,
         fecha_inicio, fecha_fin, activo, via_administracion)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+
+    SQL_ELIMINAR_TRATAMIENTO = """
+        UPDATE Tratamientos SET activo = 0 WHERE id_tratamiento = ?
     """
 
     def devuelve_tratamientos(self, pacienteVO):
@@ -93,3 +108,39 @@ class TratamientosDaoJDBC(Conexion):
         except Exception as e:
             print("Error guardando tratamiento:", e)
             self.conexion.rollback()
+
+    def eliminar_tratamiento(self, id_tratamiento):
+        cursor = self.getCursor()
+        try:
+            self.conexion.jconn.setAutoCommit(False)
+            cursor.execute(self.SQL_ELIMINAR_TRATAMIENTO, (id_tratamiento,))
+            self.conexion.jconn.commit()
+            print("Tratamiento eliminado con éxito")
+        except Exception as e:
+            try:
+                self.conexion.jconn.rollback()
+            except Exception:
+                pass
+            print("Error eliminando tratamiento:", e)
+        finally:
+            self.conexion.jconn.setAutoCommit(True)
+
+    def obtener_tratamientos_por_ingreso(self, id_ingreso):
+        cursor = self.getCursor()
+        tratamientos = []
+        try:
+            cursor.execute(self.SQL_SELECT_POR_INGRESO, (id_ingreso,))
+            rows = cursor.fetchall()
+            for row in rows:
+                tratamiento = TratamientoVO(
+                    id_tratamiento=row[0], id_ingreso=row[1], id_medico=row[2], id_medicamento=row[3],
+                    dosis=row[4], frecuencia=row[5], notas=row[6], fecha_inicio=row[7], fecha_fin=row[8],
+                    activo=row[9], via_administracion=row[10], nombre=row[11], categoria=row[12],
+                    descripcion=row[13], unidad_medida=row[14], stock=row[15], stock_minimo=row[16],
+                    alerta_stock=row[17]
+                )
+                tratamientos.append(tratamiento)
+            return tratamientos
+        except Exception as e:
+            print("Error obteniendo tratamientos por ingreso:", e)
+            return []

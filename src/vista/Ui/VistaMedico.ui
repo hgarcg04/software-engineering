@@ -479,19 +479,97 @@
             
             <widget class="QWidget" name="tab_actuales">
              <attribute name="title"><string>Actualmente Ingresados</string></attribute>
-             <layout class="QVBoxLayout" name="tabActualesLayout">
+             <layout class="QHBoxLayout" name="tabActualesLayout">
+              <property name="spacing"><number>16</number></property>
+
+              <!-- Columna izquierda: tabla de pacientes ingresados -->
               <item>
-               <widget class="QTableWidget" name="tabla_ingresos">
-                <property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property>
-                <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
-                <property name="columnCount"><number>4</number></property>
-                <attribute name="horizontalHeaderStretchLastSection"><bool>true</bool></attribute>
-                <column><property name="text"><string>ID Ingreso</string></property></column>
-                <column><property name="text"><string>Habitación / Cama</string></property></column>
-                <column><property name="text"><string>Paciente</string></property></column>
-                <column><property name="text"><string>Fecha Ingreso</string></property></column>
+               <layout class="QVBoxLayout">
+                <property name="spacing"><number>8</number></property>
+                <item>
+                 <widget class="QLabel" name="lbl_ingresados_titulo">
+                  <property name="text"><string>Pacientes ingresados</string></property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QTableWidget" name="tabla_ingresos">
+                  <property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property>
+                  <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
+                  <property name="columnCount"><number>4</number></property>
+                  <attribute name="horizontalHeaderStretchLastSection"><bool>true</bool></attribute>
+                  <column><property name="text"><string>ID Ingreso</string></property></column>
+                  <column><property name="text"><string>Habitación</string></property></column>
+                  <column><property name="text"><string>Paciente</string></property></column>
+                  <column><property name="text"><string>Fecha Ingreso</string></property></column>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+
+              <!-- Columna derecha: panel de tratamientos -->
+              <item>
+               <widget class="QFrame" name="frame_tratamientos_ingreso">
+                <layout class="QVBoxLayout" name="tratamientosLayout">
+                 <property name="spacing"><number>10</number></property>
+                 <item>
+                  <layout class="QHBoxLayout">
+                   <item>
+                    <widget class="QLabel" name="lbl_tratamientos_titulo">
+                     <property name="text"><string>Tratamientos del paciente</string></property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer>
+                     <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                     <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="lbl_paciente_tratamiento">
+                   <property name="text"><string>Selecciona un paciente</string></property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QTableWidget" name="tabla_tratamientos_ingreso">
+                   <property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property>
+                   <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
+                   <property name="columnCount"><number>5</number></property>
+                   <attribute name="horizontalHeaderStretchLastSection"><bool>true</bool></attribute>
+                   <column><property name="text"><string>Medicamento</string></property></column>
+                   <column><property name="text"><string>Dosis</string></property></column>
+                   <column><property name="text"><string>Frecuencia</string></property></column>
+                   <column><property name="text"><string>Vía</string></property></column>
+                   <column><property name="text"><string>Notas</string></property></column>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout">
+                   <item>
+                    <widget class="QPushButton" name="btn_añadir_tratamiento">
+                     <property name="text"><string>Añadir tratamiento</string></property>
+                     <property name="enabled"><bool>false</bool></property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btn_eliminar_tratamiento">
+                     <property name="text"><string>Eliminar tratamiento</string></property>
+                     <property name="enabled"><bool>false</bool></property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer>
+                     <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                     <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
                </widget>
               </item>
+
              </layout>
             </widget>
 

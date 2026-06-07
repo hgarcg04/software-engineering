@@ -94,6 +94,14 @@ class Logica():
         dao = TratamientosDaoJDBC()
         dao.guardar_tratamiento(tratamientoVO)
 
+    def eliminarTratamiento(self, id_tratamiento):
+        dao = TratamientosDaoJDBC()
+        dao.eliminar_tratamiento(id_tratamiento)
+
+    def obtenerTratamientosPorIngreso(self, id_ingreso):
+        dao = TratamientosDaoJDBC()
+        return dao.obtener_tratamientos_por_ingreso(id_ingreso)
+
     def buscarPaciente(self, texto):
         dao = PacientesDaoJDBC()
         return dao.buscar_paciente(texto)

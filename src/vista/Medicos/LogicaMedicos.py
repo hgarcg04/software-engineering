@@ -18,6 +18,7 @@ class VentanaMedico(QMainWindow, Form):
     def __init__(self):
         super().__init__()
         self._pacientes_busqueda = []
+        self._ingresos_actuales = []
         self._citas_agenda_hoy = {}
         self._cita_activa = None
         self._controlador = None
@@ -69,6 +70,9 @@ class VentanaMedico(QMainWindow, Form):
         # Ingresos
         self.btn_buscar_general.clicked.connect(self._buscar_en_ingresos)
         self.txt_buscar_general.returnPressed.connect(self._buscar_en_ingresos)
+        self.tabla_ingresos.itemSelectionChanged.connect(self._on_ingreso_seleccionado)
+        self.btn_añadir_tratamiento.clicked.connect(self._abrir_dialogo_receta_ingreso)
+        self.btn_eliminar_tratamiento.clicked.connect(self._eliminar_tratamiento_ingreso)
 
         # Logout
         self.btn_logout.clicked.connect(self._logout)
@@ -382,29 +386,30 @@ class VentanaMedico(QMainWindow, Form):
     # -- Ingreso ------------------------
 
     def cargar_ingresos(self, lista_ingresos, lista_altas):
+        self._ingresos_actuales = lista_ingresos
         # Tabla ingresos actuales
         self.tabla_ingresos.setRowCount(0)
         self.tabla_ingresos.verticalHeader().setVisible(False)
-        for row_data in lista_ingresos:
+        for ingresoVO in lista_ingresos:
             row = self.tabla_ingresos.rowCount()
             self.tabla_ingresos.insertRow(row)
-            self.tabla_ingresos.setItem(row, 0, self._item(row_data[0]))  # id_ingreso
-            self.tabla_ingresos.setItem(row, 1, self._item(row_data[1] or ""))  # habitacion/cama
-            self.tabla_ingresos.setItem(row, 2, self._item(row_data[2]))  # nombre
-            self.tabla_ingresos.setItem(row, 3, self._item(str(row_data[3])[:10]))  # fecha
+            self.tabla_ingresos.setItem(row, 0, self._item(ingresoVO.id_ingreso))  # id_ingreso
+            self.tabla_ingresos.setItem(row, 1, self._item(ingresoVO.habitacion or ""))  # habitacion/cama
+            self.tabla_ingresos.setItem(row, 2, self._item(ingresoVO.nombre_completo))  # nombre
+            self.tabla_ingresos.setItem(row, 3, self._item(ingresoVO.fecha_inicio))  # fecha
         self.tabla_ingresos.resizeColumnsToContents()
 
         # Tabla altas recientes
         self.tabla_altas_recientes.setRowCount(0)
         self.tabla_altas_recientes.verticalHeader().setVisible(False)
-        for row_data in lista_altas:
+        for altaVO in lista_altas:
             row = self.tabla_altas_recientes.rowCount()
             self.tabla_altas_recientes.insertRow(row)
-            self.tabla_altas_recientes.setItem(row, 0, self._item(row_data[0]))  # id_ingreso
-            self.tabla_altas_recientes.setItem(row, 1, self._item(row_data[1]))  # nombre
-            self.tabla_altas_recientes.setItem(row, 2, self._item(str(row_data[2])[:10]))  # fecha ingreso
-            self.tabla_altas_recientes.setItem(row, 3, self._item(str(row_data[3])[:10]))  # fecha alta
-            self.tabla_altas_recientes.setItem(row, 4, self._item(row_data[4] or ""))  # motivo
+            self.tabla_altas_recientes.setItem(row, 0, self._item(altaVO.id_ingreso))  # id_ingreso
+            self.tabla_altas_recientes.setItem(row, 1, self._item(altaVO.nombre_completo))  # nombre
+            self.tabla_altas_recientes.setItem(row, 2, self._item(altaVO.fecha_inicio))  # fecha ingreso
+            self.tabla_altas_recientes.setItem(row, 3, self._item(altaVO.fecha_fin))  # fecha alta
+            self.tabla_altas_recientes.setItem(row, 4, self._item(altaVO.observaciones or ""))  # motivo
         self.tabla_altas_recientes.resizeColumnsToContents()
 
     def _buscar_en_ingresos(self):
@@ -415,6 +420,40 @@ class VentanaMedico(QMainWindow, Form):
         for row in range(self.tabla_altas_recientes.rowCount()):
             nombre = self.tabla_altas_recientes.item(row, 1).text().lower()
             self.tabla_altas_recientes.setRowHidden(row, texto not in nombre)
+
+    def _on_ingreso_seleccionado(self):
+        fila = self.tabla_ingresos.currentRow()
+        if fila < 0 or not self._controlador:
+            return
+        self.btn_añadir_tratamiento.setEnabled(True)
+        self.btn_eliminar_tratamiento.setEnabled(False)
+        self._controlador.cargar_tratamientos_ingreso(self._ingresos_actuales[fila])
+
+    def cargar_tratamientos_ingreso(self, lista_tratamientos, nombre_paciente):
+        self.lbl_paciente_tratamiento.setText(nombre_paciente)
+        self.tabla_tratamientos_ingreso.setRowCount(0)
+        for t in lista_tratamientos:
+            row = self.tabla_tratamientos_ingreso.rowCount()
+            self.tabla_tratamientos_ingreso.insertRow(row)
+            self.tabla_tratamientos_ingreso.setItem(row, 0, self._item(t.nombre or ''))
+            self.tabla_tratamientos_ingreso.setItem(row, 1, self._item(t.dosis or ''))
+            self.tabla_tratamientos_ingreso.setItem(row, 2, self._item(t.frecuencia or ''))
+            self.tabla_tratamientos_ingreso.setItem(row, 3, self._item(t.via_administracion or ''))
+            self.tabla_tratamientos_ingreso.setItem(row, 4, self._item(t.notas or ''))
+        self.tabla_tratamientos_ingreso.resizeColumnsToContents()
+        self.tabla_tratamientos_ingreso.itemSelectionChanged.connect(
+            lambda: self.btn_eliminar_tratamiento.setEnabled(
+                self.tabla_tratamientos_ingreso.currentRow() >= 0))
+
+    def _abrir_dialogo_receta_ingreso(self):
+        if self._controlador:
+            self._controlador.abrir_receta_desde_ingreso()
+
+    def _eliminar_tratamiento_ingreso(self):
+        fila = self.tabla_tratamientos_ingreso.currentRow()
+        if fila < 0 or not self._controlador:
+            return
+        self._controlador.eliminar_tratamiento_ingreso(fila)
             
     # ── Logout ───────────────────────────────────────────────────
 
