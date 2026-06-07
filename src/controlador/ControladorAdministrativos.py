@@ -1,6 +1,5 @@
 from src.modelo.VO.PacientesVO import PacientesVO
 from src.modelo.LogicaEmail import EmailService
-from src.modelo.SingletonLog import SingletonLog
 from datetime import date
 import secrets
 import string
@@ -316,7 +315,6 @@ class ControladorAdministrativos:
 
     def limpiar_formulario_credencial(self):
         self._vista.limpiar_formulario_credencial()
-
     # ── CU7: Pedir Medicamentos ───────────────────────────────────────────────
 
     def cargar_catalogo(self):
@@ -370,7 +368,6 @@ class ControladorAdministrativos:
 
         # Recargar el catálogo con los stocks actualizados
         self.cargar_catalogo()
-        
     # ── CU6: Copia de Seguridad ───────────────────────────────────────────────
 
     def inicializar_backup(self):
@@ -411,6 +408,7 @@ class ControladorAdministrativos:
 
         if exito:
             # Registrar en log de actividad
+            from src.modelo.log.SingletonLog import SingletonLog
             SingletonLog().registrar_backup(self.user_vo, tipo, tamanio_kb)
 
             # Actualizar vista
@@ -427,3 +425,16 @@ class ControladorAdministrativos:
             self._vista.mostrar_info("Copia completada", mensaje)
         else:
             self._vista.mostrar_error("Error en la copia", mensaje)
+
+    # ── Tablón de Tareas ──────────────────────────────────────────────────────
+
+    def cargar_tareas(self):
+        tareas = self._modelo.obtenerTareas()
+        self._vista.cargar_tareas(tareas)
+
+    def marcar_tarea_hecha(self, id_tarea):
+        exito = self._modelo.eliminarTarea(id_tarea)
+        if exito:
+            self._vista.confirmar_tarea_eliminada()
+        else:
+            self._vista.mostrar_error("Error", "No se pudo eliminar la tarea. Inténtalo de nuevo.")

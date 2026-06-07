@@ -7,7 +7,7 @@ from src.modelo.dao.PacientesDaoJDBC import PacientesDaoJDBC
 from src.modelo.dao.MedicamentosDaoJDBC import MedicamentosDaoJDBC
 from src.modelo.dao.EpisodiosDaoJDBC import EpisodiosDaoJDBC
 from src.modelo.dao.BackupDaoJDBC import BackupDaoJDBC
-
+from src.modelo.dao.TablonDaoJDBC import TablonDaoJDBC
 import bcrypt
 
 
@@ -220,3 +220,14 @@ class Logica():
     def comprobarEspacioBackup(self, ruta_destino):
         dao = BackupDaoJDBC()
         return dao.comprobar_espacio(ruta_destino)
+
+
+    # --- Tablón de Tareas ---
+
+    def obtenerTareas(self):
+        dao = TablonDaoJDBC()
+        return dao.obtener_tareas()
+
+    def eliminarTarea(self, id_tarea):
+        dao = TablonDaoJDBC()
+        return dao.eliminar_tarea(id_tarea)
