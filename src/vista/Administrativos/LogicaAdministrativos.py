@@ -131,23 +131,6 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales,
     ]
 
     def registrar_paciente(self):
-        # ── Validación de campos obligatorios ────────────────────────────────
-        campos_vacios = []
-        for attr, etiqueta in self._CAMPOS_OBLIGATORIOS_PACIENTE:
-            widget = getattr(self, attr)
-            if not widget.text().strip():
-                campos_vacios.append(etiqueta)
-                widget.setStyleSheet("border: 1px solid #e74c3c;")
-            else:
-                widget.setStyleSheet("")
-
-        if campos_vacios:
-            QMessageBox.warning(
-                self,
-                "Campos obligatorios",
-                "Los siguientes campos son obligatorios:\n\n• " + "\n• ".join(campos_vacios)
-            )
-            return
 
         # ── Recogida de datos ─────────────────────────────────────────────────
         nif              = self.input_dni_paciente.text().strip().upper()

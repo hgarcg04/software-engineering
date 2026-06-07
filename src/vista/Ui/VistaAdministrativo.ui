@@ -772,7 +772,7 @@
              </item>
              <item row="5" column="0">
               <widget class="QLabel" name="lbl_f_telefono">
-               <property name="text"><string>Teléfono</string></property>
+               <property name="text"><string>Teléfono *</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
@@ -783,7 +783,7 @@
              </item>
              <item row="6" column="0">
               <widget class="QLabel" name="lbl_f_email">
-               <property name="text"><string>Correo electrónico</string></property>
+               <property name="text"><string>Correo electrónico *</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
@@ -794,7 +794,7 @@
              </item>
              <item row="7" column="0">
               <widget class="QLabel" name="lbl_f_direccion">
-               <property name="text"><string>Dirección</string></property>
+               <property name="text"><string>Dirección *</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
@@ -805,7 +805,7 @@
              </item>
              <item row="8" column="0">
               <widget class="QLabel" name="lbl_f_alergias">
-               <property name="text"><string>Alergias conocidas</string></property>
+               <property name="text"><string>Alergias conocidas *</string></property>
                <property name="class" stdset="0"><string>formLabel</string></property>
               </widget>
              </item>
