@@ -50,8 +50,12 @@ class PacientesDaoJDBC(Conexion):
 
     SQL_DAR_ALTA_INGRESO = """
         UPDATE Ingresos 
-        SET fecha_alta = CURRENT_TIMESTAMP 
-        WHERE id_paciente = ? AND fecha_alta IS NULL
+        SET fecha_fin = CURRENT_TIMESTAMP 
+        WHERE id_episodio IN (
+            SELECT ep.id_episodio 
+            FROM Episodios ep
+            WHERE ep.id_paciente = ?
+        ) AND fecha_fin IS NULL
     """
 
     SQL_COMPROBAR_HOSPITALIZADO = """
@@ -194,10 +198,28 @@ class PacientesDaoJDBC(Conexion):
         finally:
             cursor.close() # revisar porque esto no lo termino de entender
 
+    def ingresar_paciente(self, id_paciente, id_episodio, habitacion):
+        cursor = self.getCursor()
+        try:
+            self.conexion.jconn.setAutoCommit(False)
+            cursor.execute(self.SQL_INGRESAR_PACIENTE, (id_paciente,))
+            cursor.execute(self.SQL_CREAR_INGRESO, (id_episodio, habitacion))
+            self.conexion.jconn.commit()
+            print(f"Paciente {id_paciente} ingresado con éxito.")
+        except Exception as e:
+            try:
+                self.conexion.jconn.rollback()
+            except Exception:
+                pass
+            print(f"Error al ingresar el paciente: {e}")
+        finally:
+            self.conexion.jconn.setAutoCommit(True)
+            cursor.close()
+
     def registrar_alta_paciente(self, id_paciente):
         cursor = self.getCursor()
         try:
-            self.conexion.jconn.setAutoCommit(False)  # Abrir transacción manual
+            self.conexion.jconn.setAutoCommit(False)
             cursor.execute(self.SQL_DAR_ALTA, (id_paciente,))
             cursor.execute(self.SQL_DAR_ALTA_INGRESO, (id_paciente,))
             self.conexion.jconn.commit()
@@ -210,7 +232,7 @@ class PacientesDaoJDBC(Conexion):
             print("Error al dar de alta al paciente en la base de datos:", e)
             return False
         finally:
-            self.conexion.jconn.setAutoCommit(True)  # Restaurar siempre, pase lo que pase
+            self.conexion.jconn.setAutoCommit(True)
     
     def existe_paciente(self, nif):
         cursor = self.getCursor()

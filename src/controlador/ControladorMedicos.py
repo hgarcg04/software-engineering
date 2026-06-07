@@ -90,8 +90,23 @@ class ControladorMedicos:
 
         self._episodio_consulta_actual = None  # resetear tras guardar
 
-    def ingresar_paciente(self, id_paciente, habitacion):
-        id_episodio = self._episodio_consulta_actual.id_episodio if self._episodio_consulta_actual else None
+    def ingresar_paciente(self, id_paciente, habitacion): # este es desde cita
+        if self._episodio_consulta_actual is not None:
+            id_episodio = self._episodio_consulta_actual.id_episodio
+        else:
+            # No hay episodio guardado aún, creamos uno de hospitalización
+            episodioVO = EpisodioVO(
+                id_paciente=id_paciente,
+                id_medico=self._user_vo.id_empleado,
+                diagnostico=None,
+                tipo="Hospitalización",
+                id_episodio=None,
+                fecha_hora_inicio=None,
+                med_apellidos=self._user_vo.apellidos,
+                sintomas=None
+            )
+            id_episodio = self._modelo.guardarEpisodio(episodioVO)
+
         self._modelo.ingresarPaciente(id_paciente, id_episodio, habitacion)
 
     def ingresar_paciente_desde_hcd(self, id_paciente, habitacion):
@@ -105,7 +120,6 @@ class ControladorMedicos:
             if dialogo.resultado == DialogoEpisodio.EPISODIO_EXISTENTE:
                 id_episodio = dialogo.episodio_seleccionado.id_episodio
             else:
-                # Crear episodio nuevo de tipo hospitalización antes de ingresar
                 episodioVO = EpisodioVO(
                     id_paciente=id_paciente,
                     id_medico=self._user_vo.id_empleado,
@@ -116,12 +130,10 @@ class ControladorMedicos:
                     med_apellidos=self._user_vo.apellidos,
                     sintomas=None
                 )
-                self._modelo.guardarEpisodio(episodioVO)
-                # Recuperar el episodio recién creado para obtener su id
-                episodios = self._modelo.obtenerEpisodios(id_paciente)
-                id_episodio = episodios[0].id_episodio if episodios else None
+                id_episodio = self._modelo.guardarEpisodio(episodioVO)
 
             self._modelo.ingresarPaciente(id_paciente, id_episodio, habitacion)
+            self.cargar_episodios_paciente(self._paciente_hcd_actual) # Por si creo un nuevo episodio y así se cambian los botones de dar alta e ingresar solos
 
     # ── Receta ───────────────────────────────────────────────────
 
@@ -199,7 +211,7 @@ class ControladorMedicos:
 
     def dar_alta_paciente(self, diagnostico_alta):
         if not self._paciente_hcd_actual:
-            self._vista.mostrar_notificacion_alta(
+            self._vista.mostrar_notificacion(
                 "Atención", 
                 "No hay ningún paciente seleccionado para dar de alta.", 
                 es_error=True
@@ -211,7 +223,7 @@ class ControladorMedicos:
         exito = self._modelo.darAltaMedica(self._paciente_hcd_actual.id_paciente)
 
         if exito:
-            self._vista.mostrar_notificacion_alta(
+            self._vista.mostrar_notificacion(
                 "Alta Procesada", 
                 f"El paciente {self._paciente_hcd_actual.nombre} ha sido dado de alta correctamente."
             )
@@ -221,7 +233,7 @@ class ControladorMedicos:
             self._vista.configurar_botones_hospitalizacion(puede_ingresar=True, puede_dar_alta=False)
             self.cargar_episodios_paciente(self._paciente_hcd_actual)
         else:
-            self._vista.mostrar_notificacion_alta(
+            self._vista.mostrar_notificacion(
                 "Error de Base de Datos", 
                 "No se pudo registrar el alta. Verifique la conexión.", 
                 es_error=True
@@ -363,14 +375,14 @@ class ControladorMedicos:
 
             doc.build(historia)
             
-            self._vista.mostrar_notificacion_alta(
+            self._vista.mostrar_notificacion(
                 "Informe Generado", 
                 f"El informe clínico de alta se guardó de manera exitosa en:\n{ruta}"
             )
 
         except Exception as e:
             print("Error generando PDF:", e)
-            self._vista.mostrar_notificacion_alta(
+            self._vista.mostrar_notificacion(
                 "Error Interno", 
                 f"No se pudo estructurar el documento PDF:\n{str(e)}", 
                 es_error=True

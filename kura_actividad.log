@@ -265,3 +265,12 @@
 [2026-06-07 01:45:50] LOGIN  | id=18 | usuario=nombre apellidos | rol=enfermero
 [2026-06-07 01:46:53] LOGIN  | id=18 | usuario=nombre apellidos | rol=enfermero
 [2026-06-07 01:47:02] LOGOUT | id=18 | usuario=nombre apellidos | rol=enfermero
+[2026-06-07 05:28:39] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-07 05:45:56] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-07 05:49:33] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-07 05:52:45] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-07 06:00:22] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-07 06:06:41] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-07 06:11:51] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-07 06:16:39] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-07 06:20:07] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico

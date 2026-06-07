@@ -68,7 +68,7 @@ class Logica():
 
     def guardarEpisodio(self, episodioVO):
         dao = EpisodiosDaoJDBC()
-        dao.guardar_episodio(episodioVO)
+        return dao.guardar_episodio(episodioVO)
 
     def pacienteEstaIngresado(self, id_paciente):
         dao = PacientesDaoJDBC()

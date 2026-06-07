@@ -127,7 +127,7 @@ class VentanaMedico(QMainWindow, Form):
         )
         return ruta
 
-    def mostrar_notificacion_alta(self, titulo, mensaje, es_error=False):
+    def mostrar_notificacion(self, titulo, mensaje, es_error=False):
         """
         MÉTODO DE VISTA (MVC Puro): Muestra cuadros de diálogo de información o error.
         """
@@ -256,33 +256,26 @@ class VentanaMedico(QMainWindow, Form):
         self._ir_inicio()
 
     def _ingresar_paciente_cita(self):
-
         if self._cita_activa.hospitalizado:
-            QMessageBox.warning(self, "Operación inválida", f"El paciente {self._cita_activa.paciente_nombre} ya está hospitalizado.")
-        
-        else:
-            respuesta = QMessageBox.question(
-                self, "Confirmar ingresos",
-                f"Se van a ingresar al siguiente paciente {self._cita_activa.paciente_nombre}\n\n¿Deseas continuar?",
-                QMessageBox.Ok | QMessageBox.Cancel )
-            
-            habitacion, ok = QInputDialog.getMultiLineText(
-                self, 
-                "Ingreso de Paciente", 
-                "Escriba la habitación del ingresado:"
-            )
+            QMessageBox.warning(self, "Operación inválida",
+                f"El paciente {self._cita_activa.paciente_nombre} ya está hospitalizado.")
+            return
+
+        respuesta = QMessageBox.question(
+            self, "Confirmar ingreso",
+            f"Se va a ingresar al siguiente paciente: {self._cita_activa.paciente_nombre}\n\n¿Deseas continuar?",
+            QMessageBox.Ok | QMessageBox.Cancel)
+
+        if respuesta == QMessageBox.Ok:
+            habitacion, ok = QInputDialog.getText(
+                self, "Ingreso de Paciente", "Escriba la habitación del ingresado:")
             if ok and habitacion.strip():
-                self._controlador.dar_alta_paciente(habitacion.strip())
-            elif ok:
-                self.mostrar_notificacion_alta(
-                    "Campo Obligatorio", 
-                    "Debe introducir una habitación.", 
-                    es_error=True
-                )
-            
-            if respuesta == QMessageBox.Ok:
                 if self._controlador:
-                    self._controlador.ingresar_paciente(self._cita_activa.id_paciente, habitacion)
+                    self._controlador.ingresar_paciente(
+                        self._cita_activa.id_paciente, habitacion.strip())
+            elif ok:
+                self.mostrar_notificacion(
+                    "Campo Obligatorio", "Debe introducir una habitación.", es_error=True)
 
 
     # ── Agenda completa ──────────────────────────────────────────
@@ -311,8 +304,7 @@ class VentanaMedico(QMainWindow, Form):
             self._controlador.buscar_paciente_hcd(texto)
 
     def _ingresar_paciente_hcd(self):
-        fila = self.tabla_busqueda_hcd.currentRow()
-        paciente = self._pacientes_busqueda[fila]
+        paciente = self._pacientes_busqueda[self.tabla_busqueda_hcd.currentRow()]
         respuesta = QMessageBox.question(
             self, "Confirmar ingreso",
             f"Se va a ingresar al siguiente paciente: {paciente.nombre}\n\n¿Deseas continuar?",
@@ -325,8 +317,9 @@ class VentanaMedico(QMainWindow, Form):
                 if self._controlador:
                     self._controlador.ingresar_paciente_desde_hcd(paciente.id_paciente, habitacion.strip())
             elif ok:
-                self.mostrar_notificacion_alta("Campo Obligatorio", "Debe introducir una habitación.", es_error=True)
-
+                self.mostrar_notificacion(
+                    "Campo Obligatorio", "Debe introducir una habitación.", es_error=True)
+                
     def _on_dar_alta_clicked(self):
         if not self._controlador:
             return
@@ -338,7 +331,7 @@ class VentanaMedico(QMainWindow, Form):
         if ok and diagnostico_alta.strip():
             self._controlador.dar_alta_paciente(diagnostico_alta.strip())
         elif ok:
-            self.mostrar_notificacion_alta(
+            self.mostrar_notificacion(
                 "Campo Obligatorio", 
                 "Debe introducir un diagnóstico o resumen clínico para poder tramitar el alta.", 
                 es_error=True
