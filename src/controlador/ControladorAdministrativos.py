@@ -1,5 +1,4 @@
 from src.modelo.VO.PacientesVO import PacientesVO
-from src.modelo.LogicaEmail import EmailService
 from src.modelo.SingletonLog import SingletonLog
 from datetime import date, datetime
 import secrets
@@ -172,7 +171,7 @@ class ControladorAdministrativos:
                 if m[0] == id_medico:
                     nombre_medico = f"{m[1]} {m[2]}"
                     break
-            EmailService().enviar_confirmacion_cita(
+            self._modelo.enviarConfirmacionCita(
                 correo_paciente = self._paciente_cita.correo,
                 nombre_paciente = self._paciente_cita.nombre_completo,
                 nombre_medico   = nombre_medico,

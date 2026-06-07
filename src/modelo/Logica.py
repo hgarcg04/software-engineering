@@ -8,6 +8,7 @@ from src.modelo.dao.MedicamentosDaoJDBC import MedicamentosDaoJDBC
 from src.modelo.dao.EpisodiosDaoJDBC import EpisodiosDaoJDBC
 from src.modelo.dao.BackupDaoJDBC import BackupDaoJDBC
 from src.modelo.dao.TablonDaoJDBC import TablonDaoJDBC
+from src.modelo.LogicaEmail import EmailService
 import bcrypt
 
 
@@ -244,4 +245,13 @@ class Logica():
     def agregarTareas(self, usuario, mensaje):
         dao = TablonDaoJDBC()
         return dao.insertar_tarea(usuario, mensaje)
+    
+    def enviarConfirmacionCita(self, correo_paciente, nombre_paciente, nombre_medico, fecha, hora):
+        EmailService().enviar_confirmacion_cita(
+            correo_paciente=correo_paciente,
+            nombre_paciente=nombre_paciente,
+            nombre_medico=nombre_medico,
+            fecha=fecha,
+            hora=hora
+        )
 
