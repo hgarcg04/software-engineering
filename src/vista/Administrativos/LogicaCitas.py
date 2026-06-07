@@ -136,8 +136,9 @@ class LogicaCitas:
         self.combo_medico_cita.clear()
         self.combo_medico_cita.addItem("— Selecciona un médico —", None)
         for m in lista_medicos:
-            # m = (id_empleado, nombre, apellidos, especialidad)
-            self.combo_medico_cita.addItem(f"{m[2]}, {m[1]}  [{m[3]}]", m[0])
+            self.combo_medico_cita.addItem(
+                f"{m.apellidos}, {m.nombre}  [{m.especialidad}]", m.id_empleado
+            )
         self.combo_medico_cita.blockSignals(False)
         self.limpiar_horas()
 
@@ -252,9 +253,9 @@ class LogicaCitas:
             # m = (id_empleado, nombre, apellidos, especialidad)
             row = self.tabla_medicos_agenda.rowCount()
             self.tabla_medicos_agenda.insertRow(row)
-            self.tabla_medicos_agenda.setItem(row, 0, self._item(str(m[0])))
-            self.tabla_medicos_agenda.setItem(row, 1, self._item(f"{m[2]}, {m[1]}"))
-            self.tabla_medicos_agenda.setItem(row, 2, self._item(m[3] or "—"))
+            self.tabla_medicos_agenda.setItem(row, 0, self._item(str(m.id_empleado)))
+            self.tabla_medicos_agenda.setItem(row, 1, self._item(f"{m.apellidos}, {m.nombre}"))
+            self.tabla_medicos_agenda.setItem(row, 2, self._item(m.especialidad or "—"))
         self.tabla_medicos_agenda.resizeColumnsToContents()
 
     def mostrar_medico_seleccionado(self, nombre_completo):

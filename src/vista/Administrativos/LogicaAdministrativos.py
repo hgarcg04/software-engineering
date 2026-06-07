@@ -190,7 +190,7 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales,
         for m in medicos:
             # m = (id_empleado, nombre, apellidos, especialidad)
             self.input_medico_paciente.addItem(
-                f"{m[2]}, {m[1]}  [{m[3]}]", m[0]
+                f"{m.apellidos}, {m.nombre}  [{m.especialidad}]", m.id_empleado
             )
         self.input_medico_paciente.blockSignals(False)
 

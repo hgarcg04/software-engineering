@@ -145,8 +145,8 @@ class ControladorAdministrativos:
     def abrir_calendario(self, id_medico, fecha=None):
         nombre_medico = ""
         for m in self._medicos_busqueda_cache:
-            if m[0] == id_medico:
-                nombre_medico = f"{m[2]}, {m[1]}"
+            if m.id_empleado == id_medico:
+                nombre_medico = f"{m.apellidos}, {m.nombre}"
                 break
         self._vista.abrir_calendario_dialogo(
             id_medico, nombre_medico,
@@ -180,8 +180,6 @@ class ControladorAdministrativos:
             )
             return
 
-        self._modelo.asignarCita(self._paciente_cita.id_paciente, id_medico, fecha, hora)
-
         # ── Notificación por email (CU4) ──────────────────────────────────────
         # Los datos del paciente y del médico ya están en memoria; no hace falta
         # ninguna consulta adicional ni lógica nueva en Logica.
@@ -194,8 +192,8 @@ class ControladorAdministrativos:
 
         nombre_medico = ""
         for m in self._medicos_busqueda_cache:
-            if m[0] == id_medico:
-                nombre_medico = f"{m[1]} {m[2]}"
+            if m.id_empleado == id_medico:
+                nombre_medico = f"{m.nombre} {m.apellidos}"
                 break
         try:
             self._modelo.enviarConfirmacionCita(
@@ -236,9 +234,9 @@ class ControladorAdministrativos:
         texto_lower = texto.lower()
         filtrados = [
             m for m in self._medicos_busqueda
-            if texto_lower in m[1].lower()
-            or texto_lower in m[2].lower()
-            or texto_lower in (m[3] or "").lower()
+            if texto_lower in m.nombre.lower()
+            or texto_lower in m.apellidos.lower()
+            or texto_lower in (m.especialidad or "").lower()
         ]
         self._medicos_visibles = filtrados
         self._vista.cargar_resultados_busqueda_medico(filtrados)
@@ -256,8 +254,8 @@ class ControladorAdministrativos:
         lista = getattr(self, '_medicos_visibles', self._medicos_busqueda)
         if fila < len(lista):
             medico = lista[fila]
-            self._medico_agenda_id = medico[0]
-            self._vista.mostrar_medico_seleccionado(f"{medico[2]}, {medico[1]}")
+            self._medico_agenda_id = medico.id_empleado
+            self._vista.mostrar_medico_seleccionado(f"{medico.apellidos}, {medico.nombre}")
 
     def deseleccionar_medico_agenda(self):
         """Limpia la selección de médico sin borrar la tabla ni el buscador."""

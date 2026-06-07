@@ -1,5 +1,5 @@
 class UserVO:
-    def __init__(self, id_empleado, dni, nombre, apellidos, email, rol, estado):
+    def __init__(self, id_empleado, dni, nombre, apellidos, email, rol, estado, especialidad=None):
         self.id_empleado = id_empleado
         self.rol = rol
         self.nombre = nombre
@@ -7,6 +7,7 @@ class UserVO:
         self.apellidos = apellidos
         self.email = email
         self.estado = estado
+        self.especialidad = especialidad
         
 
     @property

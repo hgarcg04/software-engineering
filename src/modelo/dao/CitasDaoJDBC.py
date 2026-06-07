@@ -1,5 +1,6 @@
 from src.modelo.Conexion.Conexion import Conexion
 from src.modelo.VO.CitasVO import CitaVO
+from src.modelo.VO.UsuariosVO import UserVO
 
 class CitasDaoJDBC(Conexion):
 
@@ -152,17 +153,28 @@ class CitasDaoJDBC(Conexion):
             return []
 
     def obtener_medicos_por_especialidad(self, especialidad=None):
-        # Devuelve tuplas (id_empleado, nombre, apellidos, especialidad)
-        # Si especialidad es None, devuelve todos los médicos
         cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_OBTENER_MEDICOS_POR_ESPECIALIDAD,
                            (especialidad, especialidad))
-            return cursor.fetchall()
+            rows = cursor.fetchall()
+            return [
+                UserVO(
+                    id_empleado=row[0],
+                    dni=None,
+                    nombre=row[1],
+                    apellidos=row[2],
+                    email=None,
+                    rol='medico',
+                    estado=None,
+                    especialidad=row[3]
+                )
+                for row in rows
+            ]
         except Exception as e:
             print("Error obteniendo médicos:", e)
             return []
-
+        
     @staticmethod
     def _hora_a_str(valor):
         """
@@ -250,12 +262,24 @@ class CitasDaoJDBC(Conexion):
     # --- CU9: Bloquear Agenda ---
 
     def buscar_medico(self, texto):
-        # Búsqueda parcial por nombre o apellidos. Devuelve tuplas (id, nombre, apellidos, especialidad)
         cursor = self.getCursor()
         try:
             patron = f"%{texto}%"
             cursor.execute(self.SQL_BUSCAR_MEDICO, (patron, patron))
-            return cursor.fetchall()
+            rows = cursor.fetchall()
+            return [
+                UserVO(
+                    id_empleado=row[0],
+                    dni=None,
+                    nombre=row[1],
+                    apellidos=row[2],
+                    email=None,
+                    rol='medico',
+                    estado=None,
+                    especialidad=row[3]
+                )
+                for row in rows
+            ]
         except Exception as e:
             print("Error buscando médico:", e)
             return []
