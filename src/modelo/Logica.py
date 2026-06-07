@@ -137,6 +137,10 @@ class Logica():
     def existePaciente(self, nif):
         dao = PacientesDaoJDBC()
         return dao.existe_paciente(nif)
+    
+    def setAlertaStock(self, id_medicamento, bit):
+        dao = MedicamentosDaoJDBC()
+        dao.set_alerta_stock(id_medicamento, bit)
 
     # --- CU4: Asignar Citas ---
 
