@@ -1,5 +1,4 @@
 from src.modelo.VO.PacientesVO import PacientesVO
-from src.modelo.LogicaEmail import EmailService
 from src.modelo.SingletonLog import SingletonLog
 from datetime import date, datetime
 import secrets
@@ -90,12 +89,8 @@ class ControladorAdministrativos:
         self._vista.mostrar_btn_no_encontrado(False)
 
     def filtrar_pacientes(self, texto):
-        """
-        Filtra la lista de pacientes localmente a medida que el usuario escribe.
-        Si no hay resultados muestra el botón de paciente no encontrado.
-        """
         if not texto.strip():
-            # Sin texto: mostrar todos
+            self._pacientes_visibles = self._pacientes_busqueda
             self._vista.cargar_resultados_busqueda_paciente(self._pacientes_busqueda)
             self._vista.mostrar_btn_no_encontrado(False)
             return
@@ -108,14 +103,14 @@ class ControladorAdministrativos:
             or texto_lower in (p.apellido1 or "").lower()
             or texto_lower in (p.apellido2 or "").lower()
         ]
-
+        self._pacientes_visibles = filtrados
         self._vista.cargar_resultados_busqueda_paciente(filtrados)
-        # Mostrar botón no encontrado solo si la búsqueda activa no da resultados
         self._vista.mostrar_btn_no_encontrado(len(filtrados) == 0)
 
     def seleccionar_paciente(self, fila):
-        if fila < len(self._pacientes_busqueda):
-            self._paciente_cita = self._pacientes_busqueda[fila]
+        lista = getattr(self, '_pacientes_visibles', self._pacientes_busqueda)
+        if fila < len(lista):
+            self._paciente_cita = lista[fila]
             self._vista.mostrar_paciente_seleccionado(self._paciente_cita.nombre_completo)
 
     def deseleccionar_paciente(self):
@@ -166,13 +161,20 @@ class ControladorAdministrativos:
         # ── Notificación por email (CU4) ──────────────────────────────────────
         # Los datos del paciente y del médico ya están en memoria; no hace falta
         # ninguna consulta adicional ni lógica nueva en Logica.
+        exito, msg = self._modelo.asignarCita(
+            self._paciente_cita.id_paciente, id_medico, fecha, hora
+        )
+        if not exito:
+            self._vista.mostrar_error("Error al asignar la cita", msg)
+            return
+
+        nombre_medico = ""
+        for m in self._medicos_busqueda_cache:
+            if m[0] == id_medico:
+                nombre_medico = f"{m[1]} {m[2]}"
+                break
         try:
-            nombre_medico = ""
-            for m in self._medicos_busqueda_cache:
-                if m[0] == id_medico:
-                    nombre_medico = f"{m[1]} {m[2]}"
-                    break
-            EmailService().enviar_confirmacion_cita(
+            self._modelo.enviarConfirmacionCita(
                 correo_paciente = self._paciente_cita.correo,
                 nombre_paciente = self._paciente_cita.nombre_completo,
                 nombre_medico   = nombre_medico,
@@ -180,7 +182,6 @@ class ControladorAdministrativos:
                 hora            = str(hora),
             )
         except Exception as e:
-            # El fallo de email NO revierte la cita ya persistida en BD
             print(f"ControladorAdministrativos: no se pudo enviar la confirmación: {e}")
         # ─────────────────────────────────────────────────────────────────────
 
@@ -203,17 +204,19 @@ class ControladorAdministrativos:
         self._vista.cargar_resultados_busqueda_medico(todos)
 
     def filtrar_medicos_agenda(self, texto):
-        """Filtra localmente la lista de médicos a medida que el usuario escribe."""
         if not texto.strip():
+            self._medicos_visibles = self._medicos_busqueda
             self._vista.cargar_resultados_busqueda_medico(self._medicos_busqueda)
             return
+
         texto_lower = texto.lower()
         filtrados = [
             m for m in self._medicos_busqueda
-            if texto_lower in m[1].lower()          # nombre
-            or texto_lower in m[2].lower()          # apellidos
-            or texto_lower in (m[3] or "").lower()  # especialidad
+            if texto_lower in m[1].lower()
+            or texto_lower in m[2].lower()
+            or texto_lower in (m[3] or "").lower()
         ]
+        self._medicos_visibles = filtrados
         self._vista.cargar_resultados_busqueda_medico(filtrados)
 
     def buscar_medico_agenda(self, texto):
@@ -226,8 +229,9 @@ class ControladorAdministrativos:
         self._vista.cargar_resultados_busqueda_medico(resultados)
 
     def seleccionar_medico_agenda(self, fila):
-        if fila < len(self._medicos_busqueda):
-            medico = self._medicos_busqueda[fila]
+        lista = getattr(self, '_medicos_visibles', self._medicos_busqueda)
+        if fila < len(lista):
+            medico = lista[fila]
             self._medico_agenda_id = medico[0]
             self._vista.mostrar_medico_seleccionado(f"{medico[2]}, {medico[1]}")
 

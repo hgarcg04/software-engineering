@@ -63,6 +63,8 @@ class MedicamentosDaoJDBC(Conexion):
         cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_UPDATE_ACTUALIZAR_STOCK, (cantidad, id_medicamento, ))
+            self.conexion.commit()
+
         except Exception as e:
             print(f"Error al añadir/quitar {cantidad} unidades del medicamento con id {id_medicamento}: ", e)
 
@@ -71,5 +73,6 @@ class MedicamentosDaoJDBC(Conexion):
         cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_UPDATE_ALERTA_STOCK, (bit, id_medicamento, ))
+            self.conexion.commit()
         except Exception as e:
             print(f"Error al cambiar la alerta de {not bit} a {bit}: ", e)
