@@ -1,7 +1,8 @@
 import os
 from PyQt5.QtWidgets import QDialog, QMessageBox
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QDate
+from datetime import date, timedelta
 
 ui_path = os.path.join(os.path.dirname(__file__), "../Ui/DialogoReceta.ui")
 Form, _ = uic.loadUiType(ui_path)
@@ -10,6 +11,12 @@ class DialogoReceta(QDialog, Form):
     def __init__(self, parent, cita_vo):
         super().__init__(parent)
         self.setupUi(self)
+
+        hoy = date.today()
+        dentro_de_una_semana = hoy + timedelta(weeks=1)
+        self.date_inicio.setDate(QDate(hoy.year, hoy.month, hoy.day))
+        self.date_fin.setDate(QDate(dentro_de_una_semana.year, dentro_de_una_semana.month, dentro_de_una_semana.day))
+
         self._paciente = cita_vo
         self.controlador = None
         self.lbl_pac_nombre.setText('— Sin paciente —')
@@ -21,6 +28,13 @@ class DialogoReceta(QDialog, Form):
 
         self.btn_prescribir.clicked.connect(self._guardar)
         self.btn_cancelar.clicked.connect(self.reject)
+
+    def inicializar(self, nombre_paciente, id_paciente, id_ingreso, medicamentos, controlador):
+        self.lbl_pac_nombre.setText(nombre_paciente)
+        self._id_paciente = id_paciente
+        self._id_ingreso = id_ingreso
+        self.controlador = controlador
+        self.cargar_medicamentos(medicamentos)
 
     def cargar_medicamentos(self, lista):
         self._medicamentos = lista

@@ -219,7 +219,7 @@
     #btn_nuevo_paciente:hover, #btn_limpiar_cita:hover,
     #btn_limpiar_credencial:hover { background-color: #b2bec3; }
 
-    /* === Tablón de comunicación === */
+    /* === Tablón de tareas === */
     #groupBox_tablon {
         background-color: #ffffff;
         border: 1px solid #dde3ea;
@@ -228,7 +228,7 @@
     }
     #groupBox_tablon::title {
         font-family: 'Segoe UI Black';
-        font-size: 22px;
+        font-size: 16px;
         font-weight: bold;
         color: #2d3436;
         subcontrol-origin: margin;
@@ -236,28 +236,19 @@
         padding: 0 8px;
     }
     #list_tablon {
-        background-color: #f8fafc;
-        border: 1px solid #dde3ea;
+        background-color: #f0f4f8;
+        border: none;
         border-radius: 8px;
         font-size: 13px;
         color: #2d3436;
-        min-height: 300px;
+        min-height: 340px;
     }
     #list_tablon::item {
-        padding: 10px 12px;
-        border-bottom: 1px solid #f0f4f8;
+        padding: 4px 4px;
+        background-color: transparent;
+        border: none;
     }
-    #list_tablon::item:alternate { background-color: #ffffff; }
-    #btn_marcar_hecha {
-        background-color: #00b894;
-        color: white;
-        border-radius: 8px;
-        padding: 8px 18px;
-        font-family: 'Segoe UI Semibold';
-        font-size: 13px;
-    }
-    #btn_marcar_hecha:hover    { background-color: #00a381; }
-    #btn_marcar_hecha:disabled { background-color: #b2d8d0; color: #ffffff; }
+    #list_tablon::item:selected { background-color: transparent; }
     #btn_refrescar_tablon {
         background-color: #6a9edb;
         color: white;
