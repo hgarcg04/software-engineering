@@ -27,9 +27,17 @@ class ControladorAdministrativos:
 
     # ── CU3: Registrar Paciente ───────────────────────────────────────────────
 
+    def cargar_medicos_combo_paciente(self):
+        medicos = self._modelo.obtenerTodosMedicos()
+        self._vista.cargar_combo_medico_paciente(medicos)
+
     def registrar_paciente(self, nif, nombre, apellido1, apellido2,
                            fecha_nacimiento, genero, correo,
-                           direccion, alergias, telefono):
+                           direccion, alergias, telefono, id_medico):
+        
+        if id_medico is None:
+            return False, "Debes seleccionar un médico asignado."
+        
         campos = {
             "NIF / DNI": nif,
             "Nombre": nombre,
@@ -68,7 +76,7 @@ class ControladorAdministrativos:
             fecha_nacimiento=fecha_nacimiento,
             genero=genero, correo=correo,
             direccion=direccion, alergias=alergias,
-            telefono=telefono
+            telefono=telefono, medico_asignado=id_medico
         )
         self._modelo.registrarPaciente(pacienteVO)
         return True, f"Paciente {nombre} {apellido1} registrado correctamente."

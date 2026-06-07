@@ -82,13 +82,17 @@ class UserDaoJDBC(Conexion):
         cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_UPDATE_PASSWORD, (nueva, userVO.id_empleado))
+            self.conexion.commit()
             print("Contraseña actualizada correctamente.")
         except Exception as e:
+            self.conexion.rollback()
             print("Error al cambiar password:", e)
 
     def activar_usuario(self, userVO):
         cursor = self.getCursor()
         try:
-            cursor.execute("UPDATE personal SET estado = 1 WHERE id_empleado = ?", (userVO.id_empleado,)) 
+            cursor.execute("UPDATE personal SET estado = 1 WHERE id_empleado = ?", (userVO.id_empleado,))
+            self.conexion.commit()
         except Exception as e:
+            self.conexion.rollback()
             print("Error al activar al usuario: ", e)

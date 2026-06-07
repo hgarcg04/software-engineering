@@ -236,10 +236,14 @@ class CitasDaoJDBC(Conexion):
         # no acepta datetime.date directamente con el driver MSSQL JDBC.
         cursor = self.getCursor()
         try:
+            #print(f"EJECUTANDO INSERT CITA")
+
             cursor.execute(self.SQL_INSERTAR_CITA,
                            (id_paciente, id_medico, str(fecha), str(hora)))
+            self.conexion.commit()
             return True, "Cita asignada correctamente."
         except Exception as e:
+            self.conexion.rollback()
             print("Error asignando cita:", e)
             return False, f"Error al asignar la cita: {e}"
 

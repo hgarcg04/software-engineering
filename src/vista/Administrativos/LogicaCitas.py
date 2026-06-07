@@ -2,7 +2,7 @@
 # VentanaAdministrativos hereda de esta clase.
 
 from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
-from PyQt5.QtCore import QDate
+from PyQt5.QtCore import QDate, Qt
 from src.vista.Administrativos.LogicaDialogoCalendario import DialogCalendario
 
 PAGE_PACIENTES = 1
@@ -32,6 +32,7 @@ class LogicaCitas:
         # IMPORTANTE: combo_medico_cita NO conecta a limpiar_horas para no
         # borrar las horas cargadas nada más seleccionar médico
         self.btn_consultar_disponibilidad.clicked.connect(self._on_abrir_calendario)
+        #print(f"_init_citas llamado")
         self.btn_asignar_cita.clicked.connect(self._on_asignar_cita)
         self.btn_limpiar_cita.clicked.connect(self._on_limpiar_cita)
 
@@ -103,7 +104,7 @@ class LogicaCitas:
             fecha_inicial=fecha_inicial,
             parent=self
         )
-        dialogo.hora_seleccionada.connect(self._on_hora_desde_calendario)
+        dialogo.hora_seleccionada.connect(self._on_hora_desde_calendario, Qt.UniqueConnection)
         dialogo.exec_()
 
     def _on_hora_desde_calendario(self, fecha, hora):

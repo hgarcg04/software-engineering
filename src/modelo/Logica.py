@@ -163,6 +163,10 @@ class Logica():
         # Devuelve los médicos filtrados por especialidad (None = todos)
         dao = CitasDaoJDBC()
         return dao.obtener_medicos_por_especialidad(especialidad)
+    
+    def obtenerTodosMedicos(self):
+        dao = CitasDaoJDBC()
+        return dao.obtener_medicos_por_especialidad(None)
 
     def obtenerCitasSemana(self, id_medico, fecha_inicio, fecha_fin):
         # Devuelve lista de dicts {fecha, hora, paciente, motivo} para el calendario
