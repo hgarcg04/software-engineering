@@ -12,7 +12,7 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QFileDialog
 
 
-from src.vista.LogicaDialogoConstantes import DialogoHistorico
+from src.vista.Enfermeros.LogicaDialogoConstantes import DialogoHistorico
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 ui_path = os.path.join(os.path.dirname(__file__), "../Ui/VistaEnfermero.ui")

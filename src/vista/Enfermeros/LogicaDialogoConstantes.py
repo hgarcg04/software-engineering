@@ -13,7 +13,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
-ui_path = os.path.join(os.path.dirname(__file__), "Ui/DialogoHistoricoConstantes.ui")
+ui_path = os.path.join(os.path.dirname(__file__), "../Ui/DialogoHistoricoConstantes.ui")
 
 
 Form, Window = uic.loadUiType(ui_path)
@@ -40,7 +40,6 @@ class DialogoHistorico(QDialog, Form):
 
     def _consultar(self):
 
-        # DUDA: ¿Crear un VO para esta tupla?
         tipo  = self.combo_constante.currentText()
         desde = self.date_desde.dateTime().toString("yyyy-MM-dd HH:mm")
         hasta = self.date_hasta.dateTime().toString("yyyy-MM-dd HH:mm")
@@ -80,20 +79,6 @@ class DialogoHistorico(QDialog, Form):
         if self.controlador:
             self.controlador.generar_grafico(self._paciente.id_paciente, tipo, desde, hasta)
 
-    def mostrar_grafico(self, fig):
-        dialogo = QDialog(self)
-        dialogo.setWindowTitle(f'Gráfico de constantes')
-        dialogo.resize(1000, 700)
-
-        canvas = FigureCanvas(fig)
-        layout = QVBoxLayout()
-        toolbar = NavigationToolbar(canvas, dialogo)
-
-
-        layout.addWidget(toolbar)
-        layout.addWidget(canvas)
-        dialogo.setLayout(layout)
-        dialogo.exec_()
     
     @property
     def controlador(self):
