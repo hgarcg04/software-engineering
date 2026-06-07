@@ -67,9 +67,9 @@ class PacientesDaoJDBC(Conexion):
 
     SQL_REGISTRAR_PACIENTE = """
             INSERT INTO Pacientes (nif, nombre, apellido1, apellido2,
-            fecha_nacimiento, genero, fecha_registro, correo, direccion, alergias, telefono)
+            fecha_nacimiento, genero, fecha_registro, correo, direccion, alergias, telefono, medico_asignado)
             VALUES (?, ?, ?, ?,
-            ?, ?, GETDATE(), ?, ?, ?, ?)
+            ?, ?, GETDATE(), ?, ?, ?, ?, ?)
         """
     
     SQL_BUSCAR_NIF = "SELECT nif FROM Pacientes WHERE nif = ?"
@@ -251,10 +251,13 @@ class PacientesDaoJDBC(Conexion):
                 pacienteVO.correo,
                 pacienteVO.direccion,
                 pacienteVO.alergias, 
-                pacienteVO.telefono
+                pacienteVO.telefono,
+                pacienteVO.medico_asignado
             ))
+            self.conexion.commit()
             
         except Exception as e:
+            self.conexion.rollback()
             print("Error al registrar paciente: ", e)
 
     def obtener_ingresos_actuales(self):

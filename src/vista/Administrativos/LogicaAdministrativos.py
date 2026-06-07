@@ -76,7 +76,7 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales,
 
     def _navegar(self, indice):
         """
-        Abre la pestaña indicada. Al entrar en Citas inicializa los combos.
+        Abre la pestaña indicada. Al entrar en cada sección inicializa sus datos.
         """
         self.stackedWidget.setCurrentIndex(indice)
         nav_btns = [
@@ -90,6 +90,9 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales,
         ]
         for i, btn in enumerate(nav_btns):
             btn.setChecked(i == indice)
+
+        if indice == PAGE_PACIENTES and self._controlador:
+            self._controlador.cargar_medicos_combo_paciente()
 
         if indice == PAGE_CITAS and self._controlador:
             self._controlador.inicializar_combos_cita()
@@ -118,19 +121,14 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales,
 
     # ── Registrar Paciente ────────────────────────────────────────────────────
 
-    # Todos los campos de texto del formulario son obligatorios
-    _CAMPOS_OBLIGATORIOS_PACIENTE = [
-        ("input_dni_paciente",       "NIF / DNI"),
-        ("input_nombre_paciente",    "Nombre"),
-        ("input_ap1_paciente",       "Primer apellido"),
-        ("input_ap2_paciente",       "Segundo apellido"),
-        ("input_email_paciente",     "Correo electrónico"),
-        ("input_telefono_paciente",  "Teléfono"),
-        ("input_direccion_paciente", "Dirección"),
-        ("input_alergias_paciente",  "Alergias (escribe 'Ninguna' si no tiene)"),
-    ]
-
     def registrar_paciente(self):
+
+        # ── Validación del combo de médico (es el único que no es texto) ─────
+        id_medico = self.input_medico_paciente.currentData()
+        if id_medico is None:
+            QMessageBox.warning(self, "Campos obligatorios",
+                                "Debes seleccionar un médico asignado.")
+            return
 
         # ── Recogida de datos ─────────────────────────────────────────────────
         nif              = self.input_dni_paciente.text().strip().upper()
@@ -148,7 +146,8 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales,
         if self._controlador:
             exito, mensaje = self._controlador.registrar_paciente(
                 nif, nombre, ap1, ap2, fecha_nacimiento,
-                genero, email, direccion, alergias, telefono
+                genero, email, direccion, alergias, telefono,
+                id_medico
             )
         else:
             return
@@ -175,10 +174,25 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales,
         ]
         for campo in campos_texto:
             campo.clear()
-            campo.setStyleSheet("")   # quita el borde rojo si lo hubiera
+            campo.setStyleSheet("")
 
         self.input_fnac_paciente.setDate(QDate.currentDate())
         self.input_genero_paciente.setCurrentIndex(0)
+        self.input_medico_paciente.setCurrentIndex(0)  # resetea al placeholder
+
+    # ── Métodos llamados por el controlador ───────────────────────────────────
+
+    def cargar_combo_medico_paciente(self, medicos):
+        """Puebla el combo de médico asignado con los datos recibidos del controlador."""
+        self.input_medico_paciente.blockSignals(True)
+        self.input_medico_paciente.clear()
+        self.input_medico_paciente.addItem("— Selecciona un médico —", None)
+        for m in medicos:
+            # m = (id_empleado, nombre, apellidos, especialidad)
+            self.input_medico_paciente.addItem(
+                f"{m[2]}, {m[1]}  [{m[3]}]", m[0]
+            )
+        self.input_medico_paciente.blockSignals(False)
 
     # ── Property controlador ──────────────────────────────────────────────────
 
