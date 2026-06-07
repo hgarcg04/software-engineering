@@ -121,6 +121,10 @@ class Logica():
     def obtenerMedicamentos(self):
         dao = MedicamentosDaoJDBC()
         return dao.obtener_medicamentos()
+
+    def obtenerMedicamentoPorId(self, id_medicamento):
+        dao = MedicamentosDaoJDBC()
+        return dao.obtener_medicamento_por_id(id_medicamento)
     
     def buscarPacientePorId(self, id_paciente):
         dao = PacientesDaoJDBC()
@@ -130,6 +134,10 @@ class Logica():
         dao = MedicamentosDaoJDBC()
         dao.actualizar_stock(id_medicamento, cantidad)
 
+    def setAlertaStock(self, id_medicamento, bit):
+        dao = MedicamentosDaoJDBC()
+        dao.set_alerta_stock(id_medicamento, bit)
+
     def registrarPaciente(self, pacienteVO):
         dao = PacientesDaoJDBC()
         dao.registrar_paciente(pacienteVO)
@@ -137,10 +145,7 @@ class Logica():
     def existePaciente(self, nif):
         dao = PacientesDaoJDBC()
         return dao.existe_paciente(nif)
-    
-    def setAlertaStock(self, id_medicamento, bit):
-        dao = MedicamentosDaoJDBC()
-        dao.set_alerta_stock(id_medicamento, bit)
+
 
     # --- CU4: Asignar Citas ---
 
@@ -235,3 +240,9 @@ class Logica():
     def eliminarTarea(self, id_tarea):
         dao = TablonDaoJDBC()
         return dao.eliminar_tarea(id_tarea)
+
+
+    def agregarTareas(self, usuario, mensaje):
+        dao = TablonDaoJDBC()
+        return dao.insertar_tarea(usuario, mensaje)
+

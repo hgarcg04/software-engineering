@@ -27,7 +27,21 @@ class MedicamentosDaoJDBC(Conexion):
 
                               """
 
-    # Te regalo este método ache, para cuando necesites mostrar el listado de medicamentos.
+    SQL_BUSCAR_POR_ID = "SELECT id_medicamento, nombre, categoria, descripcion, unidad_medida, stock, stock_minimo, alerta_stock FROM Medicamentos WHERE id_medicamento = ?"
+
+    def obtener_medicamento_por_id(self, id_medicamento):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_BUSCAR_POR_ID, (id_medicamento,))
+            row = cursor.fetchone()
+            if row:
+                (id_med, nombre, categoria, descripcion, unidad_medida, stock, stock_minimo, alerta_stock) = row
+                return MedicamentoVO(id_med, nombre, categoria, descripcion, unidad_medida, stock, stock_minimo, alerta_stock)
+            return None
+        except Exception as e:
+            print("Error obteniendo medicamento por id:", e)
+            return None
+
     def obtener_medicamentos(self):
         cursor = self.getCursor()
         try:

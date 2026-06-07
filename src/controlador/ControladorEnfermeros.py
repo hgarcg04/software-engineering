@@ -1,6 +1,6 @@
-
 from src.modelo.VO.ConstantesVO import ConstantesVO
 from src.modelo.VO.TomaVO import TomaVO
+from src.modelo.VO.MedicamentosVO import MedicamentoVO
 from src.modelo.LogicaGraficas import LogicaGraficas
 from src.vista.Enfermeros.GeneradorGraficas import LogicaGenerarGrafica
 from src.modelo.GeneradorInformePDF import GeneradorInformePDF
@@ -26,7 +26,7 @@ class ControladorEnfermeros:
         """
         lista_pacientes = self._modelo.obtenerPacientes(self.user_vo) or []
         self._vista.cargar_datos_iniciales(lista_pacientes, self.user_vo)
-    
+
     def cargar_tratamientos(self, pacienteVO):
         """
             Pedimos al modelo un listado de los tratamientos activos del paciente seleccionado.
@@ -94,8 +94,28 @@ class ControladorEnfermeros:
         tomas_sesion = self._modelo.obtenerTomasSesionActual(pacienteVO)
         self._vista.cargar_tomas_sesion_actual(tomas_sesion)
 
-    def actualizar_stock(self, id_tratamiento, cantidad):
-        self._modelo.actualizarStock(id_tratamiento, cantidad)
+    def actualizar_stock(self, id_medicamento, cantidad):
+        medicamentoVO = self._modelo.obtenerMedicamentoPorId(id_medicamento)
+        print(medicamentoVO.stock_minimo)
+        stock_actual = medicamentoVO.stock + cantidad
+        self._modelo.actualizarStock(medicamentoVO.id_medicamento, cantidad)
+
+        if stock_actual < medicamentoVO.stock_minimo:
+
+            self._set_alerta_stock(medicamentoVO.id_medicamento, 1)
+            self._avisar_falta_stock_en_tablon(self.user_vo, f"Stock actual de '{medicamentoVO.nombre}': {stock_actual}"
+                                                                             f" (Stock minimo: {medicamentoVO.stock_minimo})")
+            print(f"Stock bajo minimos. Aviso enviado")
+        else:
+            print(f"Stock aun por encima de umbral:  {stock_actual}")
+            self._set_alerta_stock(medicamentoVO.id_medicamento, 0)
+
+
+    def _set_alerta_stock(self, id_medicamento, bit):
+        self._modelo.setAlertaStock(id_medicamento, bit)
+
+    def _avisar_falta_stock_en_tablon(self, usuario, mensaje):
+        return self._modelo.agregarTareas(usuario, mensaje)
     
 
     def cambiar_password(self, nueva, enfermero):

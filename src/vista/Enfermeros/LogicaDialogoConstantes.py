@@ -79,6 +79,7 @@ class DialogoHistorico(QDialog, Form):
         if self.controlador:
             self.controlador.generar_grafico(self._paciente.id_paciente, tipo, desde, hasta)
 
+
     
     @property
     def controlador(self):

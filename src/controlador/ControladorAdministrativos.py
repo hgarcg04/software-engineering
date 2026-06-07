@@ -1,7 +1,6 @@
 from src.modelo.VO.PacientesVO import PacientesVO
 from src.modelo.LogicaEmail import EmailService
-from src.modelo.SingletonLog import SingletonLog
-from datetime import date, datetime
+from datetime import date
 import secrets
 import string
 import re
@@ -360,7 +359,9 @@ class ControladorAdministrativos:
         medicamentos_actualizados = self._modelo.obtenerMedicamentos()
         for med in medicamentos_actualizados:
             if med.alerta_stock and med.stock > med.stock_minimo:
-                self._modelo.setAlertaStock(med.id_medicamento, 0)
+                from src.modelo.dao.MedicamentosDaoJDBC import MedicamentosDaoJDBC
+                dao = MedicamentosDaoJDBC()
+                dao.set_alerta_stock(med.id_medicamento, 0)
 
         # Notificar éxito a la vista
         self._vista.confirmar_pedido_exitoso()
@@ -407,9 +408,11 @@ class ControladorAdministrativos:
 
         if exito:
             # Registrar en log de actividad
+            from src.modelo.log.SingletonLog import SingletonLog
             SingletonLog().registrar_backup(self.user_vo, tipo, tamanio_kb)
 
             # Actualizar vista
+            from datetime import datetime
             ahora = datetime.now()
             self._vista.actualizar_ultima_copia(
                 ahora.strftime('%Y-%m-%d'),
