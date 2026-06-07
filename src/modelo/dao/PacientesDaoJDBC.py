@@ -167,7 +167,7 @@ class PacientesDaoJDBC(Conexion):
             cursor.execute(self.SQL_BUSCAR_POR_ID, (id_paciente,))
             row = cursor.fetchone()
             if row:
-                return [PacientesVO(
+                return PacientesVO(
                     id_episodio=None,
                     nif=row[1],
                     nombre=row[2],
@@ -179,11 +179,10 @@ class PacientesDaoJDBC(Conexion):
                     medico_asignado=row[8],
                     id_paciente=row[0],
                     hospitalizado=row[9]
-                )]
-            return []
+                )
         except Exception as e:
             print("Error buscando paciente por id:", e)
-            return []
+            return
 
     def ingresar_paciente(self, id_paciente, id_episodio, habitacion):
         cursor = self.getCursor()

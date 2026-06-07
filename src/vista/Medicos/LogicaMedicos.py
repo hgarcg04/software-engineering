@@ -480,7 +480,7 @@ class VentanaMedico(QMainWindow, Form):
         if self._ruta_imagen_rx:
             self.btn_analizar_rx.setEnabled(False)
             self.btn_analizar_rx.setText("Analizando...")
-            self._controlador.clasificar_imagen(self._ruta_imagen_rx)
+            self._controlador.clasificar_imagen(self._ruta_imagen_rx)  # ← directo
             self.btn_analizar_rx.setEnabled(True)
             self.btn_analizar_rx.setText("Analizar")
     # Se llama desde ControladorMedicos.clasificar_imagen() que lo hace en la lógica propia de neumonia
