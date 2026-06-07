@@ -1,7 +1,7 @@
 from src.modelo.VO.PacientesVO import PacientesVO
 from src.modelo.LogicaEmail import EmailService
 from src.modelo.SingletonLog import SingletonLog
-from datetime import date
+from datetime import date, datetime
 import secrets
 import string
 import re
@@ -410,7 +410,6 @@ class ControladorAdministrativos:
             SingletonLog().registrar_backup(self.user_vo, tipo, tamanio_kb)
 
             # Actualizar vista
-            from datetime import datetime
             ahora = datetime.now()
             self._vista.actualizar_ultima_copia(
                 ahora.strftime('%Y-%m-%d'),

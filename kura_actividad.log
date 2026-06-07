@@ -299,3 +299,5 @@
 [2026-06-07 10:36:31] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-06-07 10:40:06] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-06-07 10:43:00] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-07 10:57:59] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-06-07 11:00:23] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
