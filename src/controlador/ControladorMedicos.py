@@ -44,7 +44,6 @@ class ControladorMedicos:
             desde = datetime.now().strftime('%Y-%m-%d')
         if hasta is None:
             hasta = (datetime.now() + timedelta(days=7)).strftime('%Y-%m-%d')
-        self._vista.establecer_rango_fechas_interfaz(desde, hasta)
         lista = self._modelo.obtenerAgenda(self._user_vo, desde, hasta)
         self._vista.cargar_agenda_completa(lista if lista else [])
 

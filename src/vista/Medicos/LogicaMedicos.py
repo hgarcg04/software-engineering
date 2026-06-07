@@ -56,7 +56,7 @@ class VentanaMedico(QMainWindow, Form):
         self.btn_ingresar_paciente.clicked.connect(self._ingresar_paciente_cita)
 
         # Agenda completa
-        self.btn_buscar_agenda.clicked.connect(self._buscar_agenda)
+        self.calendario_agenda.selectionChanged.connect(self._on_fecha_calendario_cambiada)
 
         # HCD
         self.search_bar.textChanged.connect(self._buscar_paciente_hcd)
@@ -135,14 +135,6 @@ class VentanaMedico(QMainWindow, Form):
             QMessageBox.critical(self, titulo, mensaje)
         else:
             QMessageBox.information(self, titulo, mensaje)
-
-    def establecer_rango_fechas_interfaz(self, fecha_desde_str, fecha_hasta_str):
-        q_desde = QDate.fromString(fecha_desde_str, "yyyy-MM-dd")
-        q_hasta = QDate.fromString(fecha_hasta_str, "yyyy-MM-dd")
-        
-        # Los widgets del .ui se llaman date_desde y date_hasta
-        self.date_desde.setDate(q_desde)
-        self.date_hasta.setDate(q_hasta)
 
     def cargar_agenda_hoy(self, lista_citas):
         self.tabla_agenda_hoy.setRowCount(0)
@@ -278,12 +270,11 @@ class VentanaMedico(QMainWindow, Form):
 
     # ── Agenda completa ──────────────────────────────────────────
 
-    def _buscar_agenda(self):
+    def _on_fecha_calendario_cambiada(self):
         if self._controlador:
-            self._controlador.cargar_agenda_completa(
-                desde=self.date_desde.date().toString('yyyy-MM-dd'),
-                hasta=self.date_hasta.date().toString('yyyy-MM-dd')
-            )
+            fecha = self.calendario_agenda.selectedDate()
+            desde = fecha.toString('yyyy-MM-dd')
+            self._controlador.cargar_agenda_completa(desde=desde, hasta=desde)
 
     def cargar_agenda_completa(self, lista_citas):
         self.tabla_agenda.setRowCount(0)
