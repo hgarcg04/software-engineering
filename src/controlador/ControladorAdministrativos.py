@@ -1,5 +1,6 @@
 from src.modelo.VO.PacientesVO import PacientesVO
 from src.modelo.LogicaEmail import EmailService
+from src.modelo.SingletonLog import SingletonLog
 from datetime import date
 import secrets
 import string
@@ -408,7 +409,6 @@ class ControladorAdministrativos:
 
         if exito:
             # Registrar en log de actividad
-            from src.modelo.log.SingletonLog import SingletonLog
             SingletonLog().registrar_backup(self.user_vo, tipo, tamanio_kb)
 
             # Actualizar vista
