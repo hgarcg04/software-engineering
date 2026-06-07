@@ -33,7 +33,7 @@ class ControladorMedicos:
             self._vista.cargar_agenda_hoy(lista)
 
     # ── Agenda completa ──────────────────────────────────────────
-
+    # Se llama desde LogicaMedicos.cargar_agenda_completa
     def cargar_agenda_completa(self, desde=None, hasta=None):
         if desde is None:
             desde = datetime.now().strftime('%Y-%m-%d')
@@ -323,7 +323,9 @@ class ControladorMedicos:
                 self._logica_neumonia = LogicaNeumonia()  # se carga solo una vez
 
             resultados = self._logica_neumonia.clasificar(ruta)
+            print("Resultados completos:", resultados)
             mejor = max(resultados, key=lambda r: r['score'])
+            print("Mejor:", mejor)
             label = mejor['label']
             confianza = round(mejor['score'] * 100, 1)
             self._vista.mostrar_resultado(label, confianza)

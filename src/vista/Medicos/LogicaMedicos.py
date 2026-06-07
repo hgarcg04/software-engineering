@@ -278,13 +278,13 @@ class VentanaMedico(QMainWindow, Form):
     #####################
     ## Agenda completa ##
     #####################
-
+    # Se llama desde self.calendario_agenda_completa
     def _on_fecha_calendario_cambiada(self):
         if self._controlador:
             fecha = self.calendario_agenda.selectedDate()
             desde = fecha.toString('yyyy-MM-dd')
             self._controlador.cargar_agenda_completa(desde=desde, hasta=desde)
-
+    # Se llama desde ControladorMedicos.cargar_agenda_completa que coge los datos del modelo
     def cargar_agenda_completa(self, lista_citas):
         self.tabla_agenda.setRowCount(0)
         for cita in lista_citas:
@@ -296,11 +296,11 @@ class VentanaMedico(QMainWindow, Form):
         self.tabla_agenda.resizeColumnsToContents()
 
     # ── HCD ──────────────────────────────────────────────────────
-
+    # Se llama desde self.search_bar
     def _buscar_paciente_hcd(self, texto):
         if self._controlador:
             self._controlador.buscar_paciente_hcd(texto)
-
+    # Se llama desde self.btn_ingresar_planta_hcd
     def _ingresar_paciente_hcd(self):
         paciente = self._pacientes_busqueda[self.tabla_busqueda_hcd.currentRow()]
         respuesta = QMessageBox.question(
@@ -317,7 +317,7 @@ class VentanaMedico(QMainWindow, Form):
             elif ok:
                 self.mostrar_notificacion(
                     "Campo Obligatorio", "Debe introducir una habitación.", es_error=True)
-                
+    # Se llama desde self.btn_dar_alta_hcd
     def _on_dar_alta_clicked(self):
         if not self._controlador:
             return
@@ -334,7 +334,7 @@ class VentanaMedico(QMainWindow, Form):
                 "Debe introducir un diagnóstico o resumen clínico para poder tramitar el alta.", 
                 es_error=True
             )
-
+    # Se llama desde ControladorMedicos.buscar_paciente_hcd() que los ha conseguido desde el modelo
     def cargar_resultados_busqueda_hcd(self, lista_pacientes):
         self._pacientes_busqueda = lista_pacientes
         self.tabla_busqueda_hcd.setRowCount(0)
@@ -345,14 +345,14 @@ class VentanaMedico(QMainWindow, Form):
             self.tabla_busqueda_hcd.setItem(row, 1, self._item(paciente.nombre_completo))
             self.tabla_busqueda_hcd.setItem(row, 2, self._item(str(paciente.fecha_nacimiento)))
         self.tabla_busqueda_hcd.resizeColumnsToContents()
-
+    # Se llama desde la tabla self.tabla_busqueda_hcd
     def _on_paciente_hcd_seleccionado(self):
         fila = self.tabla_busqueda_hcd.currentRow()
         if fila < 0 or not self._controlador:
             return
         paciente = self._pacientes_busqueda[fila]
         self._controlador.cargar_episodios_paciente(paciente)
-
+    # Se llama desde ControladorMedicos.cargar_episodios_paciente() que los obtiene desde el modelo
     def cargar_episodios_hcd(self, paciente_nombre, lista_episodios):
         self.lbl_paciente_sel_nombre.setText(paciente_nombre)
         self.tabla_episodios_hcd.setRowCount(0)
@@ -363,13 +363,13 @@ class VentanaMedico(QMainWindow, Form):
             self.tabla_episodios_hcd.setItem(row, 1, self._item(ep.tipo))
             self.tabla_episodios_hcd.setItem(row, 2, self._item(ep.diagnostico))
         self.tabla_episodios_hcd.resizeColumnsToContents()
-
+    # Se llama desde la tabla self.tabla_episodios_hcd
     def _on_episodio_seleccionado(self):
         fila = self.tabla_episodios_hcd.currentRow()
         if fila < 0 or not self._controlador:
             return
         self._controlador.cargar_detalle_episodio(fila)
-
+    # Se llama desde ControladorMedicos.cargar_detalle_episodio tras haber accedido a la Base de Datos
     def mostrar_detalle_episodio(self, texto, lista_tratamientos):
         self.txt_detalle_episodio.setPlainText(texto)
         self.tabla_tratamientos_hcd.setRowCount(0)
@@ -381,7 +381,7 @@ class VentanaMedico(QMainWindow, Form):
             self.tabla_tratamientos_hcd.setItem(row, 2, self._item(t.get('frecuencia', '')))
             self.tabla_tratamientos_hcd.setItem(row, 3, self._item(t.get('via', '')))
         self.tabla_tratamientos_hcd.resizeColumnsToContents()
-
+    # Se llama desde el boton self.btn_cerrar_detalle
     def _cerrar_detalle_hcd(self):
         self.txt_detalle_episodio.clear()
         self.tabla_tratamientos_hcd.setRowCount(0)
@@ -416,8 +416,7 @@ class VentanaMedico(QMainWindow, Form):
             self.tabla_altas_recientes.setItem(row, 3, self._item(altaVO.fecha_fin))  # fecha alta
             self.tabla_altas_recientes.setItem(row, 4, self._item(altaVO.observaciones or ""))  # motivo
         self.tabla_altas_recientes.resizeColumnsToContents()
-
-    # Llamado desde los botones
+    # Llamado desde los botones self.btn_buscar_general y self.txt_buscar_general
     def _buscar_en_ingresos(self):
         texto = self.txt_buscar_general.text().strip()
         if self._controlador:
