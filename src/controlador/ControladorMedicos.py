@@ -352,7 +352,6 @@ class ControladorMedicos:
             ep_actual = episodios[0] if episodios else None
 
             if ep_actual:
-                # 🛠️ SOLUCIÓN: Forzamos que ponga "Hospitalización en Planta" en lugar de "Consulta"
                 tipo_ingreso_bonito = "Hospitalización en Planta" 
                 
                 datos_ingreso = [
@@ -370,7 +369,6 @@ class ControladorMedicos:
                 historia.append(Paragraph("<b>DIAGNÓSTICO AL ALTA:</b>", styles['Normal']))
                 historia.append(Spacer(1, 0.1 * cm))
                 
-                # 🛠️ SOLUCIÓN: Usamos el texto fresco que acaba de escribir el médico en la ventana
                 texto_final = diagnostico_alta_reciente.replace('\n', '<br/>') if diagnostico_alta_reciente else "Sin diagnóstico especificado al alta."
                 historia.append(Paragraph(texto_final, styles['Normal']))
             else:

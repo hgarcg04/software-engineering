@@ -1,7 +1,8 @@
 import os
 from PyQt5.QtWidgets import QDialog, QMessageBox
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QDate
+from datetime import date, timedelta
 
 ui_path = os.path.join(os.path.dirname(__file__), "../Ui/DialogoReceta.ui")
 Form, _ = uic.loadUiType(ui_path)
@@ -10,6 +11,12 @@ class DialogoReceta(QDialog, Form):
     def __init__(self, parent, cita_vo):
         super().__init__(parent)
         self.setupUi(self)
+
+        hoy = date.today()
+        dentro_de_una_semana = hoy + timedelta(weeks=1)
+        self.date_inicio.setDate(QDate(hoy.year, hoy.month, hoy.day))
+        self.date_fin.setDate(QDate(dentro_de_una_semana.year, dentro_de_una_semana.month, dentro_de_una_semana.day))
+
         self._paciente = cita_vo
         self.controlador = None
         self.lbl_pac_nombre.setText('— Sin paciente —')
