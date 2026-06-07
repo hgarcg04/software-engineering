@@ -29,6 +29,13 @@ class DialogoReceta(QDialog, Form):
         self.btn_prescribir.clicked.connect(self._guardar)
         self.btn_cancelar.clicked.connect(self.reject)
 
+    def inicializar(self, nombre_paciente, id_paciente, id_ingreso, medicamentos, controlador):
+        self.lbl_pac_nombre.setText(nombre_paciente)
+        self._id_paciente = id_paciente
+        self._id_ingreso = id_ingreso
+        self.controlador = controlador
+        self.cargar_medicamentos(medicamentos)
+
     def cargar_medicamentos(self, lista):
         self._medicamentos = lista
         self._mostrar_medicamentos(lista)
