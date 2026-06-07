@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from PyQt5.QtGui import QColor
 
 
-ui_path = os.path.join(os.path.dirname(__file__), "Ui/VistaMedico.ui")
+ui_path = os.path.join(os.path.dirname(__file__), "../Ui/VistaMedico.ui")
 Form, Window = uic.loadUiType(ui_path)
 
 

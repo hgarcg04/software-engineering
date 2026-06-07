@@ -1,5 +1,5 @@
-from src.vista.LogicaDialogoReceta import DialogoReceta
-from src.vista.LogicaDialogoEpisodio import DialogoEpisodio
+from src.vista.Medicos.LogicaDialogoReceta import DialogoReceta
+from src.vista.Medicos.LogicaDialogoEpisodio import DialogoEpisodio
 from src.modelo.VO.EpisodiosVO import EpisodioVO
 from src.modelo.VO.TratamientosVO import TratamientoVO
 from src.modelo.LogicaNeumonia import LogicaNeumonia

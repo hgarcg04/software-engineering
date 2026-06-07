@@ -274,3 +274,6 @@
 [2026-06-07 06:11:51] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-06-07 06:16:39] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
 [2026-06-07 06:20:07] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-07 06:22:22] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-07 06:27:50] LOGOUT | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
+[2026-06-07 06:40:27] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico

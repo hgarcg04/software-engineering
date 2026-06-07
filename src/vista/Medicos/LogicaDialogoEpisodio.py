@@ -2,7 +2,7 @@ import os
 from PyQt5.QtWidgets import QDialog
 from PyQt5 import uic
 
-ui_path = os.path.join(os.path.dirname(__file__), "Ui/DialogoEpisodio.ui")
+ui_path = os.path.join(os.path.dirname(__file__), "../Ui/DialogoEpisodio.ui")
 Form, _ = uic.loadUiType(ui_path)
 
 

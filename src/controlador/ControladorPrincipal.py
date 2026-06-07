@@ -1,6 +1,6 @@
 from src.modelo.VO.LoginVO import LoginVO
 from src.vista.Enfermeros.LogicaEnfermeros import VentanaEnfermeros
-from src.vista.LogicaMedicos import VentanaMedico
+from src.vista.Medicos.LogicaMedicos import VentanaMedico
 from src.vista.Administrativos.LogicaAdministrativos import VentanaAdministrativos
 from src.modelo.Logica import Logica
 from src.controlador.ControladorEnfermeros import ControladorEnfermeros

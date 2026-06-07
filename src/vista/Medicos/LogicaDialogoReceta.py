@@ -4,7 +4,7 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
 
-ui_path = os.path.join(os.path.dirname(__file__), "Ui/DialogoReceta.ui")
+ui_path = os.path.join(os.path.dirname(__file__), "../Ui/DialogoReceta.ui")
 Form, _ = uic.loadUiType(ui_path)
 
 class DialogoReceta(QDialog, Form):
