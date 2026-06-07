@@ -176,5 +176,4 @@ class LogicaTablon:
 
     def confirmar_tarea_eliminada(self):
         """Llamado por el controlador tras eliminar con éxito."""
-        if self._controlador:
-            self._controlador.cargar_tareas()
+        self._on_refrescar()

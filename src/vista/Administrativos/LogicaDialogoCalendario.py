@@ -26,11 +26,12 @@ class DialogCalendario(QDialog):
     # Emite (fecha:date, hora:str) cuando el usuario elige una celda libre
     hora_seleccionada = pyqtSignal(object, str)
 
-    def __init__(self, id_medico, nombre_medico, modelo, fecha_inicial=None, parent=None):
+    def __init__(self, id_medico, nombre_medico, fn_citas, fn_bloqueados, fecha_inicial=None, parent=None):
         super().__init__(parent)
         self._id_medico = id_medico
         self._nombre_medico = nombre_medico
-        self._modelo = modelo
+        self._fn_citas = fn_citas
+        self._fn_bloqueados = fn_bloqueados
         # Si se proporciona fecha_inicial, abrir en su semana; si no, usar hoy
         referencia = fecha_inicial if isinstance(fecha_inicial, date) else date.today()
         self._lunes = referencia - timedelta(days=referencia.weekday())
@@ -142,8 +143,8 @@ class DialogCalendario(QDialog):
         )
 
         # Obtener datos del modelo
-        citas = self._modelo.obtenerCitasSemana(self._id_medico, self._lunes, viernes)
-        bloqueados = self._modelo.obtenerDiasBloqueadosSemana(self._id_medico, self._lunes, viernes)
+        citas = self._fn_citas(self._id_medico, self._lunes, viernes)
+        bloqueados = self._fn_bloqueados(self._id_medico, self._lunes, viernes)
 
         # Conjunto rápido {(fecha_str, hora_str)}
         ocupadas = {(c['fecha'], c['hora']): c['paciente'] for c in citas}
