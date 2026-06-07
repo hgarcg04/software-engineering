@@ -293,6 +293,7 @@ class PacientesDaoJDBC(Conexion):
                 )
                 altas.append(alta)
             return altas
+        
         except Exception as e:
             print("Error obteniendo altas recientes:", e)
             return []

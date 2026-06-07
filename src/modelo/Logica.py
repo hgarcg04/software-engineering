@@ -152,8 +152,7 @@ class Logica():
         return dao.existe_paciente(nif)
 
 
-    # --- CU4: Asignar Citas ---
-
+    #Asignar Citas
     def obtenerEspecialidades(self):
         # Devuelve las especialidades disponibles para el combo de la vista
         dao = CitasDaoJDBC()

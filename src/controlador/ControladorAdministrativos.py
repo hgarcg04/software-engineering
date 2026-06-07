@@ -408,7 +408,6 @@ class ControladorAdministrativos:
         if exito:
             # Registrar en log de actividad
             SingletonLog().registrar_backup(self.user_vo, tipo, tamanio_kb)
-
             # Actualizar vista
             ahora = datetime.now()
             self._vista.actualizar_ultima_copia(

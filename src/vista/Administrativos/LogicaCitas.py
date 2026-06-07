@@ -272,6 +272,7 @@ class LogicaCitas:
     def limpiar_formulario_cita(self):
         self._limpiar_todo_citas()
 
+
     # ── Utilidades ────────────────────────────────────────────────────────────
 
     def mostrar_error(self, titulo, mensaje):
