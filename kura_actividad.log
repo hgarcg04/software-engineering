@@ -304,3 +304,10 @@
 [2026-06-07 11:38:58] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
 [2026-06-07 11:40:15] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
 [2026-06-07 11:41:17] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-07 12:29:36] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-06-07 12:30:50] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-06-07 12:31:20] LOGOUT | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-06-07 12:31:23] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-07 12:31:51] LOGOUT | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-07 12:31:53] LOGIN  | id=4 | usuario=Ana Gómez Torres | rol=medico
+[2026-06-07 12:32:21] LOGIN  | id=1 | usuario=Carlos Rodríguez Fernández | rol=medico
