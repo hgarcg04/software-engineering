@@ -162,10 +162,13 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales,
         genero           = self.input_genero_paciente.currentText()
 
         # ── Llamada al controlador ────────────────────────────────────────────
-        exito, mensaje = self.controlador.registrar_paciente(
-            nif, nombre, ap1, ap2, fecha_nacimiento,
-            genero, email, direccion, alergias, telefono
-        )
+        if self._controlador:
+            exito, mensaje = self._controlador.registrar_paciente(
+                nif, nombre, ap1, ap2, fecha_nacimiento,
+                genero, email, direccion, alergias, telefono
+            )
+        else:
+            return
 
         if exito:
             QMessageBox.information(self, "Éxito", mensaje)

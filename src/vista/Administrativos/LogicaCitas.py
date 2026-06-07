@@ -91,12 +91,18 @@ class LogicaCitas:
 
     #Métodos llamados por el controlador
 
-    def abrir_calendario_dialogo(self, id_medico, nombre_medico, modelo, fecha_inicial=None):
+    def abrir_calendario_dialogo(self, id_medico, nombre_medico, fn_citas, fn_bloqueados, fecha_inicial=None):
         """
         Instancia y abre el DialogCalendario modal.
         Cuando el usuario elige una celda libre, rellena fecha y hora en el formulario.
         """
-        dialogo = DialogCalendario(id_medico, nombre_medico, modelo, fecha_inicial=fecha_inicial, parent=self)
+        dialogo = DialogCalendario(
+            id_medico, nombre_medico,
+            fn_citas=fn_citas,
+            fn_bloqueados=fn_bloqueados,
+            fecha_inicial=fecha_inicial,
+            parent=self
+        )
         dialogo.hora_seleccionada.connect(self._on_hora_desde_calendario)
         dialogo.exec_()
 
