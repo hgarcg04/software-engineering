@@ -21,7 +21,6 @@ class ControladorMedicos:
         self._episodio_consulta_actual = None  # EpisodioVO activo en la consulta
         self._paciente_ingreso_actual = None
 
-        self._vista.cargar_datos_iniciales(self._user_vo)
         self._cargar_agenda_hoy()
 
         self._logica_neumonia = None
@@ -309,7 +308,6 @@ class ControladorMedicos:
         self._altas_recientes = altas
         self._vista.cargar_ingresos(ingresos if ingresos else [], altas if altas else [])
 
-    # Llamado desde LogicaMedicos._buscar_en_ingresos()
     def filtrar_ingresos(self, texto):
         texto = texto.lower()
         ingresos_filtrados = [i for i in self._ingresos_actuales if texto in i.nombre_completo.lower()]

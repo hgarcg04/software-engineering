@@ -2,9 +2,10 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QInputDialog, QButtonGroup
-from PyQt5.QtCore import pyqtSignal, QTimer, QDateTime, QDate
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QInputDialog, QButtonGroup, QFileDialog
+from PyQt5.QtCore import pyqtSignal, QTimer, QDateTime, Qt
 from PyQt5 import uic
+from PyQt5.QtGui import QPixmap
 from datetime import datetime, timedelta
 
 
@@ -31,19 +32,21 @@ class VentanaMedico(QMainWindow, Form):
         self.timer.start(1000)
         self._actualizar_fecha_hora()
 
-        # Botones de navegación exclusivos
+        # Botones de navegación exclusivos del menu
         self._btn_group = QButtonGroup(self)
         self._btn_group.setExclusive(True)
         self._btn_group.addButton(self.btn_nav_inicio)
         self._btn_group.addButton(self.btn_nav_agenda)
         self._btn_group.addButton(self.btn_nav_hcd)
         self._btn_group.addButton(self.btn_ingr)
+        self._btn_group.addButton(self.btn_nav_neumonia)
 
         # Navegación sidebar
         self.btn_nav_inicio.clicked.connect(self._ir_inicio)
         self.btn_nav_agenda.clicked.connect(self._ir_agenda)
         self.btn_nav_hcd.clicked.connect(self._ir_hcd)
         self.btn_ingr.clicked.connect(self._ir_ingresos)
+        self.btn_nav_neumonia.clicked.connect(self._ir_neumonia)
 
         # Inicio
         self.tabla_agenda_hoy.itemSelectionChanged.connect(self._on_cita_seleccionada)
@@ -74,18 +77,21 @@ class VentanaMedico(QMainWindow, Form):
         self.btn_añadir_tratamiento.clicked.connect(self._abrir_dialogo_receta_ingreso)
         self.btn_eliminar_tratamiento.clicked.connect(self._eliminar_tratamiento_ingreso)
 
-        # Logout
-        self.btn_logout.clicked.connect(self._logout)
-
         # Clasificación
-        self._btn_group.addButton(self.btn_nav_neumonia)
-        self.btn_nav_neumonia.clicked.connect(self._ir_neumonia)
         self.btn_seleccionar_rx.clicked.connect(self._seleccionar_imagen_rx)
         self.btn_analizar_rx.clicked.connect(self._analizar_rx)
         self._ruta_imagen_rx = None
 
-    # ── Navegación ──────────────────────────────────────────────
+        # Logout
+        self.btn_logout.clicked.connect(self._logout)
 
+    # -- Inicio --------------------------------------------------
+    def _cargar_datos_iniciales(self):
+        userVO = self._controlador._user_vo
+        self.lbl_user_name.setText(f"Dr./Dra.: {userVO.nombre} {userVO.apellidos}")
+
+    # ── Navegación ────────────────────────────────────────────── Se llaman con los botones del menú
+    
     def _ir_inicio(self):
         self.stackedPanel.setCurrentIndex(0)
         self.btn_nav_inicio.setChecked(True)
@@ -106,40 +112,16 @@ class VentanaMedico(QMainWindow, Form):
         if self._controlador:
             self._controlador.cargar_ingresos()
 
-    # ── Inicio ───────────────────────────────────────────────────
-
-    def cargar_datos_iniciales(self, userVO):
-        self.lbl_user_name.setText(f"Dr./Dra.: {userVO.nombre} {userVO.apellidos}")
-
+    def _ir_neumonia(self):
+        self.stackedPanel.setCurrentIndex(5)
+        self.btn_nav_neumonia.setChecked(True)
+    ##############################
+    ##  Inicio / Agenda del día ##
+    ##############################
+    # Se llama desde el init
     def _actualizar_fecha_hora(self):
         self.lbl_datetime.setText(QDateTime.currentDateTime().toString("dd/MM/yyyy  HH:mm"))
-
-    def configurar_botones_hospitalizacion(self, puede_ingresar, puede_dar_alta):
-        self.btn_ingresar_planta_hcd.setEnabled(puede_ingresar)
-        self.btn_dar_alta_hcd.setEnabled(puede_dar_alta)
-
-    def solicitar_ruta_informe_alta(self, nif_paciente):
-        from PyQt5.QtWidgets import QFileDialog
-        
-        ruta, _ = QFileDialog.getSaveFileName(
-            self,
-            "Guardar Informe de Alta Clínica",
-            f"Informe_Alta_{nif_paciente}.pdf",
-            "PDF Files (*.pdf)"
-        )
-        return ruta
-
-    def mostrar_notificacion(self, titulo, mensaje, es_error=False):
-        """
-        MÉTODO DE VISTA (MVC Puro): Muestra cuadros de diálogo de información o error.
-        """
-        from PyQt5.QtWidgets import QMessageBox
-        
-        if es_error:
-            QMessageBox.critical(self, titulo, mensaje)
-        else:
-            QMessageBox.information(self, titulo, mensaje)
-
+    # Se llama desde ControladorMedicos._cargar_agenda_hoy()
     def cargar_agenda_hoy(self, lista_citas):
         self.tabla_agenda_hoy.setRowCount(0)
         self._citas_agendas_hoy = {} # Por si coincide que se pasa de día y no se reinicia, te imaginas? que guapo
@@ -176,7 +158,7 @@ class VentanaMedico(QMainWindow, Form):
                 self.tabla_agenda_hoy.setItem(row, 2, self._item(''))
 
         self.tabla_agenda_hoy.resizeColumnsToContents()
-
+    # Es una función de la tabla self.tabla_agenda_hoy
     def _on_cita_seleccionada(self):
         fila = self.tabla_agenda_hoy.currentRow()
         if fila < 0:
@@ -187,7 +169,7 @@ class VentanaMedico(QMainWindow, Form):
         tiene_cita = hora in self._citas_agenda_hoy
         self.btn_iniciar_consulta.setEnabled(tiene_cita)
         self.btn_ver_hcd_inicio.setEnabled(tiene_cita)
-
+    # Es una función del botón self.btn_iniciar_consulta
     def _abrir_consulta(self):
         fila = self.tabla_agenda_hoy.currentRow()
         if fila < 0:
@@ -198,7 +180,43 @@ class VentanaMedico(QMainWindow, Form):
         cita = self._citas_agenda_hoy[hora]
         if self._controlador:
             self._controlador.abrir_seleccion_episodio(cita)
+    # Es una función del botón self.btn_ver_hcd_inicio
+    def _ver_hcd_paciente_agenda(self):
+        fila = self.tabla_agenda_hoy.currentRow()
+        if fila < 0:
+            return
+        hora = self.tabla_agenda_hoy.item(fila, 0).text()[:5]
+        if hora not in self._citas_agenda_hoy:
+            return
+        cita = self._citas_agenda_hoy[hora]
+        self._ir_hcd()
+        if self._controlador:
+            self._controlador.cargar_hcd_desde_agenda(cita.id_paciente)
+    # Se llama varias veces para configurar los botones de ingresar y alta
+    def configurar_botones_hospitalizacion(self, puede_ingresar, puede_dar_alta):
+        self.btn_ingresar_planta_hcd.setEnabled(puede_ingresar)
+        self.btn_dar_alta_hcd.setEnabled(puede_dar_alta)
+    # Se llama desde ControladorMedicos.exportar_informe_alta_pdf()
+    def solicitar_ruta_informe_alta(self, nif_paciente):
+        ruta, _ = QFileDialog.getSaveFileName(
+            self,
+            "Guardar Informe de Alta Clínica",
+            f"Informe_Alta_{nif_paciente}.pdf",
+            "PDF Files (*.pdf)"
+        )
+        return ruta
+    # Se llama varias veces para notificar desde el controlador
+    def mostrar_notificacion(self, titulo, mensaje, es_error=False):
+        """
+        MÉTODO DE VISTA (MVC Puro): Muestra cuadros de diálogo de información o error.
+        """
+        from PyQt5.QtWidgets import QMessageBox
         
+        if es_error:
+            QMessageBox.critical(self, titulo, mensaje)
+        else:
+            QMessageBox.information(self, titulo, mensaje)
+    # Se llama desde ControladorMedicos.abrir_seleccion_episodio()
     def abrir_pagina_consulta(self, cita_vo, episodio_vo=None):
         """
         Llamado por el controlador tras elegir episodio.
@@ -220,25 +238,11 @@ class VentanaMedico(QMainWindow, Form):
             self.edit_diagnostico.clear()
 
         self.stackedPanel.setCurrentIndex(3)
-
-    def _ver_hcd_paciente_agenda(self):
-        fila = self.tabla_agenda_hoy.currentRow()
-        if fila < 0:
-            return
-        hora = self.tabla_agenda_hoy.item(fila, 0).text()[:5]
-        if hora not in self._citas_agenda_hoy:
-            return
-        cita = self._citas_agenda_hoy[hora]
-        self._ir_hcd()
-        if self._controlador:
-            self._controlador.cargar_hcd_desde_agenda(cita.id_paciente)
-
-    # ── Consulta ─────────────────────────────────────────────────
-
+    # Es una función del boton self.btn_añadir_tratamiento
     def _abrir_dialogo_receta(self):
         if self._controlador:
             self._controlador.abrir_receta(self._cita_activa)
-
+    # Es una función del boton self.btn_guardar_consulta
     def _guardar_consulta(self):
         if self._controlador:
             self._controlador.guardar_consulta(
@@ -248,7 +252,7 @@ class VentanaMedico(QMainWindow, Form):
                 cita=self._cita_activa
             )
         self._ir_inicio()
-
+    # Es una función del botón self.btn_ingresar_paciente
     def _ingresar_paciente_cita(self):
         if self._cita_activa.hospitalizado:
             QMessageBox.warning(self, "Operación inválida",
@@ -271,8 +275,9 @@ class VentanaMedico(QMainWindow, Form):
                 self.mostrar_notificacion(
                     "Campo Obligatorio", "Debe introducir una habitación.", es_error=True)
 
-
-    # ── Agenda completa ──────────────────────────────────────────
+    #####################
+    ## Agenda completa ##
+    #####################
 
     def _on_fecha_calendario_cambiada(self):
         if self._controlador:
@@ -472,16 +477,10 @@ class VentanaMedico(QMainWindow, Form):
     @controlador.setter
     def controlador(self, ref):
         self._controlador = ref
+        self._cargar_datos_iniciales()
 
     ######################################### MODELO ######################################################
-    def _ir_neumonia(self):
-        self.stackedPanel.setCurrentIndex(5)
-        self.btn_nav_neumonia.setChecked(True)
-
     def _seleccionar_imagen_rx(self):
-        from PyQt5.QtWidgets import QFileDialog
-        from PyQt5.QtGui import QPixmap
-        from PyQt5.QtCore import Qt
         ruta, _ = QFileDialog.getOpenFileName(
             self, "Seleccionar radiografía", "",
             "Imágenes (*.png *.jpg *.jpeg)"
