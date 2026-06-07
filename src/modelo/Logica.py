@@ -57,7 +57,12 @@ class Logica():
     def obtenerTomasSesionActual(self, pacienteVO):
         toma_dao = TomasDaoJDBC()
         return toma_dao.obtener_tomas_sesion_actual(pacienteVO)
-    
+
+    def eliminarToma(self, id_toma):
+        dao = TomasDaoJDBC()
+        dao.eliminar_toma(id_toma)
+
+
     def obtenerAgendaHoy(self, userVO):
         dao = CitasDaoJDBC()
         return dao.obtener_agenda_hoy(userVO)

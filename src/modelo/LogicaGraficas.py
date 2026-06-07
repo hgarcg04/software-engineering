@@ -41,7 +41,7 @@ class LogicaGraficas:
                 'normal': (95, 100),
             },
         }
-        print("Tipo:", tipo)
+
         rangos = RANGOS.get(tipo, {})
 
         df_constantes = self._obtenerConstantesComoDataFrame(id_episodio, tipo, desde, hasta)

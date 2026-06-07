@@ -49,6 +49,10 @@ class TomasDaoJDBC(Conexion):
                     
                                 """
 
+    SQL_DELETE = """
+        DELETE FROM Tomas WHERE id_toma = ?
+    """
+
     def guardar_nueva_toma(self, tomaVO):
         cursor = self.getCursor()
         try:
@@ -113,4 +117,11 @@ class TomasDaoJDBC(Conexion):
         except Exception as e:
             print("Error al obtener las tomas de episodio: ", e)
             return []
-        
+
+
+    def eliminar_toma(self, id_toma):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.SQL_DELETE, (id_toma,))
+        except Exception as e:
+            print("Error al eliminar toma: ", e)

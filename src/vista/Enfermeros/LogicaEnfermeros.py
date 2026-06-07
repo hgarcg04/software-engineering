@@ -3,7 +3,7 @@ import os
 
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QTableWidgetItem
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QTableWidgetItem, QTableWidget
 from PyQt5.QtCore import QTimer, QDateTime, Qt, pyqtSignal
 from PyQt5.QtWidgets import QHeaderView
 from PyQt5.QtGui import QColor
@@ -94,6 +94,8 @@ class VentanaEnfermeros(QMainWindow, Form):
         # --- Botones de pagina de medicación ---
         self.tabla_tratamientos.cellClicked.connect(self.on_tratamiento_clicked)
         self.btn_confirmar_toma.clicked.connect(self.on_confirmar_administracion_clicked)
+        self.tabla_tomas_sesion.setSelectionBehavior(QTableWidget.SelectRows)
+        self.tabla_tomas_sesion.setToolTip("Selecciona una fila y pulsa Supr para eliminar el registro.")
 
         # --- PDF ----
         self.btn_exportar_pdf.clicked.connect(self.exportar_informe_pdf)
@@ -530,6 +532,8 @@ class VentanaEnfermeros(QMainWindow, Form):
                                                                  "Se ha dado aviso automático a personal administrativo.")
 
 
+
+
     def parpadear(self, n_veces, encendido):
         # Funcion para que el enfermero pueda ver que se ha registrado una nueva confirmación de 
         # administración de medicación.
@@ -551,12 +555,12 @@ class VentanaEnfermeros(QMainWindow, Form):
                 item.setBackground(color)
         
         # definimos tiempo entre color y no color
-        
         QTimer.singleShot(300, lambda: self.parpadear(n_veces - 1, not encendido)) 
 
         
     def actualizar_ultima_toma(self):
-        self.controlador.obtener_ultima_toma(self._tratamiento_activo)
+        if self._tratamiento_activo:
+            self.controlador.obtener_ultima_toma(self._tratamiento_activo)
         if self._ultima_toma:
             self.lbl_det_ultima_toma.setText(f"{self._ultima_toma.fecha} - {self._ultima_toma.hora[:5]}")
 
@@ -577,7 +581,27 @@ class VentanaEnfermeros(QMainWindow, Form):
                 
             
                 item2 = QTableWidgetItem(t.observaciones)
-                self.tabla_tomas_sesion.setItem(fila, 2, item2) 
+                self.tabla_tomas_sesion.setItem(fila, 2, item2)
+
+    # sobreescribimos el metodo de QWidget para recibir el evento de el botn 'supr' presionado
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Delete:
+            fila = self.tabla_tomas_sesion.currentRow()
+            if fila >= 0:
+                print("recibida señal de boton delete")
+
+                respuesta = QMessageBox.question(
+                    self, "Botón suprimir presionado",
+                    f"Se va a eliminar el registro de la toma selecionada\n\n¿Deseas continuar?",
+                    QMessageBox.Ok | QMessageBox.Cancel)
+
+                if respuesta == QMessageBox.Ok:
+                    toma = self._tomas_sesion_actual[fila]
+                    self.controlador.eliminar_toma(toma.id_toma)
+                    self.actualizar_tomas_sesion_actual()
+                    self.actualizar_ultima_toma()
+                    self.tabla_tomas_sesion.clearSelection()
+                    #self.actualizar_ultima_toma()
 
 
 

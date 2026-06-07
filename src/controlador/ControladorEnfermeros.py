@@ -79,8 +79,8 @@ class ControladorEnfermeros:
             print("Datos no encontrado")
             return
 
-        df_constantes, tomas_prueba, rangos = datos
-        vista.generar_grafico(df_constantes, tomas_prueba, rangos, id_episodio, tipo)
+        df_constantes, tomas, rangos = datos
+        vista.generar_grafico(df_constantes, tomas, rangos, id_episodio, tipo)
 
     def guardar_nueva_toma(self, id_empleado, id_tratamiento, observaciones):
         tomaVO =TomaVO(id_empleado, id_tratamiento, observaciones)
@@ -93,6 +93,9 @@ class ControladorEnfermeros:
     def obtener_tomas_sesion_actual(self, pacienteVO):
         tomas_sesion = self._modelo.obtenerTomasSesionActual(pacienteVO)
         self._vista.cargar_tomas_sesion_actual(tomas_sesion)
+
+    def eliminar_toma(self, id_toma):
+        self._modelo.eliminarToma(id_toma)
 
     def actualizar_stock(self, id_medicamento, cantidad):
         medicamentoVO = self._modelo.obtenerMedicamentoPorId(id_medicamento)
