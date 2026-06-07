@@ -26,14 +26,14 @@ class ControladorMedicos:
         self._logica_neumonia = None
 
     # ── Inicio ───────────────────────────────────────────────────
-
+    # Se llama desde el init para llamar a la vista con los datos obtenidos del modelo
     def _cargar_agenda_hoy(self):
         lista = self._modelo.obtenerAgendaHoy(self._user_vo)
         if lista:
             self._vista.cargar_agenda_hoy(lista)
 
     # ── Agenda completa ──────────────────────────────────────────
-    # Se llama desde LogicaMedicos.cargar_agenda_completa
+    # Se llama desde LogicaMedicos._ir_agenda
     def cargar_agenda_completa(self, desde=None, hasta=None):
         if desde is None:
             desde = datetime.now().strftime('%Y-%m-%d')
@@ -43,8 +43,8 @@ class ControladorMedicos:
         self._vista.cargar_agenda_completa(lista if lista else [])
 
     # ── Consulta ─────────────────────────────────────────────────
-
-    def abrir_seleccion_episodio(self, cita_vo): # Llamado por LogicaMedicos._abrir_consulta()
+    # Llamado por LogicaMedicos._abrir_consulta()
+    def abrir_seleccion_episodio(self, cita_vo): 
         episodios = self._modelo.obtenerEpisodios(cita_vo.id_paciente)
 
         dialogo = DialogoEpisodio(
@@ -188,7 +188,7 @@ class ControladorMedicos:
             self._vista.configurar_botones_hospitalizacion(puede_ingresar=False, puede_dar_alta=True)
         else:
             self._vista.configurar_botones_hospitalizacion(puede_ingresar=True, puede_dar_alta=False)
-
+    # Llamado desde LogicaMedicos._on_ingreso_seleccionado()
     def cargar_tratamientos_ingreso(self, ingresoVO):
         self._paciente_ingreso_actual = ingresoVO
         tratamientos = self._modelo.obtenerTratamientosPorIngreso(ingresoVO.id_ingreso)
@@ -315,8 +315,11 @@ class ControladorMedicos:
         altas_filtradas = [a for a in altas if texto in a.nombre_completo.lower()]
         self._vista.cargar_ingresos(ingresos_filtrados, altas_filtradas)
 
-    # CLASIFICACIÖN
+    #######################
+    ##      MODELO       ##
+    #######################
 
+    # Se llama desde LogicaMedicos._analizar_rx()
     def clasificar_imagen(self, ruta):
         try:
             if self._logica_neumonia is None:

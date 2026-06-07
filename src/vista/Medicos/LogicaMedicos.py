@@ -295,7 +295,9 @@ class VentanaMedico(QMainWindow, Form):
             self.tabla_agenda.setItem(row, 2, self._item(cita.motivo))
         self.tabla_agenda.resizeColumnsToContents()
 
-    # ── HCD ──────────────────────────────────────────────────────
+    #####################
+    ##       HCD       ##
+    #####################
     # Se llama desde self.search_bar
     def _buscar_paciente_hcd(self, texto):
         if self._controlador:
@@ -388,8 +390,10 @@ class VentanaMedico(QMainWindow, Form):
         self.btn_ingresar_planta_hcd.setEnabled(False)
         self.btn_dar_alta_hcd.setEnabled(False)
 
-    # -- Ingreso ------------------------
-
+    #####################
+    ##     Ingreso     ##
+    #####################
+    # LLamado desde ControladorMedicos.cargar_ingresos() que consigue los ingresados y los altas recientes de la BD
     def cargar_ingresos(self, lista_ingresos, lista_altas):
         self._ingresos_actuales = lista_ingresos
         # Tabla ingresos actuales
@@ -421,7 +425,7 @@ class VentanaMedico(QMainWindow, Form):
         texto = self.txt_buscar_general.text().strip()
         if self._controlador:
             self._controlador.filtrar_ingresos(texto)
-
+    # Se llama desde la abla self.tabla_ingresos
     def _on_ingreso_seleccionado(self):
         fila = self.tabla_ingresos.currentRow()
         if fila < 0 or not self._controlador:
@@ -429,9 +433,8 @@ class VentanaMedico(QMainWindow, Form):
         self.btn_añadir_tratamiento.setEnabled(True)
         self.btn_eliminar_tratamiento.setEnabled(False)
         self._controlador.cargar_tratamientos_ingreso(self._ingresos_actuales[fila])
-
+    # LLamado desde ControladorMedicos.cargar_tratamientos_ingreso() con los datos obtenidos y este es llamado desde la función anterior
     def cargar_tratamientos_ingreso(self, lista_tratamientos, nombre_paciente):
-        print(f"=== cargar_tratamientos_ingreso: {len(lista_tratamientos)} tratamientos para {nombre_paciente} ===")
         self.lbl_paciente_tratamiento.setText(nombre_paciente)
         self.tabla_tratamientos_ingreso.setRowCount(0)
         for t in lista_tratamientos:
@@ -446,19 +449,61 @@ class VentanaMedico(QMainWindow, Form):
         self.tabla_tratamientos_ingreso.itemSelectionChanged.connect(
             lambda: self.btn_eliminar_tratamiento.setEnabled(
                 self.tabla_tratamientos_ingreso.currentRow() >= 0))
-
+    # Se llama desde el boton self.btn_añadir_tratamiento
     def _abrir_dialogo_receta_ingreso(self):
         if self._controlador:
             self._controlador.abrir_receta_desde_ingreso()
-
+    # Se llama desde el boton self.btn_eliminar_tratamiento
     def _eliminar_tratamiento_ingreso(self):
         fila = self.tabla_tratamientos_ingreso.currentRow()
         if fila < 0 or not self._controlador:
             return
         self._controlador.eliminar_tratamiento_ingreso(fila)
             
-    # ── Logout ───────────────────────────────────────────────────
+    ######################
+    ##      MODELO      ##
+    ######################
+    # Se llama desde el boton self.btn_seleccionar_rx
+    def _seleccionar_imagen_rx(self):
+        ruta, _ = QFileDialog.getOpenFileName(
+            self, "Seleccionar radiografía", "",
+            "Imágenes (*.png *.jpg *.jpeg)"
+        )
+        if ruta:
+            self._ruta_imagen_rx = ruta
+            pixmap = QPixmap(ruta).scaled(620, 520, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.lbl_imagen_rx.setPixmap(pixmap)
+            self.btn_analizar_rx.setEnabled(True)
+            self.frame_resultado_rx.setVisible(False)
+    # Se llama desde el boton self.btn_analizar_rx
+    def _analizar_rx(self):
+        if self._ruta_imagen_rx:
+            self.btn_analizar_rx.setEnabled(False)
+            self.btn_analizar_rx.setText("Analizando...")
+            self._controlador.clasificar_imagen(self._ruta_imagen_rx)
+            self.btn_analizar_rx.setEnabled(True)
+            self.btn_analizar_rx.setText("Analizar")
+    # Se llama desde ControladorMedicos.clasificar_imagen() que lo hace en la lógica propia de neumonia
+    def mostrar_resultado(self, label, confianza):
+        self.frame_resultado_rx.setVisible(True)
+        if "PNEUMONIA" in label.upper():
+            self.lbl_resultado_rx.setText("⚠ NEUMONÍA\nDETECTADA")
+            self.lbl_resultado_rx.setStyleSheet("font-family: 'Segoe UI Black'; font-size: 20px; color: #e17055;")
+        else:
+            self.lbl_resultado_rx.setText("✔ NORMAL")
+            self.lbl_resultado_rx.setStyleSheet("font-family: 'Segoe UI Black'; font-size: 20px; color: #00b894;")
+        self.lbl_confianza_rx.setText(f"Confianza: {confianza}%")
+    # Muestra el error, esto es porque al principio me daba error con otros modelos
+    def mostrar_error(self, mensaje):
+        self.frame_resultado_rx.setVisible(True)
+        self.lbl_resultado_rx.setText("Error al analizar la imagen")
+        self.lbl_resultado_rx.setStyleSheet("font-family: 'Segoe UI Black'; font-size: 18px; color: #e17055;")
+        self.lbl_confianza_rx.setText(mensaje)
+    
+###########################################################################################################    
 
+    # ── Logout ───────────────────────────────────────────────────
+    # Se llama desde el botón self.btn_logout
     def _logout(self):
         self.signal_logout.emit()
         self.close()
@@ -477,40 +522,3 @@ class VentanaMedico(QMainWindow, Form):
     def controlador(self, ref):
         self._controlador = ref
         self._cargar_datos_iniciales()
-
-    ######################################### MODELO ######################################################
-    def _seleccionar_imagen_rx(self):
-        ruta, _ = QFileDialog.getOpenFileName(
-            self, "Seleccionar radiografía", "",
-            "Imágenes (*.png *.jpg *.jpeg)"
-        )
-        if ruta:
-            self._ruta_imagen_rx = ruta
-            pixmap = QPixmap(ruta).scaled(620, 520, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            self.lbl_imagen_rx.setPixmap(pixmap)
-            self.btn_analizar_rx.setEnabled(True)
-            self.frame_resultado_rx.setVisible(False)
-
-    def _analizar_rx(self):
-        if self._ruta_imagen_rx:
-            self.btn_analizar_rx.setEnabled(False)
-            self.btn_analizar_rx.setText("Analizando...")
-            self._controlador.clasificar_imagen(self._ruta_imagen_rx)
-            self.btn_analizar_rx.setEnabled(True)
-            self.btn_analizar_rx.setText("Analizar")
-
-    def mostrar_resultado(self, label, confianza):
-        self.frame_resultado_rx.setVisible(True)
-        if "PNEUMONIA" in label.upper():
-            self.lbl_resultado_rx.setText("⚠ NEUMONÍA\nDETECTADA")
-            self.lbl_resultado_rx.setStyleSheet("font-family: 'Segoe UI Black'; font-size: 20px; color: #e17055;")
-        else:
-            self.lbl_resultado_rx.setText("✔ NORMAL")
-            self.lbl_resultado_rx.setStyleSheet("font-family: 'Segoe UI Black'; font-size: 20px; color: #00b894;")
-        self.lbl_confianza_rx.setText(f"Confianza: {confianza}%")
-
-    def mostrar_error(self, mensaje):
-        self.frame_resultado_rx.setVisible(True)
-        self.lbl_resultado_rx.setText("Error al analizar la imagen")
-        self.lbl_resultado_rx.setStyleSheet("font-family: 'Segoe UI Black'; font-size: 18px; color: #e17055;")
-        self.lbl_confianza_rx.setText(mensaje)
