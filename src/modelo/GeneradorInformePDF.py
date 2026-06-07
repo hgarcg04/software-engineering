@@ -1,16 +1,30 @@
 
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtCore import QDateTime
-
-
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, HRFlowable
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 
-class GeneradorInformePDF:
 
-    def crear_pdf_informe(self, parent, ruta, pac):
+class GeneradorInformePDF:
+    """
+    Servicio de modelo encargado de construir y escribir en disco
+    el informe de inicio de hospitalización en formato PDF.
+
+    No tiene ninguna dependencia de PyQt5 — cumple estrictamente
+    su rol dentro de la capa de modelo/servicio del patrón MVC.
+    """
+
+    def crear_pdf_informe(self, ruta: str, pac, fecha_generacion: str) -> None:
+        """
+        Construye el PDF y lo escribe en la ruta indicada.
+
+        Parámetros
+        ----------
+        ruta            : path completo donde se guardará el PDF.
+        pac             : PacienteVO con los datos del paciente ingresado.
+        fecha_generacion: cadena con la fecha/hora formateada, proporcionada
+                          por el controlador (así el modelo no depende de QDateTime).
+        """
         doc = SimpleDocTemplate(
             ruta,
             pagesize=A4,
@@ -23,16 +37,12 @@ class GeneradorInformePDF:
         historia = []
 
         # --- CABECERA ---
-        cabecera_data = [[
-            Paragraph("Informe de Hospitalización"),
-        ]]
+        cabecera_data = [[Paragraph("Informe de Hospitalización")]]
         tabla_cabecera = Table(cabecera_data, colWidths=[17 * cm])
-
         historia.append(tabla_cabecera)
         historia.append(Spacer(1, 0.3 * cm))
 
-        ahora = QDateTime.currentDateTime().toString("dd/MM/yyyy HH:mm")
-        historia.append(Paragraph(f"Documento generado el {ahora}"))
+        historia.append(Paragraph(f"Documento generado el {fecha_generacion}"))
         historia.append(Spacer(1, 0.5 * cm))
 
         # --- SECCIÓN: DATOS DEL PACIENTE ---
@@ -41,10 +51,10 @@ class GeneradorInformePDF:
         historia.append(Spacer(1, 0.2 * cm))
 
         datos_paciente = [
-            [Paragraph("NIF / DNI:"), Paragraph(str(pac.nif)),
-             Paragraph("Nombre completo:"), Paragraph(f"{pac.nombre} {pac.apellido1} {pac.apellido2}")],
-            [Paragraph("Fecha de nacimiento:"), Paragraph(str(pac.fecha_nacimiento)),
-             Paragraph("Género:"), Paragraph(str(pac.genero))],
+            [Paragraph("NIF / DNI:"),           Paragraph(str(pac.nif)),
+             Paragraph("Nombre completo:"),      Paragraph(f"{pac.nombre} {pac.apellido1} {pac.apellido2}")],
+            [Paragraph("Fecha de nacimiento:"),  Paragraph(str(pac.fecha_nacimiento)),
+             Paragraph("Género:"),               Paragraph(str(pac.genero))],
         ]
         tabla_pac = Table(datos_paciente, colWidths=[4 * cm, 4.5 * cm, 4 * cm, 4.5 * cm])
         historia.append(tabla_pac)
@@ -59,24 +69,20 @@ class GeneradorInformePDF:
         dieta = str(pac.dieta) if pac.dieta else "—"
 
         datos_ingreso = [
-            [Paragraph("Habitación:"), Paragraph(str(pac.num_habitacion)),
+            [Paragraph("Habitación:"),      Paragraph(str(pac.num_habitacion)),
              Paragraph("Fecha de ingreso:"), Paragraph(fecha_ingreso)],
             [Paragraph("Médico asignado:"), Paragraph(str(pac.medico_asignado)),
-             Paragraph("Dieta:"), Paragraph(dieta)],
+             Paragraph("Dieta:"),           Paragraph(dieta)],
         ]
         tabla_ing = Table(datos_ingreso, colWidths=[4 * cm, 4.5 * cm, 4 * cm, 4.5 * cm])
         historia.append(tabla_ing)
         historia.append(Spacer(1, 1 * cm))
 
         # --- OBSERVACIONES ---
-
         historia.append(Paragraph("ANOTACIONES AL INGRESAR"))
         historia.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0cb868")))
         historia.append(Spacer(1, 0.2 * cm))
-
         historia.append(Paragraph(str(pac.observaciones)))
 
         doc.build(historia)
-
-        QMessageBox.information(parent, "PDF exportado", f"Informe guardado correctamente en:\n{ruta}")
-
+        # El controlador es responsable de notificar a la vista tras este return.

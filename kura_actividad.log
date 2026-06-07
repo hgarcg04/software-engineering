@@ -359,3 +359,6 @@
 [2026-06-07 18:59:40] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
 [2026-06-07 19:03:23] LOGIN  | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
 [2026-06-07 19:07:30] LOGOUT | id=12 | usuario=Elena Morales Fuentes | rol=administrativo
+[2026-06-07 20:02:07] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-07 20:04:07] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero
+[2026-06-07 20:05:34] LOGIN  | id=6 | usuario=María Pérez Díaz | rol=enfermero

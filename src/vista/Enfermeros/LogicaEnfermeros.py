@@ -344,7 +344,18 @@ class VentanaEnfermeros(QMainWindow, Form):
         if not ruta:
             return
 
-        self.controlador.crear_pdf_informe(self, ruta, pac)
+        self.controlador.crear_pdf_informe(ruta, pac)
+
+    def mostrar_confirmacion_pdf(self, ruta: str) -> None:
+        """
+        Muestra el mensaje de éxito al usuario.
+        Llamado por el controlador tras completar la generación del PDF.
+        """
+        QMessageBox.information(
+            self,
+            "PDF exportado",
+            f"Informe guardado correctamente en:\n{ruta}"
+        )
     
     # ----------------------------------------------------------------------------------------------------------------------------------------------------------
     #                                                      PÁGINA DE REGISTRO DE CONSTANTES VITALES

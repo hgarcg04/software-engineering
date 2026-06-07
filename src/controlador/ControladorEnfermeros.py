@@ -5,6 +5,9 @@ from src.modelo.LogicaGraficas import LogicaGraficas
 from src.vista.Enfermeros.GeneradorGraficas import LogicaGenerarGrafica
 from src.modelo.GeneradorInformePDF import GeneradorInformePDF
 
+from datetime import datetime
+
+
 class ControladorEnfermeros:
     def __init__(self, vista, modelo, user_vo, controlador_principal=None):
         self._vista = vista
@@ -126,9 +129,15 @@ class ControladorEnfermeros:
     def cambiar_password(self, nueva, enfermero):
         self.controlador_principal.cambiar_password(nueva, enfermero)
 
-    def crear_pdf_informe(self, parent, ruta, pacVO):
+    def crear_pdf_informe(self, ruta, pacVO):
+
+        fecha_generacion = datetime.now().strftime("%d/%m/%Y %H:%M")
+
         generador = GeneradorInformePDF()
-        generador.crear_pdf_informe(parent, ruta, pacVO)
+        generador.crear_pdf_informe(ruta, pacVO, fecha_generacion)
+
+        self._vista.mostrar_confirmacion_pdf(ruta)
+
 
 
     # ── HCD ──────────────────────────────────────────────────────
