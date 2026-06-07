@@ -1,7 +1,7 @@
 from src.modelo.VO.PacientesVO import PacientesVO
 from src.modelo.LogicaEmail import EmailService
 from src.modelo.SingletonLog import SingletonLog
-from datetime import date
+from datetime import date, datetime
 import secrets
 import string
 import re
@@ -316,7 +316,6 @@ class ControladorAdministrativos:
 
     def limpiar_formulario_credencial(self):
         self._vista.limpiar_formulario_credencial()
-
     # ── CU7: Pedir Medicamentos ───────────────────────────────────────────────
 
     def cargar_catalogo(self):
@@ -361,16 +360,13 @@ class ControladorAdministrativos:
         medicamentos_actualizados = self._modelo.obtenerMedicamentos()
         for med in medicamentos_actualizados:
             if med.alerta_stock and med.stock > med.stock_minimo:
-                from src.modelo.dao.MedicamentosDaoJDBC import MedicamentosDaoJDBC
-                dao = MedicamentosDaoJDBC()
-                dao.set_alerta_stock(med.id_medicamento, 0)
+                self._modelo.setAlertaStock(med.id_medicamento, 0)
 
         # Notificar éxito a la vista
         self._vista.confirmar_pedido_exitoso()
 
         # Recargar el catálogo con los stocks actualizados
         self.cargar_catalogo()
-        
     # ── CU6: Copia de Seguridad ───────────────────────────────────────────────
 
     def inicializar_backup(self):
@@ -414,7 +410,6 @@ class ControladorAdministrativos:
             SingletonLog().registrar_backup(self.user_vo, tipo, tamanio_kb)
 
             # Actualizar vista
-            from datetime import datetime
             ahora = datetime.now()
             self._vista.actualizar_ultima_copia(
                 ahora.strftime('%Y-%m-%d'),
@@ -427,3 +422,16 @@ class ControladorAdministrativos:
             self._vista.mostrar_info("Copia completada", mensaje)
         else:
             self._vista.mostrar_error("Error en la copia", mensaje)
+
+    # ── Tablón de Tareas ──────────────────────────────────────────────────────
+
+    def cargar_tareas(self):
+        tareas = self._modelo.obtenerTareas()
+        self._vista.cargar_tareas(tareas)
+
+    def marcar_tarea_hecha(self, id_tarea):
+        exito = self._modelo.eliminarTarea(id_tarea)
+        if exito:
+            self._vista.confirmar_tarea_eliminada()
+        else:
+            self._vista.mostrar_error("Error", "No se pudo eliminar la tarea. Inténtalo de nuevo.")

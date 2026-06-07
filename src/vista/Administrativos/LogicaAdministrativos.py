@@ -10,6 +10,7 @@ from src.vista.Administrativos.LogicaCitas import LogicaCitas
 from src.vista.Administrativos.LogicaCredenciales import LogicaCredenciales
 from src.vista.Administrativos.LogicaMedicamentos import LogicaMedicamentos
 from src.vista.Administrativos.LogicaBackup import LogicaBackup
+from src.vista.Administrativos.LogicaTablon import LogicaTablon
 
 ui_path = os.path.join(os.path.dirname(__file__), "..", "Ui", "VistaAdministrativo.ui")
 
@@ -24,7 +25,7 @@ PAGE_BACKUP       = 6
 Form, Window = uic.loadUiType(ui_path)
 
 
-class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales, LogicaMedicamentos, LogicaBackup):
+class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales, LogicaMedicamentos, LogicaBackup, LogicaTablon):
     signal_logout = pyqtSignal()
 
     def __init__(self):
@@ -65,6 +66,9 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales,
         # CU6: Copia de Seguridad (mixin LogicaBackup)
         self._init_backup()
 
+        # Tablon de Tareas (mixin LogicaTablon)
+        self._init_tablon()
+
     def cerrar_sesion(self):
         print("Cerrando sesión...")
         self.signal_logout.emit()
@@ -98,6 +102,9 @@ class VentanaAdministrativos(QMainWindow, Form, LogicaCitas, LogicaCredenciales,
 
         if indice == PAGE_BACKUP and self._controlador:
             self._controlador.inicializar_backup()
+
+        if indice == PAGE_INICIO and self._controlador:
+            self._controlador.cargar_tareas()
 
     # ── Inicio: nombre de usuario y reloj ─────────────────────────────────────
 

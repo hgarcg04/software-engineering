@@ -7,7 +7,7 @@ from src.modelo.dao.PacientesDaoJDBC import PacientesDaoJDBC
 from src.modelo.dao.MedicamentosDaoJDBC import MedicamentosDaoJDBC
 from src.modelo.dao.EpisodiosDaoJDBC import EpisodiosDaoJDBC
 from src.modelo.dao.BackupDaoJDBC import BackupDaoJDBC
-
+from src.modelo.dao.TablonDaoJDBC import TablonDaoJDBC
 import bcrypt
 
 
@@ -94,6 +94,14 @@ class Logica():
         dao = TratamientosDaoJDBC()
         dao.guardar_tratamiento(tratamientoVO)
 
+    def eliminarTratamiento(self, id_tratamiento):
+        dao = TratamientosDaoJDBC()
+        dao.eliminar_tratamiento(id_tratamiento)
+
+    def obtenerTratamientosPorIngreso(self, id_ingreso):
+        dao = TratamientosDaoJDBC()
+        return dao.obtener_tratamientos_por_ingreso(id_ingreso)
+
     def buscarPaciente(self, texto):
         dao = PacientesDaoJDBC()
         return dao.buscar_paciente(texto)
@@ -129,6 +137,10 @@ class Logica():
     def existePaciente(self, nif):
         dao = PacientesDaoJDBC()
         return dao.existe_paciente(nif)
+    
+    def setAlertaStock(self, id_medicamento, bit):
+        dao = MedicamentosDaoJDBC()
+        dao.set_alerta_stock(id_medicamento, bit)
 
     # --- CU4: Asignar Citas ---
 
@@ -212,3 +224,14 @@ class Logica():
     def comprobarEspacioBackup(self, ruta_destino):
         dao = BackupDaoJDBC()
         return dao.comprobar_espacio(ruta_destino)
+
+
+    # --- Tablón de Tareas ---
+
+    def obtenerTareas(self):
+        dao = TablonDaoJDBC()
+        return dao.obtener_tareas()
+
+    def eliminarTarea(self, id_tarea):
+        dao = TablonDaoJDBC()
+        return dao.eliminar_tarea(id_tarea)

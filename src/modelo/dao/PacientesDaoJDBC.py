@@ -1,6 +1,7 @@
 from src.modelo.Conexion.Conexion import Conexion
 from src.modelo.VO.PacientesVO import PacientesVO
-from src.modelo.VO.UsuariosVO import UserVO
+from src.modelo.VO.IngresosVO import IngresoVO
+from src.modelo.VO.AltasVO import AltaVO
 
 
 class PacientesDaoJDBC(Conexion):
@@ -76,7 +77,7 @@ class PacientesDaoJDBC(Conexion):
     SQL_INGRESOS_ACTUALES = """
         SELECT i.id_ingreso, i.num_habitacion,
             p.nombre + ' ' + p.apellido1 + ' ' + ISNULL(p.apellido2, '') AS nombre_completo,
-            i.fecha_inicio
+            i.fecha_inicio, p.id_paciente
         FROM Ingresos i
         JOIN Episodios e ON i.id_episodio = e.id_episodio
         JOIN Pacientes p ON e.id_paciente = p.id_paciente
@@ -187,20 +188,6 @@ class PacientesDaoJDBC(Conexion):
     def ingresar_paciente(self, id_paciente, id_episodio, habitacion):
         cursor = self.getCursor()
         try:
-            cursor.execute(self.SQL_INGRESAR_PACIENTE, (id_paciente,))
-            cursor.execute(self.SQL_CREAR_INGRESO, (id_episodio, habitacion))
-            self.conexion.commit()
-            print(f"Paciente {id_paciente} ingresado con éxito.")
-        
-        except Exception as e:
-            self.conexion.rollback()
-            print(f"Error al ingresar el paciente: {e}")
-        finally:
-            cursor.close() # revisar porque esto no lo termino de entender
-
-    def ingresar_paciente(self, id_paciente, id_episodio, habitacion):
-        cursor = self.getCursor()
-        try:
             self.conexion.jconn.setAutoCommit(False)
             cursor.execute(self.SQL_INGRESAR_PACIENTE, (id_paciente,))
             cursor.execute(self.SQL_CREAR_INGRESO, (id_episodio, habitacion))
@@ -272,18 +259,38 @@ class PacientesDaoJDBC(Conexion):
 
     def obtener_ingresos_actuales(self):
         cursor = self.getCursor()
+        ingresos = []
         try:
             cursor.execute(self.SQL_INGRESOS_ACTUALES)
-            return cursor.fetchall()
+            rows = cursor.fetchall()
+            for row in rows:
+                ingreso = IngresoVO(
+                    id_ingreso = row[0],
+                    habitacion = row[1],
+                    nombre_completo = row[2],
+                    fecha_inicio = row[3],
+                    id_paciente = row[4]
+                )
+                ingresos.append(ingreso)
+            return ingresos
         except Exception as e:
             print("Error obteniendo ingresos actuales:", e)
             return []
 
     def obtener_altas_recientes(self):
         cursor = self.getCursor()
+        altas = []
         try:
             cursor.execute(self.SQL_ALTAS_RECIENTES)
-            return cursor.fetchall()
+            rows = cursor.fetchall()
+            for row in rows:
+                alta = AltaVO(
+                    id_ingreso = row[0],
+                    nombre_completo = row[1],
+                    fecha_inicio = row[2],
+                    fecha_fin = row[3],
+                    observaciones = row[4]
+                )
         except Exception as e:
             print("Error obteniendo altas recientes:", e)
             return []

@@ -219,7 +219,7 @@
     #btn_nuevo_paciente:hover, #btn_limpiar_cita:hover,
     #btn_limpiar_credencial:hover { background-color: #b2bec3; }
 
-    /* === Tablón de comunicación === */
+    /* === Tablón de tareas === */
     #groupBox_tablon {
         background-color: #ffffff;
         border: 1px solid #dde3ea;
@@ -228,7 +228,7 @@
     }
     #groupBox_tablon::title {
         font-family: 'Segoe UI Black';
-        font-size: 22px;
+        font-size: 16px;
         font-weight: bold;
         color: #2d3436;
         subcontrol-origin: margin;
@@ -236,27 +236,28 @@
         padding: 0 8px;
     }
     #list_tablon {
-        background-color: #f8fafc;
-        border: 1px solid #dde3ea;
+        background-color: #f0f4f8;
+        border: none;
         border-radius: 8px;
         font-size: 13px;
         color: #2d3436;
-        min-height: 300px;
+        min-height: 340px;
     }
     #list_tablon::item {
-        padding: 10px 12px;
-        border-bottom: 1px solid #f0f4f8;
+        padding: 4px 4px;
+        background-color: transparent;
+        border: none;
     }
-    #list_tablon::item:alternate { background-color: #ffffff; }
-    #btn_enviar_tablon {
-        background-color: #00b894;
+    #list_tablon::item:selected { background-color: transparent; }
+    #btn_refrescar_tablon {
+        background-color: #6a9edb;
         color: white;
         border-radius: 8px;
         padding: 8px 18px;
         font-family: 'Segoe UI Semibold';
         font-size: 13px;
     }
-    #btn_enviar_tablon:hover { background-color: #00a381; }
+    #btn_refrescar_tablon:hover { background-color: #4a7ec0; }
 
     /* === Frame de disponibilidad / resultado === */
     #frame_disponibilidad {
@@ -633,7 +634,7 @@
           <!-- ── Tablón de comunicación ── -->
           <item>
            <widget class="QGroupBox" name="groupBox_tablon">
-            <property name="title"><string>Tablón de comunicación</string></property>
+            <property name="title"><string>Tareas pendientes</string></property>
             <layout class="QVBoxLayout" name="tablonLayout">
              <property name="leftMargin"><number>12</number></property>
              <property name="topMargin"><number>12</number></property>
@@ -641,26 +642,34 @@
              <property name="bottomMargin"><number>12</number></property>
              <property name="spacing"><number>8</number></property>
 
-             <!-- Lista de mensajes -->
+             <!-- Lista de tareas -->
              <item>
               <widget class="QListWidget" name="list_tablon">
                <property name="alternatingRowColors"><bool>true</bool></property>
-               <property name="selectionMode"><enum>QAbstractItemView::NoSelection</enum></property>
+               <property name="selectionMode"><enum>QAbstractItemView::SingleSelection</enum></property>
               </widget>
              </item>
 
-             <!-- Fila inferior: campo de texto + botón enviar -->
+             <!-- Fila inferior: marcar hecha + refrescar -->
              <item>
-              <layout class="QHBoxLayout" name="tablonInputLayout">
+              <layout class="QHBoxLayout" name="tablonBotonesLayout">
                <property name="spacing"><number>8</number></property>
                <item>
-                <widget class="QLineEdit" name="input_tablon">
-                 <property name="placeholderText"><string>Escribe un mensaje para médicos y enfermeros...</string></property>
+                <spacer>
+                 <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                 <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_marcar_hecha">
+                 <property name="text"><string>Marcar como hecha</string></property>
+                 <property name="enabled"><bool>false</bool></property>
+                 <property name="minimumWidth"><number>150</number></property>
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="btn_enviar_tablon">
-                 <property name="text"><string>Publicar</string></property>
+                <widget class="QPushButton" name="btn_refrescar_tablon">
+                 <property name="text"><string>Refrescar</string></property>
                  <property name="minimumWidth"><number>100</number></property>
                 </widget>
                </item>
