@@ -522,8 +522,13 @@ class VentanaEnfermeros(QMainWindow, Form):
         self.actualizar_ultima_toma()
         self.actualizar_tomas_sesion_actual()
 
-        self.parpadear(10, True)
+        self.parpadear(15, True)
         self.edit_notas_toma.clear()
+
+    def confirmar_aviso(self):
+        QMessageBox.warning(self, "Stock por debajo del umbral", "El medicamento suministrado se está agotando.\n"
+                                                                 "Se ha dado aviso automático a personal administrativo.")
+
 
     def parpadear(self, n_veces, encendido):
         # Funcion para que el enfermero pueda ver que se ha registrado una nueva confirmación de 

@@ -103,11 +103,13 @@ class ControladorEnfermeros:
         if stock_actual < medicamentoVO.stock_minimo:
 
             self._set_alerta_stock(medicamentoVO.id_medicamento, 1)
-            self._avisar_falta_stock_en_tablon(self.user_vo, f"Stock actual de '{medicamentoVO.nombre}': {stock_actual}"
+            retorno = self._avisar_falta_stock_en_tablon(self.user_vo, f"Stock actual de '{medicamentoVO.nombre}': {stock_actual}"
                                                                              f" (Stock minimo: {medicamentoVO.stock_minimo})")
-            print(f"Stock bajo minimos. Aviso enviado")
+            if retorno:
+                self._vista.confirmar_aviso()
+
         else:
-            print(f"Stock aun por encima de umbral:  {stock_actual}")
+
             self._set_alerta_stock(medicamentoVO.id_medicamento, 0)
 
 

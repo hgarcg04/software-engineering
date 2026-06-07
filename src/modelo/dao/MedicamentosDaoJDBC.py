@@ -62,7 +62,6 @@ class MedicamentosDaoJDBC(Conexion):
     def actualizar_stock(self, id_medicamento, cantidad):
         cursor = self.getCursor()
         try:
-            print(f"Se han quitado {cantidad} unidades del medicamento con id {id_medicamento}")
             cursor.execute(self.SQL_UPDATE_ACTUALIZAR_STOCK, (cantidad, id_medicamento, ))
         except Exception as e:
             print(f"Error al añadir/quitar {cantidad} unidades del medicamento con id {id_medicamento}: ", e)
