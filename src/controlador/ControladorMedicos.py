@@ -206,6 +206,8 @@ class ControladorMedicos:
     def abrir_receta_desde_ingreso(self):
         if not self._paciente_ingreso_actual:
             return
+        print("=== abrir_receta_desde_ingreso llamado ===")
+        print("paciente_ingreso_actual:", self._paciente_ingreso_actual)
 
         id_ingreso = self._paciente_ingreso_actual.id_ingreso
         nombre_paciente = self._paciente_ingreso_actual.nombre_completo
@@ -217,14 +219,15 @@ class ControladorMedicos:
         dialogo.controlador = self
         medicamentos = self._modelo.obtenerMedicamentos()
         dialogo.cargar_medicamentos(medicamentos)
-        dialogo.exec_()
+        resultado = dialogo.exec_()
+        print("Resultado diálogo:", resultado)
         
         # Recargar tratamientos tras cerrar el diálogo
         self.cargar_tratamientos_ingreso(self._paciente_ingreso_actual)
 
     def eliminar_tratamiento_ingreso(self, fila):
         tratamientos = self._modelo.obtenerTratamientosPorIngreso(
-            self._paciente_ingreso_actual[0])
+            self._paciente_ingreso_actual.id_ingreso)
         if fila >= len(tratamientos):
             return
         id_tratamiento = tratamientos[fila].id_tratamiento
@@ -245,9 +248,9 @@ class ControladorMedicos:
         self._vista.mostrar_detalle_episodio(texto, tratamientos if tratamientos else [])
 
     def cargar_hcd_desde_agenda(self, id_paciente):
-        pacientes = self._modelo.buscarPacientePorId(id_paciente)
-        if pacientes:
-            self.cargar_episodios_paciente(pacientes[0])
+        paciente = self._modelo.buscarPacientePorId(id_paciente)
+        if paciente:
+            self.cargar_episodios_paciente(paciente.id_paciente)
 
     def dar_alta_paciente(self, diagnostico_alta):
         if not self._paciente_hcd_actual:
@@ -257,9 +260,6 @@ class ControladorMedicos:
                 es_error=True
             )
             return
-        episodios = self._modelo.obtenerEpisodios(self._paciente_hcd_actual.id_paciente)
-        id_episodio = episodios[0].id_episodio if episodios else None
-
         exito = self._modelo.darAltaMedica(self._paciente_hcd_actual.id_paciente)
 
         if exito:

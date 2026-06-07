@@ -77,7 +77,7 @@ class PacientesDaoJDBC(Conexion):
     SQL_INGRESOS_ACTUALES = """
         SELECT i.id_ingreso, i.num_habitacion,
             p.nombre + ' ' + p.apellido1 + ' ' + ISNULL(p.apellido2, '') AS nombre_completo,
-            i.fecha_inicio
+            i.fecha_inicio, p.id_paciente
         FROM Ingresos i
         JOIN Episodios e ON i.id_episodio = e.id_episodio
         JOIN Pacientes p ON e.id_paciente = p.id_paciente
@@ -268,7 +268,8 @@ class PacientesDaoJDBC(Conexion):
                     id_ingreso = row[0],
                     habitacion = row[1],
                     nombre_completo = row[2],
-                    fecha_inicio = row[3]
+                    fecha_inicio = row[3],
+                    id_paciente = row[4]
                 )
                 ingresos.append(ingreso)
             return ingresos

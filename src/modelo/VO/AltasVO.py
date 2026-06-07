@@ -1,5 +1,5 @@
 class AltaVO:
-    def __init__(self, id_ingreso, habitacion, nombre_completo, fecha_inicio, fecha_fin, observaciones):
+    def __init__(self, id_ingreso, nombre_completo, fecha_inicio, fecha_fin, observaciones):
         self.id_ingreso = id_ingreso
         self.nombre_completo = nombre_completo
         self.fecha_inicio = fecha_inicio

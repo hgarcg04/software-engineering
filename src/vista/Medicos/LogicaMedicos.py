@@ -430,6 +430,7 @@ class VentanaMedico(QMainWindow, Form):
         self._controlador.cargar_tratamientos_ingreso(self._ingresos_actuales[fila])
 
     def cargar_tratamientos_ingreso(self, lista_tratamientos, nombre_paciente):
+        print(f"=== cargar_tratamientos_ingreso: {len(lista_tratamientos)} tratamientos para {nombre_paciente} ===")
         self.lbl_paciente_tratamiento.setText(nombre_paciente)
         self.tabla_tratamientos_ingreso.setRowCount(0)
         for t in lista_tratamientos:

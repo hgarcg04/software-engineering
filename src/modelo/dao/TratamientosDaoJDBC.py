@@ -89,6 +89,7 @@ class TratamientosDaoJDBC(Conexion):
             return []
         
     def guardar_tratamiento(self, tratamientoVO):
+        print(f"=== Guardando tratamiento: id_ingreso={tratamientoVO.id_ingreso}, id_medicamento={tratamientoVO.id_medicamento} ===")
         cursor = self.getCursor()
         try:
             cursor.execute(self.SQL_INSERT_TRATAMIENTO, (
@@ -126,11 +127,13 @@ class TratamientosDaoJDBC(Conexion):
             self.conexion.jconn.setAutoCommit(True)
 
     def obtener_tratamientos_por_ingreso(self, id_ingreso):
+        print(f"=== Buscando tratamientos para id_ingreso={id_ingreso} ===")
         cursor = self.getCursor()
         tratamientos = []
         try:
             cursor.execute(self.SQL_SELECT_POR_INGRESO, (id_ingreso,))
             rows = cursor.fetchall()
+            print(f"=== Filas encontradas: {len(rows)} ===")
             for row in rows:
                 tratamiento = TratamientoVO(
                     id_tratamiento=row[0], id_ingreso=row[1], id_medico=row[2], id_medicamento=row[3],
