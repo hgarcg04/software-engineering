@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout
 
 class LogicaGenerarGrafica:
 
-    def generar_grafico(self, df_constantes, tomas_prueba, rangos, id_episodio, tipo):
+    def generar_grafico(self, df_constantes, tomas, rangos, id_episodio, tipo):
         con_valor = df_constantes.dropna(subset=['valor'])
         fig, ax = plt.subplots(figsize=(12, 4))
 
@@ -39,7 +39,7 @@ class LogicaGenerarGrafica:
 
         # ---- TIMESTAMPS DE TOMAS ----
 
-        for toma, medicamento in tomas_prueba:
+        for toma, medicamento in tomas:
             ax.axvline(x=toma, color='purple', linestyle='--', linewidth=1.5, alpha=0.7)
             ax.annotate(
                 medicamento,
