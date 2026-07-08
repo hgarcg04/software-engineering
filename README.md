@@ -28,9 +28,8 @@ implementación, pruebas y documentación.
 
 ## 🛠️ Tecnologías Utilizadas
 
--   Lenguaje de programación: Python,...
--   Framework / Librerías: *Por definir*
--   Base de datos: MySQL,...
+-   Lenguaje de programación: Python.
+-   Base de datos: SQL Server.
 -   Control de versiones: Git y GitHub
 
 ------------------------------------------------------------------------
@@ -38,10 +37,7 @@ implementación, pruebas y documentación.
 ## 📂 Estructura del Proyecto
 
     software-engineering/
-    ├── docs/
     ├── src/
-    ├── tests/
-    ├── README.md
     └── .gitignore
 
 ------------------------------------------------------------------------
